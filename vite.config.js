@@ -3,5 +3,5 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/config-generator/", // MUST match repo name
+  base: "/", // correct for custom domain
 });
