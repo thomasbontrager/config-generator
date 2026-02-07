@@ -35,13 +35,11 @@ VITE_APP_URL=http://localhost:3000
 \`\`\`bash
 npm run build
 \`\`\`
-`,bm="",Sm="",zm="",Em=`# Express App
+`,bm="",Sm="",zm="",Em=`# Express API
 
-Production-ready Express.js starter template.
+Minimal production-ready Express server starter.
 
 ## Getting started
-
-Follow these steps to set up and run the application:
 
 \`\`\`bash
 npm install
@@ -50,30 +48,18 @@ node index.js
 
 ## Environment variables
 
-1. Copy \`.env.example\` to \`.env\`
-2. Update the values as needed
+Copy .env.example to .env
+
+Update the values as needed
 
 Example:
-\`\`\`env
+
+\`\`\`bash
 PORT=3000
-NODE_ENV=development
 \`\`\`
 
-## Docker
-
-To run the application using Docker:
+## Run with Docker
 
 \`\`\`bash
 docker-compose up --build
-\`\`\`
-
-This will build and start the application in a containerized environment.
-
-## Build for production
-
-To build the application for production deployment:
-
-\`\`\`bash
-npm run build
-\`\`\`
-`;async function Am({vite:mt,express:Yt}){const C=new hm;if(mt){const U=C.folder("vite-react");U.file(".env.example",ym),U.file("Dockerfile",pm),U.file("docker-compose.yml",gm),U.file("README.md",_m)}if(Yt){const U=C.folder("express");U.file(".env.example",bm),U.file("Dockerfile",Sm),U.file("docker-compose.yml",zm),U.file("README.md",Em)}if(!mt&&!Yt){alert("Please select at least one stack.");return}const E=await C.generateAsync({type:"blob"});vm.saveAs(E,"config-generator.zip")}function Tm(){const[mt,Yt]=Cr.useState(!1),[C,E]=Cr.useState(!1);return Je.jsxs("div",{style:{padding:32,fontFamily:"system-ui, -apple-system, BlinkMacSystemFont",background:"#1e1e1e",minHeight:"100vh",color:"#fff"},children:[Je.jsx("h1",{children:"Config / Boilerplate Generator"}),Je.jsx("p",{children:"Select your stack and generate a ZIP."}),Je.jsx("div",{style:{marginTop:20},children:Je.jsxs("label",{children:[Je.jsx("input",{type:"checkbox",checked:mt,onChange:U=>Yt(U.target.checked)})," ","Vite + React"]})}),Je.jsx("div",{style:{marginTop:8},children:Je.jsxs("label",{children:[Je.jsx("input",{type:"checkbox",checked:C,onChange:U=>E(U.target.checked)})," ","Express"]})}),Je.jsx("button",{style:{marginTop:20,padding:"10px 18px",fontSize:16,cursor:"pointer"},onClick:()=>Am({vite:mt,express:C}),disabled:!mt&&!C,children:"Generate ZIP"})]})}cm.createRoot(document.getElementById("root")).render(Je.jsx(Cr.StrictMode,{children:Je.jsx(Tm,{})}));
+\`\`\``;async function Am({vite:mt,express:Yt}){const C=new hm;if(mt){const U=C.folder("vite-react");U.file(".env.example",ym),U.file("Dockerfile",pm),U.file("docker-compose.yml",gm),U.file("README.md",_m)}if(Yt){const U=C.folder("express");U.file(".env.example",bm),U.file("Dockerfile",Sm),U.file("docker-compose.yml",zm),U.file("README.md",Em)}if(!mt&&!Yt){alert("Please select at least one stack.");return}const E=await C.generateAsync({type:"blob"});vm.saveAs(E,"config-generator.zip")}function Tm(){const[mt,Yt]=Cr.useState(!1),[C,E]=Cr.useState(!1);return Je.jsxs("div",{style:{padding:32,fontFamily:"system-ui, -apple-system, BlinkMacSystemFont",background:"#1e1e1e",minHeight:"100vh",color:"#fff"},children:[Je.jsx("h1",{children:"Config / Boilerplate Generator"}),Je.jsx("p",{children:"Select your stack and generate a ZIP."}),Je.jsx("div",{style:{marginTop:20},children:Je.jsxs("label",{children:[Je.jsx("input",{type:"checkbox",checked:mt,onChange:U=>Yt(U.target.checked)})," ","Vite + React"]})}),Je.jsx("div",{style:{marginTop:8},children:Je.jsxs("label",{children:[Je.jsx("input",{type:"checkbox",checked:C,onChange:U=>E(U.target.checked)})," ","Express"]})}),Je.jsx("button",{style:{marginTop:20,padding:"10px 18px",fontSize:16,cursor:"pointer"},onClick:()=>Am({vite:mt,express:C}),disabled:!mt&&!C,children:"Generate ZIP"})]})}cm.createRoot(document.getElementById("root")).render(Je.jsx(Cr.StrictMode,{children:Je.jsx(Tm,{})}));
