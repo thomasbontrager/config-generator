@@ -206,10 +206,10 @@
         </div>
         
         <div class="filters">
-            <button class="active" onclick="filter('all')">All Tasks</button>
-            <button onclick="filter('high')">High Priority</button>
-            <button onclick="filter('medium')">Medium Priority</button>
-            <button onclick="filter('low')">Low Priority</button>
+            <button class="active" onclick="filter('all', event)">All Tasks</button>
+            <button onclick="filter('high', event)">High Priority</button>
+            <button onclick="filter('medium', event)">Medium Priority</button>
+            <button onclick="filter('low', event)">Low Priority</button>
         </div>
         
         <div id="taskList"></div>
@@ -235,7 +235,7 @@
             const filteredTasks = currentFilter === 'all' ? tasks : tasks.filter(task => task.priority === currentFilter);
             
             taskList.innerHTML = '';
-            filteredTasks.forEach((task, index) => {
+            filteredTasks.forEach((task) => {
                 const taskDiv = document.createElement('div');
                 taskDiv.className = 'task';
                 taskDiv.innerHTML = `
@@ -243,7 +243,7 @@
                         <span>${task.text}</span>
                         <span class="task-priority priority-${task.priority}">${task.priority.toUpperCase()}</span>
                     </div>
-                    <button onclick='removeTask(${tasks.indexOf(task)})'>Remove</button>
+                    <button onclick='removeTask(${task.id})'>Remove</button>
                 `;
                 taskList.appendChild(taskDiv);
             });
@@ -270,9 +270,10 @@
             }
         }
 
-        function removeTask(index) {
-            const task = tasks[index];
-            tasks.splice(index, 1);
+        function removeTask(taskId) {
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            const task = tasks[taskIndex];
+            tasks.splice(taskIndex, 1);
             localStorage.setItem('tasks', JSON.stringify(tasks));
             renderTasks();
             
@@ -282,7 +283,7 @@
             });
         }
 
-        function filter(priority) {
+        function filter(priority, event) {
             currentFilter = priority;
             
             // Update active filter button

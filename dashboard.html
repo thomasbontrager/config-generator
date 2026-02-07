@@ -164,11 +164,11 @@
 <body>
     <div class="sidebar">
         <div class="logo">⚡ ShipForge</div>
-        <div class="nav-item active" onclick="switchTab('dashboard')">📊 Dashboard</div>
-        <div class="nav-item" onclick="switchTab('calendar')">📅 Calendar</div>
-        <div class="nav-item" onclick="switchTab('notes')">📝 Notes</div>
-        <div class="nav-item" onclick="switchTab('timer')">⏱️ Timer</div>
-        <div class="nav-item" onclick="switchTab('settings')">⚙️ Settings</div>
+        <div class="nav-item active" onclick="switchTab('dashboard', event)">📊 Dashboard</div>
+        <div class="nav-item" onclick="switchTab('calendar', event)">📅 Calendar</div>
+        <div class="nav-item" onclick="switchTab('notes', event)">📝 Notes</div>
+        <div class="nav-item" onclick="switchTab('timer', event)">⏱️ Timer</div>
+        <div class="nav-item" onclick="switchTab('settings', event)">⚙️ Settings</div>
         <a href="index.html" style="text-decoration: none; color: inherit;">
             <div class="nav-item home-link">🏠 Back to Home</div>
         </a>
@@ -244,7 +244,7 @@
         };
         let timerInterval = null, timeLeft = 25 * 60;
 
-        function switchTab(tab) {
+        function switchTab(tab, event) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(tab).classList.add('active');
