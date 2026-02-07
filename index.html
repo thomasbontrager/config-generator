@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShipForge Landing Page</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <title>Config/Boilerplate Generator</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        header { background: #333; color: #fff; padding: 10px 20px; }
-        nav a { color: #fff; margin: 0 15px; text-decoration: none; }
-        section { padding: 20px; }
-        .signup { background: #f4f4f4; padding: 20px; text-align: center; }
-        footer { background: #333; color: #fff; text-align: center; padding: 10px 0; position: relative; left: 0; bottom: 0; width: 100%; }
-        .features, .use-cases { display: flex; justify-content: space-around; margin: 20px 0; }
+        body { background-color: #121212; color: #ffffff; font-family: 'Roboto', sans-serif; }
+        .container { padding: 20px; }
+        button { margin-top: 20px; padding: 10px 20px; }
     </style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-F88E6SFH4F"></script>
     <script>
@@ -19,43 +16,24 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-F88E6SFH4F');
+
+        function trackZipGeneration() {
+            gtag('event', 'zip_generation', { 'event_category': 'button_click', 'event_label': 'Generate ZIP' });
+        }
     </script>
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="#features">Features</a>
-            <a href="#use-cases">Use Cases</a>
-            <a href="#signup">Sign Up</a>
-        </nav>
-    </header>
-
-    <section id="features">
-        <h2>Features</h2>
-        <div class="features">
-            <div>Feature 1: Amazing Speed</div>
-            <div>Feature 2: User-Friendly Interface</div>
-            <div>Feature 3: 24/7 Support</div>
-        </div>
-    </section>
-
-    <section id="use-cases">
-        <h2>Use Cases</h2>
-        <div class="use-cases">
-            <div>Use Case 1: Best for Startups</div>
-            <div>Use Case 2: Ideal for Enterprises</div>
-            <div>Use Case 3: Perfect for Freelancers</div>
-        </div>
-    </section>
-
-    <section class="signup" id="signup">
-        <h2>Sign Up for Early Access</h2>
-        <input type="email" placeholder="Enter your email" />
-        <button>Sign Up</button>
-    </section>
-
-    <footer>
-        <p>&copy; 2026 ShipForge. All rights reserved.</p>
-    </footer>
+    <div class="container">
+        <h1>Config/Boilerplate Generator</h1>
+        <form>
+            <label>
+                <input type="checkbox" name="vite_react" value="yes"> Vite + React
+            </label><br>
+            <label>
+                <input type="checkbox" name="express" value="yes"> Express
+            </label><br>
+            <button type="button" onclick="trackZipGeneration();">Generate ZIP</button>
+        </form>
+    </div>
 </body>
 </html>
