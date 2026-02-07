@@ -33,7 +33,7 @@ A production-ready Next.js 14 SaaS application for generating configuration file
   - Billing management
 
 - **Tech Stack**
-  - **Framework:** Next.js 14 (App Router) + TypeScript
+  - **Framework:** Next.js 15 (App Router) + TypeScript
   - **Styling:** Tailwind CSS + shadcn/ui components
   - **Auth:** NextAuth.js
   - **Database:** Prisma ORM + PostgreSQL
