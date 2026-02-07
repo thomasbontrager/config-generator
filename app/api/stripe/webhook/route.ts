@@ -29,34 +29,43 @@ export async function POST(request: Request) {
       case 'customer.subscription.created':
       case 'customer.subscription.updated':
         const subscription = event.data.object;
-        await prisma.user.update({
+        
+        // Find user by Stripe customer ID
+        const user = await prisma.user.findFirst({
           where: { subscriptionId: subscription.customer as string },
-          data: {
-            subscriptionStatus: subscription.status === 'active' ? 'ACTIVE' : 'TRIAL',
-            renewalDate: new Date(subscription.current_period_end * 1000),
-          },
         });
-        await prisma.subscription.upsert({
-          where: { stripeSubscriptionId: subscription.id },
-          create: {
-            stripeSubscriptionId: subscription.id,
-            userId: '', // Need to find user by customer ID
-            status: subscription.status === 'active' ? 'ACTIVE' : 'TRIAL',
-            planId: 'pro',
-            currentPeriodStart: new Date(subscription.current_period_start * 1000),
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-          },
-          update: {
-            status: subscription.status === 'active' ? 'ACTIVE' : 'TRIAL',
-            currentPeriodStart: new Date(subscription.current_period_start * 1000),
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-          },
-        });
+
+        if (user) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              subscriptionStatus: subscription.status === 'active' ? 'ACTIVE' : 'TRIAL',
+              renewalDate: new Date(subscription.current_period_end * 1000),
+            },
+          });
+          
+          await prisma.subscription.upsert({
+            where: { stripeSubscriptionId: subscription.id },
+            create: {
+              stripeSubscriptionId: subscription.id,
+              userId: user.id,
+              status: subscription.status === 'active' ? 'ACTIVE' : 'TRIAL',
+              planId: 'pro',
+              currentPeriodStart: new Date(subscription.current_period_start * 1000),
+              currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            },
+            update: {
+              status: subscription.status === 'active' ? 'ACTIVE' : 'TRIAL',
+              currentPeriodStart: new Date(subscription.current_period_start * 1000),
+              currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            },
+          });
+        }
         break;
 
       case 'customer.subscription.deleted':
         const deletedSub = event.data.object;
-        await prisma.user.update({
+        await prisma.user.updateMany({
           where: { subscriptionId: deletedSub.customer as string },
           data: {
             subscriptionStatus: 'CANCELED',
@@ -66,14 +75,22 @@ export async function POST(request: Request) {
 
       case 'invoice.payment_succeeded':
         const invoice = event.data.object;
-        await prisma.payment.create({
-          data: {
-            userId: '', // Need to find user
-            stripePaymentId: invoice.id,
-            amount: invoice.amount_paid,
-            status: 'SUCCEEDED',
-          },
+        
+        // Find user by customer ID
+        const paymentUser = await prisma.user.findFirst({
+          where: { subscriptionId: invoice.customer as string },
         });
+
+        if (paymentUser) {
+          await prisma.payment.create({
+            data: {
+              userId: paymentUser.id,
+              stripePaymentId: invoice.id,
+              amount: invoice.amount_paid,
+              status: 'SUCCEEDED',
+            },
+          });
+        }
         break;
 
       default:
