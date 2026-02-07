@@ -5,56 +5,225 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShipForge Task Manager</title>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: linear-gradient(to right, #1E1E2F, #2B2B4D);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             color: #FFFFFF;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         h1 {
             text-align: center;
+            color: #4a9eff;
+            font-size: 2.2em;
+            margin: 30px 0 10px 0;
+        }
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 30px;
         }
         .task-container {
-            max-width: 600px;
+            max-width: 700px;
             margin: auto;
-            padding: 20px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            background: rgba(45, 45, 45, 0.9);
+            backdrop-filter: blur(10px);
         }
-        .task {
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.2);
+        .input-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        input[type="text"],
+        select {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(74, 158, 255, 0.3);
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1em;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #4a9eff;
+            background: rgba(74, 158, 255, 0.15);
+        }
+        select {
+            cursor: pointer;
+        }
+        select option {
+            background: #2d2d2d;
+            color: #fff;
+        }
+        button {
+            background: linear-gradient(135deg, #4a9eff, #2a7dd8);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(74, 158, 255, 0.4);
+        }
+        button:active {
+            transform: scale(0.98);
         }
         .filters {
-            margin: 20px 0;
+            margin: 20px 0 30px 0;
             text-align: center;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .filters button {
+            background: rgba(74, 158, 255, 0.2);
+            border: 2px solid rgba(74, 158, 255, 0.4);
+            padding: 8px 20px;
+            font-size: 0.95em;
+        }
+        .filters button:hover {
+            background: rgba(74, 158, 255, 0.3);
+            border-color: #4a9eff;
+        }
+        .filters button.active {
+            background: rgba(74, 158, 255, 0.5);
+            border-color: #4a9eff;
+        }
+        .task {
+            margin: 12px 0;
+            padding: 15px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #4a9eff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        .task:hover {
+            background: rgba(74, 158, 255, 0.15);
+            transform: translateX(5px);
+        }
+        .task-content {
+            flex: 1;
+        }
+        .task-priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .priority-high {
+            background: rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+        }
+        .priority-medium {
+            background: rgba(251, 191, 36, 0.3);
+            color: #fbbf24;
+        }
+        .priority-low {
+            background: rgba(74, 222, 128, 0.3);
+            color: #4ade80;
+        }
+        .task button {
+            background: rgba(255, 107, 107, 0.3);
+            border: 2px solid rgba(255, 107, 107, 0.5);
+            padding: 6px 15px;
+            font-size: 0.9em;
+        }
+        .task button:hover {
+            background: rgba(255, 107, 107, 0.5);
+            border-color: #ff6b6b;
+        }
+        .nav {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+        }
+        .nav a {
+            color: #4a9eff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 0.95em;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        #taskList:empty::after {
+            content: 'No tasks yet. Add your first task above!';
+            display: block;
+            text-align: center;
+            color: #888;
+            padding: 40px 20px;
+            font-style: italic;
         }
     </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-F88E6SFH4F"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-F88E6SFH4F');
+    </script>
 </head>
 <body>
-    <h1>ShipForge Task Management Application</h1>
+    <h1>⚡ ShipForge Task Manager</h1>
+    <p class="subtitle">Organize and track your tasks efficiently</p>
     <div class="task-container">
-        <h2>Tasks</h2>
+        <div class="input-section">
+            <input type="text" id="taskInput" placeholder="Enter new task..." />
+            <select id="priorityInput">
+                <option value="low">Low Priority</option>
+                <option value="medium" selected>Medium Priority</option>
+                <option value="high">High Priority</option>
+            </select>
+            <button onclick="addTask()">Add Task</button>
+        </div>
+        
         <div class="filters">
-            <button onclick="filter('all')">All</button>
+            <button class="active" onclick="filter('all')">All Tasks</button>
             <button onclick="filter('high')">High Priority</button>
             <button onclick="filter('medium')">Medium Priority</button>
             <button onclick="filter('low')">Low Priority</button>
         </div>
+        
         <div id="taskList"></div>
-        <input type="text" id="taskInput" placeholder="New task..." />
-        <select id="priorityInput">
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-        </select>
-        <button onclick="addTask()">Add Task</button>
+        
+        <div class="nav">
+            <a href="index.html">🏠 Home</a>
+            <a href="dashboard.html">📊 Dashboard</a>
+            <a href="pricing.html">💰 Pricing</a>
+            <a href="contact.html">📧 Contact</a>
+        </div>
     </div>
     <script>
         let tasks = [];
+        let currentFilter = 'all';
 
         function loadTasks() {
             tasks = JSON.parse(localStorage.getItem('tasks')) || [];
@@ -63,11 +232,19 @@
 
         function renderTasks() {
             const taskList = document.getElementById('taskList');
+            const filteredTasks = currentFilter === 'all' ? tasks : tasks.filter(task => task.priority === currentFilter);
+            
             taskList.innerHTML = '';
-            tasks.forEach((task, index) => {
+            filteredTasks.forEach((task, index) => {
                 const taskDiv = document.createElement('div');
                 taskDiv.className = 'task';
-                taskDiv.innerHTML = `<span>${task.text} (Priority: ${task.priority})</span> <button onclick='removeTask(${index})'>Remove</button>`;
+                taskDiv.innerHTML = `
+                    <div class="task-content">
+                        <span>${task.text}</span>
+                        <span class="task-priority priority-${task.priority}">${task.priority.toUpperCase()}</span>
+                    </div>
+                    <button onclick='removeTask(${tasks.indexOf(task)})'>Remove</button>
+                `;
                 taskList.appendChild(taskDiv);
             });
         }
@@ -75,42 +252,59 @@
         function addTask() {
             const taskInput = document.getElementById('taskInput');
             const priorityInput = document.getElementById('priorityInput');
-            if (taskInput.value) {
-                tasks.push({ text: taskInput.value, priority: priorityInput.value });
+            
+            if (taskInput.value.trim()) {
+                tasks.push({ 
+                    text: taskInput.value.trim(), 
+                    priority: priorityInput.value,
+                    id: Date.now()
+                });
                 localStorage.setItem('tasks', JSON.stringify(tasks));
                 renderTasks();
                 taskInput.value = '';
-                trackAnalytics('Add Task', taskInput.value);
+                
+                gtag('event', 'task_added', {
+                    'event_category': 'task_management',
+                    'priority': priorityInput.value
+                });
             }
         }
 
         function removeTask(index) {
+            const task = tasks[index];
             tasks.splice(index, 1);
             localStorage.setItem('tasks', JSON.stringify(tasks));
             renderTasks();
-            trackAnalytics('Remove Task', tasks[index] ? tasks[index].text : '');
-        }
-
-        function filter(priority) {
-            const filteredTasks = priority === 'all' ? tasks : tasks.filter(task => task.priority === priority);
-            renderFilteredTasks(filteredTasks);
-        }
-
-        function renderFilteredTasks(filteredTasks) {
-            const taskList = document.getElementById('taskList');
-            taskList.innerHTML = '';
-            filteredTasks.forEach((task, index) => {
-                const taskDiv = document.createElement('div');
-                taskDiv.className = 'task';
-                taskDiv.innerHTML = `<span>${task.text} (Priority: ${task.priority})</span> <button onclick='removeTask(${index})'>Remove</button>`;
-                taskList.appendChild(taskDiv);
+            
+            gtag('event', 'task_removed', {
+                'event_category': 'task_management',
+                'priority': task ? task.priority : 'unknown'
             });
         }
 
-        function trackAnalytics(action, task) {
-            console.log(`Tracking Action: ${action}, Task: ${task}`);
-            // Here you would integrate with your analytics service
+        function filter(priority) {
+            currentFilter = priority;
+            
+            // Update active filter button
+            document.querySelectorAll('.filters button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderTasks();
+            
+            gtag('event', 'filter_applied', {
+                'event_category': 'task_management',
+                'filter': priority
+            });
         }
+
+        // Add task on Enter key
+        document.getElementById('taskInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
 
         window.onload = loadTasks;
     </script>
