@@ -1,12 +1,21 @@
 import { useState } from "react";
 import { generateZip } from "./generateZip";
+import "./App.css";
 
 export default function App() {
   const [vite, setVite] = useState(false);
   const [express, setExpress] = useState(false);
 
   return (
-    <div style={{ padding: 32, fontFamily: "system-ui" }}>
+    <div
+      style={{
+        padding: 32,
+        fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",
+        background: "#1e1e1e",
+        minHeight: "100vh",
+        color: "#fff",
+      }}
+    >
       <h1>Config / Boilerplate Generator</h1>
       <p>Select your stack and generate a ZIP.</p>
 
@@ -16,25 +25,31 @@ export default function App() {
             type="checkbox"
             checked={vite}
             onChange={(e) => setVite(e.target.checked)}
-          />
-          {" "}Vite + React
+          />{" "}
+          Vite + React
         </label>
       </div>
 
-      <div>
+      <div style={{ marginTop: 8 }}>
         <label>
           <input
             type="checkbox"
             checked={express}
             onChange={(e) => setExpress(e.target.checked)}
-          />
-          {" "}Express
+          />{" "}
+          Express
         </label>
       </div>
 
       <button
-        style={{ marginTop: 20, padding: "8px 16px" }}
+        style={{
+          marginTop: 20,
+          padding: "10px 18px",
+          fontSize: 16,
+          cursor: "pointer",
+        }}
         onClick={() => generateZip({ vite, express })}
+        disabled={!vite && !express}
       >
         Generate ZIP
       </button>
