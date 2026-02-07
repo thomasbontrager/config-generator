@@ -75,6 +75,8 @@ Next.js API Routes
 └── Stripe SDK (ready for payments)
 ```
 
+**Security Note**: Upgraded to Next.js 15.5.12 to address all known vulnerabilities including DoS attacks via HTTP request deserialization.
+
 ### Infrastructure
 ```
 Deployment
