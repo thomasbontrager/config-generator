@@ -160,7 +160,7 @@
                 <textarea id="message" name="message" required></textarea>
             </div>
             <button type="submit" id="submitBtn">Send Message</button>
-            <div id="message-status"></div>
+            <div id="status-message"></div>
         </form>
         <div class="nav">
             <a href="index.html">🏠 Home</a>
@@ -175,7 +175,7 @@
             e.preventDefault();
             
             const submitBtn = document.getElementById('submitBtn');
-            const messageStatus = document.getElementById('message-status');
+            const statusMessage = document.getElementById('status-message');
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const company = document.getElementById('company').value;
@@ -205,16 +205,16 @@
             })
             .then(response => response.json())
             .then(data => {
-                messageStatus.textContent = '✅ Message sent successfully! We\'ll get back to you soon.';
-                messageStatus.className = 'success';
+                statusMessage.textContent = '✅ Message sent successfully! We\'ll get back to you soon.';
+                statusMessage.className = 'success';
                 document.getElementById('contactForm').reset();
                 
                 gtag('event', 'contact_form_success');
             })
             .catch(error => {
                 console.error('Error:', error);
-                messageStatus.textContent = '❌ Failed to send message. Please try emailing us directly at contact@shipforge.dev';
-                messageStatus.className = 'error';
+                statusMessage.textContent = '❌ Failed to send message. Please try emailing us directly at contact@shipforge.dev';
+                statusMessage.className = 'error';
                 
                 gtag('event', 'contact_form_error', {
                     'error': error.message

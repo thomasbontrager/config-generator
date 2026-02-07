@@ -272,6 +272,11 @@
 
         function removeTask(taskId) {
             const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex === -1) {
+                console.error('Task not found:', taskId);
+                return;
+            }
+            
             const task = tasks[taskIndex];
             tasks.splice(taskIndex, 1);
             localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -279,7 +284,7 @@
             
             gtag('event', 'task_removed', {
                 'event_category': 'task_management',
-                'priority': task ? task.priority : 'unknown'
+                'priority': task.priority
             });
         }
 
