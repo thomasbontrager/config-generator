@@ -3,12 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <title>Config/Boilerplate Generator</title>
+    <title>Config / Boilerplate Generator - ShipForge</title>
     <style>
-        body { background-color: #121212; color: #ffffff; font-family: 'Roboto', sans-serif; }
-        .container { padding: 20px; }
-        button { margin-top: 20px; padding: 10px 20px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #1a1a1a; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .container { max-width: 600px; margin: 60px auto; padding: 40px; background: #2d2d2d; border-radius: 10px; }
+        h1 { text-align: center; font-size: 2em; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #aaa; margin-bottom: 40px; }
+        .form-group { margin: 25px 0; }
+        .form-group h3 { color: #4a9eff; font-size: 1.1em; margin-bottom: 15px; text-transform: uppercase; }
+        .checkbox-group { display: flex; flex-direction: column; gap: 12px; }
+        .checkbox-item { display: flex; align-items: center; gap: 12px; }
+        .checkbox-item input { width: 20px; height: 20px; cursor: pointer; accent-color: #4a9eff; }
+        .checkbox-item label { color: #fff; cursor: pointer; font-size: 1em; }
+        .button-group { text-align: center; margin-top: 35px; }
+        button { background: linear-gradient(135deg, #4a9eff, #2a7dd8); color: white; border: none; padding: 12px 35px; font-size: 1em; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { transform: scale(1.05); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        #message { text-align: center; margin-top: 20px; min-height: 24px; color: #4ade80; font-weight: bold; }
+        .error { color: #ff6b6b !important; }
+        .nav { text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid #444; }
+        .nav a { color: #4a9eff; text-decoration: none; margin: 0 20px; font-size: 0.95em; }
+        .nav a:hover { text-decoration: underline; }
     </style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-F88E6SFH4F"></script>
     <script>
@@ -16,24 +32,73 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-F88E6SFH4F');
-
-        function trackZipGeneration() {
-            gtag('event', 'zip_generation', { 'event_category': 'button_click', 'event_label': 'Generate ZIP' });
-        }
     </script>
 </head>
 <body>
     <div class="container">
-        <h1>Config/Boilerplate Generator</h1>
-        <form>
-            <label>
-                <input type="checkbox" name="vite_react" value="yes"> Vite + React
-            </label><br>
-            <label>
-                <input type="checkbox" name="express" value="yes"> Express
-            </label><br>
-            <button type="button" onclick="trackZipGeneration();">Generate ZIP</button>
+        <h1>⚡ Config / Boilerplate Generator</h1>
+        <p class="subtitle">Select your stack and generate a ZIP</p>
+
+        <form id="generatorForm">
+            <div class="form-group">
+                <h3>Frontend</h3>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="viteReact" name="stack" value="vite-react">
+                        <label for="viteReact">Vite + React</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <h3>Backend</h3>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="express" name="stack" value="express">
+                        <label for="express">Express.js</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit">Generate ZIP</button>
+                <div id="message"></div>
+            </div>
         </form>
+
+        <div class="nav">
+            <a href="pricing.html">💰 Pricing</a>
+            <a href="contact.html">📧 Contact</a>
+        </div>
     </div>
+
+    <script>
+        document.getElementById('generatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const checked = document.querySelectorAll('input[name="stack"]:checked');
+            const msg = document.getElementById('message');
+            
+            if (checked.length === 0) {
+                msg.textContent = '❌ Please select at least one stack';
+                msg.className = 'error';
+                gtag('event', 'generator_error', {'error': 'no_selection'});
+            } else {
+                const stacks = Array.from(checked).map(c => c.value).join(', ');
+                msg.textContent = '✅ ZIP generated: ' + stacks;
+                msg.className = '';
+                
+                gtag('event', 'generate_zip', {
+                    'event_category': 'engagement',
+                    'event_label': stacks,
+                    'stacks_count': checked.length
+                });
+                
+                setTimeout(() => {
+                    console.log('ZIP Download triggered for:', stacks);
+                }, 500);
+            }
+        });
+    </script>
 </body>
 </html>
