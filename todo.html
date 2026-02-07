@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShipForge Task Manager</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #1E1E2F, #2B2B4D);
+            color: #FFFFFF;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+        }
+        .task-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .task {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .filters {
+            margin: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>ShipForge Task Management Application</h1>
+    <div class="task-container">
+        <h2>Tasks</h2>
+        <div class="filters">
+            <button onclick="filter('all')">All</button>
+            <button onclick="filter('high')">High Priority</button>
+            <button onclick="filter('medium')">Medium Priority</button>
+            <button onclick="filter('low')">Low Priority</button>
+        </div>
+        <div id="taskList"></div>
+        <input type="text" id="taskInput" placeholder="New task..." />
+        <select id="priorityInput">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+        </select>
+        <button onclick="addTask()">Add Task</button>
+    </div>
+    <script>
+        let tasks = [];
+
+        function loadTasks() {
+            tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+            tasks.forEach((task, index) => {
+                const taskDiv = document.createElement('div');
+                taskDiv.className = 'task';
+                taskDiv.innerHTML = `<span>${task.text} (Priority: ${task.priority})</span> <button onclick='removeTask(${index})'>Remove</button>`;
+                taskList.appendChild(taskDiv);
+            });
+        }
+
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const priorityInput = document.getElementById('priorityInput');
+            if (taskInput.value) {
+                tasks.push({ text: taskInput.value, priority: priorityInput.value });
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                renderTasks();
+                taskInput.value = '';
+                trackAnalytics('Add Task', taskInput.value);
+            }
+        }
+
+        function removeTask(index) {
+            tasks.splice(index, 1);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            renderTasks();
+            trackAnalytics('Remove Task', tasks[index] ? tasks[index].text : '');
+        }
+
+        function filter(priority) {
+            const filteredTasks = priority === 'all' ? tasks : tasks.filter(task => task.priority === priority);
+            renderFilteredTasks(filteredTasks);
+        }
+
+        function renderFilteredTasks(filteredTasks) {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+            filteredTasks.forEach((task, index) => {
+                const taskDiv = document.createElement('div');
+                taskDiv.className = 'task';
+                taskDiv.innerHTML = `<span>${task.text} (Priority: ${task.priority})</span> <button onclick='removeTask(${index})'>Remove</button>`;
+                taskList.appendChild(taskDiv);
+            });
+        }
+
+        function trackAnalytics(action, task) {
+            console.log(`Tracking Action: ${action}, Task: ${task}`);
+            // Here you would integrate with your analytics service
+        }
+
+        window.onload = loadTasks;
+    </script>
+</body>
+</html>
