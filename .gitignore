@@ -25,3 +25,8 @@ dist-ssr
 
 # Backend environment
 backend/.env
+
+# Frontend environment
+.env
+.env.local
+.env.production

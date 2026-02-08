@@ -1,12 +1,13 @@
 import jwt from "jsonwebtoken";
-
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
+import { JWT_SECRET } from "../config/jwt.js";
 
 export function signToken(payload) {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
 }
 
 // Mock user database - in production, this would be a real database
+// NOTE: Passwords are stored in plain text for development only.
+// In production, use bcrypt or similar to hash passwords before storage.
 const users = [
   {
     id: 1,
