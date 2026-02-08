@@ -1,0 +1,36 @@
+# Cloudflare Pages Configuration
+# 
+# This file is optional - Cloudflare Pages can auto-detect Vite projects.
+# However, it's useful for documenting the build configuration.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Environment variables are set in Cloudflare Dashboard
+# Pages → Settings → Environment Variables
+#
+# Production variables:
+#   VITE_API_URL=https://api.shipforge.dev
+#
+# Preview/Development variables:
+#   VITE_API_URL=https://dev-api.shipforge.dev
+
+# Redirects and rewrites
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers for security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
