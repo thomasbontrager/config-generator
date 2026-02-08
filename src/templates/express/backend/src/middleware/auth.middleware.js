@@ -18,6 +18,7 @@ export function authenticate(req, res, next) {
   next();
 }
 
+// Note: This middleware must be used after authenticate middleware
 export function requireAdmin(req, res, next) {
   if (!req.user || req.user.role !== "ADMIN") {
     return res.status(403).json({ message: "Admin access required" });
