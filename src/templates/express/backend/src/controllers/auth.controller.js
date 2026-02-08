@@ -6,7 +6,7 @@ export async function signup(req, res) {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ message: "Missing fields" });
+    return res.status(400).json({ message: "Email and password are required" });
   }
 
   const existing = await prisma.user.findUnique({ where: { email } });
