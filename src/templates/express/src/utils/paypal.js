@@ -14,6 +14,15 @@ export async function getPayPalToken() {
     body: "grant_type=client_credentials",
   });
 
+  if (!res.ok) {
+    throw new Error(`PayPal authentication failed: ${res.status} ${res.statusText}`);
+  }
+
   const data = await res.json();
+  
+  if (!data.access_token) {
+    throw new Error("PayPal authentication failed: No access token received");
+  }
+  
   return data.access_token;
 }

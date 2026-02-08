@@ -21,7 +21,14 @@ PAYPAL_CLIENT_ID=your_client_id
 PAYPAL_CLIENT_SECRET=your_client_secret
 PAYPAL_PLAN_ID=your_plan_id
 PAYPAL_API=https://api-m.sandbox.paypal.com
+
+# Application Configuration
+BRAND_NAME=Your App Name
+RETURN_URL=http://localhost:5173/billing/success
+CANCEL_URL=http://localhost:5173/billing/cancel
 ```
+
+**Important:** Update `RETURN_URL` and `CANCEL_URL` to match your frontend URL in production.
 
 ## PayPal Dashboard Setup
 
