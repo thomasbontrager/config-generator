@@ -87,7 +87,7 @@ export default function Generator() {
           opacity: isActive ? 1 : 0.5,
         }}
         onClick={() => generateZip({ vite, express })}
-        disabled={!vite && !express || !isActive}
+        disabled={(!vite && !express) || !isActive}
       >
         Generate ZIP
       </button>
