@@ -92,9 +92,9 @@ config-generator/
 │       ├── vite-react/
 │       └── express/
 ├── public/                  # Static assets
-├── index.html              # Main HTML landing page
-├── dashboard.html          # Dashboard page
-├── todo.html              # Task management page
+├── index.html               # Main HTML landing page
+├── dashboard.html           # Dashboard page
+├── todo.html                # Task management page
 └── package.json
 ```
 
