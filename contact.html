@@ -211,7 +211,8 @@
             }
             
             // In production, this would submit to a backend
-            msgDiv.textContent = '✅ Message sent! We\'ll get back to you soon.';
+            // For demo purposes, we simulate success and track the event
+            msgDiv.textContent = '✅ Message received! (Demo mode - in production this would be sent to our team)';
             msgDiv.className = '';
             this.reset();
             

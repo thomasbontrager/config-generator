@@ -258,7 +258,7 @@
 
         // Track time on page (drop-off indicator)
         let timeOnPage = 0;
-        setInterval(() => {
+        let engagementInterval = setInterval(() => {
             timeOnPage += 5;
             if (timeOnPage === 30) {
                 gtag('event', 'pricing_engaged', {
@@ -266,6 +266,7 @@
                     'event_label': '30_seconds',
                     'time_on_page': 30
                 });
+                clearInterval(engagementInterval); // Clear after tracking
             }
         }, 5000);
     </script>
