@@ -30,7 +30,6 @@ export default defineConfig([
   {
     files: ['cli.js'],
     languageOptions: {
-      ecmaVersion: 2020,
       globals: globals.node,
       parserOptions: {
         ecmaVersion: 'latest',
