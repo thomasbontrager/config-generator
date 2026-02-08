@@ -15,3 +15,11 @@ export const apiLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+export const webhookLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // Limit to 1000 webhooks per 15 minutes
+  message: "Too many webhook requests.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});

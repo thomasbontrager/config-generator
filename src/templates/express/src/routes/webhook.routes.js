@@ -1,10 +1,12 @@
 import { Router } from "express";
 import prisma from "../utils/prisma.js";
 import { verifyPayPalWebhook } from "../utils/paypalVerify.js";
+import { webhookLimiter } from "../middleware/rateLimit.js";
 
 const router = Router();
 
-router.post("/paypal", async (req, res) => {
+// Apply rate limiting to webhook endpoint
+router.post("/paypal", webhookLimiter, async (req, res) => {
   try {
     const isValid = await verifyPayPalWebhook(req.headers, req.body);
 
