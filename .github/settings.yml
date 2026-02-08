@@ -1,0 +1,52 @@
+# GitHub repository settings
+# This file configures branch protection and other repository settings
+# Requires the Probot Settings app or similar tool to apply these settings
+# See: https://github.com/apps/settings
+
+repository:
+  # Repository name (for reference)
+  name: config-generator
+  description: Configuration generator for web development projects
+  
+  # Default branch
+  default_branch: main
+  
+  # Delete branch on merge
+  delete_branch_on_merge: true
+
+# Branch protection rules
+branches:
+  - name: main
+    # Protection settings for the main branch
+    protection:
+      # Require pull request reviews before merging
+      required_pull_request_reviews:
+        # Number of reviewers required to approve pull requests
+        required_approving_review_count: 1
+        # Dismiss stale pull request approvals when new commits are pushed
+        dismiss_stale_reviews: true
+        # Require review from Code Owners
+        require_code_owner_reviews: false
+      
+      # Require status checks to pass before merging
+      required_status_checks:
+        # Require branches to be up to date before merging
+        strict: true
+        # List of required status checks
+        contexts:
+          - "deploy"
+      
+      # Enforce all configured restrictions for administrators
+      enforce_admins: true
+      
+      # Restrict who can push to matching branches (null = no restrictions)
+      restrictions: null
+      
+      # Require linear history (no merge commits)
+      required_linear_history: false
+      
+      # Prevent force pushes to this branch
+      allow_force_pushes: false
+      
+      # Prevent deletion of this branch
+      allow_deletions: false
