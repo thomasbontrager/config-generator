@@ -6,6 +6,33 @@ import authRoutes from "./routes/auth.routes.js";
 import webhookRoutes from "./routes/webhook.routes.js";
 import apiRoutes from "./routes/api.routes.js";
 
+// ========================================
+// ENVIRONMENT VALIDATION
+// ========================================
+
+const requiredEnvVars = [
+  "DATABASE_URL",
+  "JWT_SECRET",
+  "PAYPAL_CLIENT_ID",
+  "PAYPAL_CLIENT_SECRET",
+  "PAYPAL_API",
+  "PAYPAL_WEBHOOK_ID",
+];
+
+const missingVars = requiredEnvVars.filter((varName) => !process.env[varName]);
+
+if (missingVars.length > 0) {
+  console.error("❌ Missing required environment variables:");
+  missingVars.forEach((varName) => console.error(`   - ${varName}`));
+  console.error("\nPlease check your .env file and ensure all variables are set.");
+  process.exit(1);
+}
+
+if (process.env.JWT_SECRET.length < 32) {
+  console.error("❌ JWT_SECRET must be at least 32 characters long for security.");
+  process.exit(1);
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -69,8 +96,19 @@ app.use((req, res) => {
 });
 
 // Central error handler (prevents information leaks)
-app.use((err, req, res, next) => {
-  console.error("Error:", err);
+app.use((err, req, res, _next) => {
+  // Log error for debugging (sanitize in production)
+  if (process.env.NODE_ENV === "development") {
+    console.error("Error:", err);
+  } else {
+    // In production, log only safe information
+    console.error("Error:", {
+      message: err.message,
+      stack: err.stack?.split("\n")[0], // Only first line of stack
+      timestamp: new Date().toISOString(),
+      path: req.path,
+    });
+  }
   
   // Don't leak error details in production
   const message =
@@ -89,6 +127,7 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📝 Environment: ${process.env.NODE_ENV || "development"}`);
   console.log(`🔒 CORS origins: ${corsOrigins.join(", ")}`);
+  console.log("✅ All security features enabled");
 });
 
 export default app;

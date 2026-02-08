@@ -13,6 +13,7 @@ import expressGitignore from "./templates/express/.gitignore?raw";
 import expressDockerfile from "./templates/express/Dockerfile?raw";
 import expressCompose from "./templates/express/docker-compose.yml?raw";
 import expressReadme from "./templates/express/README.md?raw";
+import expressSecurityTesting from "./templates/express/SECURITY_TESTING.md?raw";
 import expressPackage from "./templates/express/package.json?raw";
 import expressSchema from "./templates/express/prisma/schema.prisma?raw";
 import expressApp from "./templates/express/src/app.js?raw";
@@ -44,6 +45,7 @@ export async function generateZip({ vite, express }) {
     expressFolder.file("Dockerfile", expressDockerfile);
     expressFolder.file("docker-compose.yml", expressCompose);
     expressFolder.file("README.md", expressReadme);
+    expressFolder.file("SECURITY_TESTING.md", expressSecurityTesting);
     expressFolder.file("package.json", expressPackage);
     
     // Prisma
