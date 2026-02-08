@@ -13,11 +13,17 @@ import expressDockerfile from "./templates/express/Dockerfile?raw";
 import expressCompose from "./templates/express/docker-compose.yml?raw";
 import expressReadme from "./templates/express/README.md?raw";
 
+// Next.js templates
+import nextjsEnv from "./templates/nextjs/.env.example?raw";
+import nextjsDockerfile from "./templates/nextjs/Dockerfile?raw";
+import nextjsCompose from "./templates/nextjs/docker-compose.yml?raw";
+import nextjsReadme from "./templates/nextjs/README.md?raw";
+
 // GitHub Rulesets templates
 import githubRulesetJson from "./templates/github-rulesets/branch-protection-ruleset.json?raw";
 import githubRulesetReadme from "./templates/github-rulesets/README.md?raw";
 
-export async function generateZip({ vite, express, githubRulesets }) {
+export async function generateZip({ vite, express, nextjs, githubRulesets }) {
   const zip = new JSZip();
 
   if (vite) {
@@ -38,6 +44,15 @@ export async function generateZip({ vite, express, githubRulesets }) {
     expressFolder.file("README.md", expressReadme);
   }
 
+  if (nextjs) {
+    const nextjsFolder = zip.folder("nextjs");
+
+    nextjsFolder.file(".env.example", nextjsEnv);
+    nextjsFolder.file("Dockerfile", nextjsDockerfile);
+    nextjsFolder.file("docker-compose.yml", nextjsCompose);
+    nextjsFolder.file("README.md", nextjsReadme);
+  }
+
   if (githubRulesets) {
     const githubFolder = zip.folder("github-rulesets");
 
@@ -45,7 +60,7 @@ export async function generateZip({ vite, express, githubRulesets }) {
     githubFolder.file("README.md", githubRulesetReadme);
   }
 
-  if (!vite && !express && !githubRulesets) {
+  if (!vite && !express && !nextjs && !githubRulesets) {
     alert("Please select at least one stack.");
     return;
   }

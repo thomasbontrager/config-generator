@@ -5,6 +5,7 @@ import "./App.css";
 export default function App() {
   const [vite, setVite] = useState(false);
   const [express, setExpress] = useState(false);
+  const [nextjs, setNextjs] = useState(false);
   const [githubRulesets, setGithubRulesets] = useState(false);
 
   return (
@@ -46,6 +47,17 @@ export default function App() {
         <label>
           <input
             type="checkbox"
+            checked={nextjs}
+            onChange={(e) => setNextjs(e.target.checked)}
+          />{" "}
+          Next.js
+        </label>
+      </div>
+
+      <div style={{ marginTop: 8 }}>
+        <label>
+          <input
+            type="checkbox"
             checked={githubRulesets}
             onChange={(e) => setGithubRulesets(e.target.checked)}
           />{" "}
@@ -60,8 +72,8 @@ export default function App() {
           fontSize: 16,
           cursor: "pointer",
         }}
-        onClick={() => generateZip({ vite, express, githubRulesets })}
-        disabled={!vite && !express && !githubRulesets}
+        onClick={() => generateZip({ vite, express, nextjs, githubRulesets })}
+        disabled={!vite && !express && !nextjs && !githubRulesets}
       >
         Generate ZIP
       </button>
