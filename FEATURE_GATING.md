@@ -168,6 +168,14 @@ Currently using mock data. In production:
 - Frontend calls `localhost:5000` - update for production
 - CORS is enabled for all origins in development
 
+### Production Considerations
+- **Rate Limiting**: Add rate limiting middleware (e.g., express-rate-limit) to prevent brute force attacks
+- **Password Hashing**: Implement bcrypt or similar for password storage
+- **Database**: Replace mock users with a real database (PostgreSQL, MongoDB, etc.)
+- **Environment Variables**: Set JWT_SECRET and VITE_API_URL properly
+- **HTTPS**: Use HTTPS in production
+- **Logging**: Add proper logging and monitoring
+
 ---
 
 **This is the money switch.** 🚀
