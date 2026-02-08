@@ -44,7 +44,7 @@ branches:
       restrictions: null
 
       # Require linear history (no merge commits)
-      required_linear_history: false
+      required_linear_history: true
 
       # Prevent force pushes to this branch
       allow_force_pushes: false

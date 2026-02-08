@@ -56,12 +56,6 @@ If the settings file is not automatically applied, you can:
      - Allow force pushes
      - Allow deletions
 
-3. **Using GitHub CLI**
-   ```bash
-   gh api -X PUT repos/:owner/:repo/branches/main/protection \
-     --input .github/settings.yml
-   ```
-
 ## Benefits
 
 - **Prevents Accidental Data Loss**: Force pushes and branch deletion are blocked
