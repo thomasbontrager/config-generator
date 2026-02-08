@@ -67,7 +67,7 @@ function loadTemplateFile(agentName, filename) {
   const templatePath = join(__dirname, "src", "templates", agentName, filename);
   try {
     return readFileSync(templatePath, "utf-8");
-  } catch (error) {
+  } catch {
     console.error(`Warning: Could not load ${filename} for ${agentName}`);
     return null;
   }
@@ -156,7 +156,7 @@ async function interactiveMode() {
   // In a real scenario, you might use a library like 'inquirer' or 'prompts'
   console.log("\n🚀 Config Generator - Interactive Mode\n");
   console.log("Available agents:");
-  Object.entries(AGENTS).forEach(([key, agent], index) => {
+  Object.entries(AGENTS).forEach(([, agent], index) => {
     console.log(`  ${index + 1}. ${agent.name} - ${agent.description}`);
   });
   
