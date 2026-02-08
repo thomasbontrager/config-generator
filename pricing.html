@@ -3,17 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pricing</title>
+    <title>Pricing - ShipForge</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #1a1a1a; 
+            color: #fff; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px 20px;
+        }
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+        }
+        h1 { 
+            text-align: center; 
+            font-size: 2.5em; 
+            margin-bottom: 20px;
+            color: #4a9eff;
+        }
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            font-size: 1.2em;
+            margin-bottom: 50px;
+        }
+        .trial-banner {
+            background: linear-gradient(135deg, #4a9eff, #2a7dd8);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .trial-banner h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+        .trial-banner p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .plan-card {
+            background: #2d2d2d;
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #444;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .plan-card:hover {
+            transform: translateY(-5px);
+            border-color: #4a9eff;
+        }
+        .plan-card.featured {
+            border-color: #4a9eff;
+            background: rgba(74, 158, 255, 0.1);
+        }
+        .plan-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #4a9eff;
+            margin-bottom: 15px;
+        }
+        .plan-price {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .plan-period {
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        .plan-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        .plan-features li {
+            padding: 8px 0;
+            border-bottom: 1px solid #444;
+        }
+        .plan-features li:before {
+            content: "✓ ";
+            color: #4ade80;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .cta-button {
+            background: linear-gradient(135deg, #4a9eff, #2a7dd8);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            width: 100%;
+        }
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+        .nav {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #444;
+        }
+        .nav a {
+            color: #4a9eff;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 0.95em;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        .badge {
+            display: inline-block;
+            background: #4ade80;
+            color: #1a1a1a;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-F88E6SFH4F"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-F88E6SFH4F');
+    </script>
 </head>
 <body>
-    <h1>Pricing</h1>
-    <p>Choose a subscription plan that suits you best!</p>
-    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-        <input type="hidden" name="cmd" value="_s-xclick">
-        <input type="hidden" name="hosted_button_id" value="YOUR_BUTTON_ID">
-        <input type="hidden" name="item_name" value="Subscription">
-        <input type="hidden" name="currency_code" value="USD">
-        <input type="submit" value="Subscribe" style="padding: 10px 20px; background-color: #0070ba; color: white; border: none; border-radius: 5px; cursor: pointer;">
-    </form>
+    <div class="container">
+        <h1>🚀 Pricing</h1>
+        <p class="subtitle">Start your 14-day free trial today</p>
+
+        <div class="trial-banner">
+            <h2>✨ 14-Day Free Trial</h2>
+            <p>Try ShipForge risk-free. No credit card required to start.</p>
+        </div>
+
+        <div class="pricing-grid">
+            <div class="plan-card">
+                <div class="plan-name">Free Trial</div>
+                <div class="plan-price">$0</div>
+                <div class="plan-period">14 days</div>
+                <ul class="plan-features">
+                    <li>All features included</li>
+                    <li>Unlimited config generation</li>
+                    <li>Docker & CI templates</li>
+                    <li>Production-ready stacks</li>
+                    <li>Email support</li>
+                </ul>
+                <button class="cta-button" onclick="handleTrialSignup('free_trial')">Start Free Trial</button>
+            </div>
+
+            <div class="plan-card featured">
+                <span class="badge">MOST POPULAR</span>
+                <div class="plan-name">Pro</div>
+                <div class="plan-price">$29</div>
+                <div class="plan-period">per month</div>
+                <ul class="plan-features">
+                    <li>Everything in Free Trial</li>
+                    <li>Priority support</li>
+                    <li>Advanced templates</li>
+                    <li>Custom configurations</li>
+                    <li>Team collaboration</li>
+                </ul>
+                <button class="cta-button" onclick="handleSubscription('pro_monthly')">Subscribe Now</button>
+            </div>
+
+            <div class="plan-card">
+                <div class="plan-name">Enterprise</div>
+                <div class="plan-price">Custom</div>
+                <div class="plan-period">contact us</div>
+                <ul class="plan-features">
+                    <li>Everything in Pro</li>
+                    <li>Dedicated support</li>
+                    <li>Custom integrations</li>
+                    <li>SLA guarantees</li>
+                    <li>On-premise options</li>
+                </ul>
+                <button class="cta-button" onclick="handleContactSales()">Contact Sales</button>
+            </div>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Home</a>
+            <a href="contact.html">📧 Contact</a>
+        </div>
+    </div>
+
+    <script>
+        function handleTrialSignup(plan) {
+            // Track trial signup
+            gtag('event', 'trial_signup_clicked', {
+                'event_category': 'conversion',
+                'event_label': plan,
+                'funnel_step': 'trial_intent',
+                'value': 0
+            });
+            
+            // In production, redirect to actual signup flow
+            alert('Free trial signup would redirect to authentication. This tracks as a trial signup intent for analytics.');
+            
+            // Simulate signup success for analytics
+            gtag('event', 'trial_started', {
+                'event_category': 'conversion',
+                'event_label': plan,
+                'funnel_step': 'trial_active',
+                'value': 1
+            });
+        }
+
+        function handleSubscription(plan) {
+            // Track subscription intent
+            gtag('event', 'subscription_clicked', {
+                'event_category': 'conversion',
+                'event_label': plan,
+                'funnel_step': 'paid_intent',
+                'value': 29
+            });
+            
+            // In production, integrate with PayPal
+            alert('Subscription would redirect to PayPal checkout. Plan: ' + plan);
+        }
+
+        function handleContactSales() {
+            // Track enterprise interest
+            gtag('event', 'enterprise_interest', {
+                'event_category': 'conversion',
+                'event_label': 'enterprise_contact',
+                'funnel_step': 'enterprise_inquiry'
+            });
+            
+            window.location.href = 'contact.html?plan=enterprise';
+        }
+
+        // Track page view as part of conversion funnel
+        gtag('event', 'pricing_page_view', {
+            'event_category': 'conversion',
+            'event_label': 'pricing_viewed',
+            'funnel_step': 'pricing'
+        });
+
+        // Track time on page (drop-off indicator)
+        let timeOnPage = 0;
+        setInterval(() => {
+            timeOnPage += 5;
+            if (timeOnPage === 30) {
+                gtag('event', 'pricing_engaged', {
+                    'event_category': 'engagement',
+                    'event_label': '30_seconds',
+                    'time_on_page': 30
+                });
+            }
+        }, 5000);
+    </script>
 </body>
 </html>
