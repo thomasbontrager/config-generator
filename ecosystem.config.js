@@ -16,7 +16,7 @@ module.exports = {
       name: 'api',
       script: './server.js', // or './src/index.js' depending on your setup
       instances: 1,
-      exec_mode: 'cluster',
+      exec_mode: 'fork', // Use 'fork' for single instance
       env: {
         NODE_ENV: 'development',
         PORT: 3000,

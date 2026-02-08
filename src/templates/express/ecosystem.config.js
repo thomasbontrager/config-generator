@@ -14,7 +14,7 @@ module.exports = {
       name: 'api',
       script: './server.js',
       instances: 1,
-      exec_mode: 'cluster',
+      exec_mode: 'fork', // Use 'fork' for single instance, 'cluster' for multiple
       
       // Environment variables
       env: {
@@ -43,9 +43,6 @@ module.exports = {
       max_restarts: 10,
       restart_delay: 4000,
       kill_timeout: 5000,
-      
-      // Cluster mode options
-      instance_var: 'INSTANCE_ID',
       
       // Source map support
       source_map_support: true,
