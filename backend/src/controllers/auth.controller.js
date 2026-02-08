@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { signToken } from "../utils/jwt.js";
 
 const users = []; // TEMP — replace with DB later
+let nextUserId = 1; // Counter for unique user IDs
 
 export async function signup(req, res) {
   const { email, password } = req.body;
@@ -18,7 +19,7 @@ export async function signup(req, res) {
   const hashed = await bcrypt.hash(password, 10);
 
   const user = {
-    id: users.length + 1,
+    id: nextUserId++,
     email,
     password: hashed,
     role: "user",
