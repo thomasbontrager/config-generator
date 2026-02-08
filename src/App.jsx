@@ -5,6 +5,7 @@ import "./App.css";
 export default function App() {
   const [vite, setVite] = useState(false);
   const [express, setExpress] = useState(false);
+  const [githubRulesets, setGithubRulesets] = useState(false);
 
   return (
     <div
@@ -41,6 +42,17 @@ export default function App() {
         </label>
       </div>
 
+      <div style={{ marginTop: 8 }}>
+        <label>
+          <input
+            type="checkbox"
+            checked={githubRulesets}
+            onChange={(e) => setGithubRulesets(e.target.checked)}
+          />{" "}
+          GitHub Branch Protection Rulesets
+        </label>
+      </div>
+
       <button
         style={{
           marginTop: 20,
@@ -48,8 +60,8 @@ export default function App() {
           fontSize: 16,
           cursor: "pointer",
         }}
-        onClick={() => generateZip({ vite, express })}
-        disabled={!vite && !express}
+        onClick={() => generateZip({ vite, express, githubRulesets })}
+        disabled={!vite && !express && !githubRulesets}
       >
         Generate ZIP
       </button>

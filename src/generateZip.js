@@ -13,7 +13,11 @@ import expressDockerfile from "./templates/express/Dockerfile?raw";
 import expressCompose from "./templates/express/docker-compose.yml?raw";
 import expressReadme from "./templates/express/README.md?raw";
 
-export async function generateZip({ vite, express }) {
+// GitHub Rulesets templates
+import githubRulesetJson from "./templates/github-rulesets/branch-protection-ruleset.json?raw";
+import githubRulesetReadme from "./templates/github-rulesets/README.md?raw";
+
+export async function generateZip({ vite, express, githubRulesets }) {
   const zip = new JSZip();
 
   if (vite) {
@@ -34,7 +38,14 @@ export async function generateZip({ vite, express }) {
     expressFolder.file("README.md", expressReadme);
   }
 
-  if (!vite && !express) {
+  if (githubRulesets) {
+    const githubFolder = zip.folder("github-rulesets");
+
+    githubFolder.file("branch-protection-ruleset.json", githubRulesetJson);
+    githubFolder.file("README.md", githubRulesetReadme);
+  }
+
+  if (!vite && !express && !githubRulesets) {
     alert("Please select at least one stack.");
     return;
   }
