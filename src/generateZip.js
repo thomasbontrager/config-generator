@@ -12,6 +12,8 @@ import expressEnv from "./templates/express/.env.example?raw";
 import expressDockerfile from "./templates/express/Dockerfile?raw";
 import expressCompose from "./templates/express/docker-compose.yml?raw";
 import expressReadme from "./templates/express/README.md?raw";
+import expressPM2 from "./templates/express/ecosystem.config.js?raw";
+import expressNginx from "./templates/express/nginx.conf?raw";
 
 export async function generateZip({ vite, express }) {
   const zip = new JSZip();
@@ -32,6 +34,8 @@ export async function generateZip({ vite, express }) {
     expressFolder.file("Dockerfile", expressDockerfile);
     expressFolder.file("docker-compose.yml", expressCompose);
     expressFolder.file("README.md", expressReadme);
+    expressFolder.file("ecosystem.config.js", expressPM2);
+    expressFolder.file("nginx.conf", expressNginx);
   }
 
   if (!vite && !express) {

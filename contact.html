@@ -3,28 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us</title>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR_TRACKING_ID"></script>
+    <title>Contact Us - ShipForge</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #1a1a1a; 
+            color: #fff; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px 20px;
+        }
+        .container { 
+            max-width: 700px; 
+            margin: 0 auto; 
+            background: #2d2d2d;
+            padding: 40px;
+            border-radius: 10px;
+        }
+        h1 { 
+            text-align: center; 
+            font-size: 2.5em; 
+            margin-bottom: 10px;
+            color: #4a9eff;
+        }
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            font-size: 1.1em;
+            margin-bottom: 40px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a9eff;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #4a9eff;
+            border-radius: 5px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1em;
+        }
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            background: rgba(74, 158, 255, 0.2);
+            border-color: #4a9eff;
+        }
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .submit-button {
+            background: linear-gradient(135deg, #4a9eff, #2a7dd8);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .submit-button:hover {
+            transform: scale(1.05);
+        }
+        .nav {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #444;
+        }
+        .nav a {
+            color: #4a9eff;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 0.95em;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        #formMessage {
+            text-align: center;
+            margin-top: 20px;
+            min-height: 24px;
+            color: #4ade80;
+            font-weight: bold;
+        }
+        .error {
+            color: #ff6b6b !important;
+        }
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-F88E6SFH4F"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
-        gtag('config', 'YOUR_TRACKING_ID');
+        gtag('config', 'G-F88E6SFH4F');
     </script>
 </head>
 <body>
-    <h1>Contact Us</h1>
-    <form action="/submit" method="POST">
-        <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name" required><br>
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br>
-        <label for="company">Company:</label><br>
-        <input type="text" id="company" name="company"><br>
-        <label for="message">Message:</label><br>
-        <textarea id="message" name="message" required></textarea><br>
-        <input type="submit" value="Submit">
-    </form>
+    <div class="container">
+        <h1>📧 Contact Us</h1>
+        <p class="subtitle">Have questions? We'd love to hear from you!</p>
+        
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name">Name *</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="company">Company</label>
+                <input type="text" id="company" name="company">
+            </div>
+            
+            <div class="form-group">
+                <label for="inquiry_type">Type of Inquiry *</label>
+                <select id="inquiry_type" name="inquiry_type" required>
+                    <option value="">-- Select --</option>
+                    <option value="question">General Question</option>
+                    <option value="feature_request">Feature Request</option>
+                    <option value="bug_report">Bug Report</option>
+                    <option value="trial_help">Trial Help</option>
+                    <option value="enterprise">Enterprise Inquiry</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Message *</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            
+            <button type="submit" class="submit-button">Send Message</button>
+            <div id="formMessage"></div>
+        </form>
+
+        <div class="nav">
+            <a href="index.html">🏠 Home</a>
+            <a href="pricing.html">💰 Pricing</a>
+        </div>
+    </div>
+
+    <script>
+        // Check for enterprise plan parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('plan') === 'enterprise') {
+            document.getElementById('inquiry_type').value = 'enterprise';
+        }
+
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const inquiryType = formData.get('inquiry_type');
+            const message = formData.get('message');
+            const msgDiv = document.getElementById('formMessage');
+            
+            // Track the contact form submission
+            gtag('event', 'contact_form_submit', {
+                'event_category': 'engagement',
+                'event_label': inquiryType,
+                'inquiry_type': inquiryType
+            });
+            
+            // Track specific types of questions (for "what features to build next")
+            if (inquiryType === 'feature_request') {
+                gtag('event', 'feature_request', {
+                    'event_category': 'feedback',
+                    'event_label': 'user_feature_request',
+                    'funnel_step': 'feature_feedback'
+                });
+            }
+            
+            if (inquiryType === 'question') {
+                gtag('event', 'user_question', {
+                    'event_category': 'feedback',
+                    'event_label': 'general_question',
+                    'funnel_step': 'user_questions'
+                });
+            }
+            
+            if (inquiryType === 'trial_help') {
+                gtag('event', 'trial_support_needed', {
+                    'event_category': 'support',
+                    'event_label': 'trial_help',
+                    'funnel_step': 'trial_friction'
+                });
+            }
+            
+            // In production, this would submit to a backend
+            // For demo purposes, we simulate success and track the event
+            msgDiv.textContent = '✅ Message received! (Demo mode - in production this would be sent to our team)';
+            msgDiv.className = '';
+            this.reset();
+            
+            // Track successful submission (conversion)
+            gtag('event', 'contact_success', {
+                'event_category': 'conversion',
+                'event_label': inquiryType,
+                'value': 1
+            });
+        });
+
+        // Track form engagement (drop-off analysis)
+        let formEngaged = false;
+        document.querySelectorAll('input, textarea, select').forEach(field => {
+            field.addEventListener('focus', function() {
+                if (!formEngaged) {
+                    gtag('event', 'contact_form_engaged', {
+                        'event_category': 'engagement',
+                        'event_label': 'form_started',
+                        'funnel_step': 'contact_form'
+                    });
+                    formEngaged = true;
+                }
+            });
+        });
+
+        // Track page view
+        gtag('event', 'contact_page_view', {
+            'event_category': 'navigation',
+            'event_label': 'contact_viewed'
+        });
+    </script>
 </body>
 </html>

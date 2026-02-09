@@ -2,6 +2,41 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+## 🚀 Production Deployment
+
+Ready to deploy? Check out our comprehensive deployment guides:
+
+- **[Production Deployment Guide](DEPLOYMENT.md)** - Full guide for deploying to Cloudflare Pages + VPS
+- **[Deployment Checklist](DEPLOYMENT-CHECKLIST.md)** - Complete checklist to ensure nothing is missed
+
+### Quick Deploy to Cloudflare Pages
+
+1. Push your code to GitHub
+2. Connect repository to Cloudflare Pages
+3. Configure build settings:
+   - Build command: `npm run build`
+   - Build output: `dist`
+   - Framework: Vite
+4. Deploy!
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
+
+## Development
+
+```bash
+npm install
+npm run dev
+```
+
+## Build
+
+```bash
+npm run build
+npm run preview  # Preview production build locally
+```
+
+---
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh

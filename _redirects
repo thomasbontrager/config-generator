@@ -1,0 +1,15 @@
+# Cloudflare Pages - Redirects and Headers
+# 
+# This file configures SPA routing and security headers for Cloudflare Pages.
+# Place this file at the root of your project.
+
+# SPA routing - redirect all requests to index.html
+/*    /index.html   200
+
+# Security headers
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
