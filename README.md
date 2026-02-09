@@ -1,16 +1,102 @@
-# React + Vite
+# Shipforge - SaaS Config Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A real SaaS application with admin dashboard, user authentication, and subscription management.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🔐 User authentication (register/login)
+- 👥 Admin dashboard for user management
+- 💳 Subscription status management
+- 🎛️ Manual subscription overrides (FREE → TRIAL → ACTIVE → CANCELLED)
+- 🔒 Backend-enforced admin protection
+- ⚙️ Config/boilerplate generator (subscription-locked)
 
-## React Compiler
+## Project Structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```
+├── backend/          # Express + Prisma backend
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── middleware/
+│   │   ├── routes/
+│   │   └── utils/
+│   └── prisma/       # Database schema
+│
+└── frontend/         # React + Vite frontend
+    └── src/
+        ├── context/  # Auth context
+        ├── pages/    # Login, Generator, Admin
+        └── ...
+```
 
-## Expanding the ESLint configuration
+## Quick Start
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 1. Backend Setup
+
+```bash
+cd backend
+npm install
+npm run prisma:generate
+npm run prisma:migrate
+npm run dev
+```
+
+Backend runs on http://localhost:5000
+
+### 2. Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend runs on http://localhost:5173
+
+### 3. Make Yourself Admin
+
+1. Register an account via the UI
+2. Run `npm run prisma:studio` in the backend directory
+3. Open the User model
+4. Find your account and change `role` from `USER` to `ADMIN`
+5. Save and refresh the frontend
+
+## Admin Dashboard
+
+Once you're an admin, you can:
+
+- View all users
+- See subscription status
+- Manually override subscriptions (FREE → TRIAL → ACTIVE → CANCELLED)
+- Emergency access control
+
+Visit `/admin` when logged in as an admin.
+
+## Tech Stack
+
+**Backend:**
+- Express.js
+- Prisma ORM
+- SQLite (can be changed to PostgreSQL/MySQL)
+- JWT authentication
+- bcryptjs for password hashing
+
+**Frontend:**
+- React 19
+- Vite
+- React Router
+- Context API for state management
+
+## API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login
+
+### Admin (requires admin role)
+- `GET /api/admin/users` - Get all users
+- `POST /api/admin/subscription` - Update user subscription
+
+## License
+
+MIT
