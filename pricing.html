@@ -267,8 +267,20 @@
                     'time_on_page': 30
                 });
                 clearInterval(engagementInterval); // Clear after tracking
+                engagementInterval = null;
             }
         }, 5000);
+
+        // Ensure the engagement interval is cleared when the page is unloaded/hidden
+        function clearEngagementIntervalOnUnload() {
+            if (engagementInterval !== null) {
+                clearInterval(engagementInterval);
+                engagementInterval = null;
+            }
+        }
+
+        window.addEventListener('beforeunload', clearEngagementIntervalOnUnload);
+        window.addEventListener('pagehide', clearEngagementIntervalOnUnload);
     </script>
 </body>
 </html>
