@@ -6,8 +6,20 @@
     <title>Config / Boilerplate Generator - ShipForge</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #1a1a1a; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .container { max-width: 600px; margin: 60px auto; padding: 40px; background: #2d2d2d; border-radius: 10px; }
+        body { 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: #fff; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .container { max-width: 600px; margin: 60px auto; padding: 40px; background: rgba(45, 45, 45, 0.9); border-radius: 10px; backdrop-filter: blur(10px); }
         h1 { text-align: center; font-size: 2em; margin-bottom: 10px; }
         .subtitle { text-align: center; color: #aaa; margin-bottom: 40px; }
         .form-group { margin: 25px 0; }
@@ -67,6 +79,8 @@
         </form>
 
         <div class="nav">
+            <a href="dashboard.html">📊 Dashboard</a>
+            <a href="todo.html">✓ Todo</a>
             <a href="pricing.html">💰 Pricing</a>
             <a href="contact.html">📧 Contact</a>
         </div>
