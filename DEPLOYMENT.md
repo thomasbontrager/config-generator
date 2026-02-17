@@ -114,7 +114,7 @@ Update system and install dependencies:
 # Update system
 apt update && apt upgrade -y
 
-# Install Node.js (v20.x LTS) - safer method
+# Install Node.js (v20.x LTS) via NodeSource repository (recommended for up-to-date and stable LTS builds)
 curl -fsSL https://deb.nodesource.com/setup_20.x -o setup_node.sh
 bash setup_node.sh
 apt install -y nodejs
