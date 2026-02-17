@@ -3,8 +3,8 @@
 # This file configures SPA routing and security headers for Cloudflare Pages.
 # Place this file at the root of your project.
 
-# SPA routing - redirect all requests to index.html
-/*    /index.html   200
+# SPA routing - redirect unknown routes to index.html (preserve existing pages)
+/*    /index.html   404
 
 # Security headers
 /*
