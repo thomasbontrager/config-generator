@@ -8,6 +8,7 @@ export default defineConfig([
   globalIgnores(['dist', 'src/templates/**']),
   {
     files: ['**/*.{js,jsx}'],
+    ignores: ['ecosystem.config.js'], // Ignore PM2 config file
     extends: [
       js.configs.recommended,
       reactHooks.configs.flat.recommended,

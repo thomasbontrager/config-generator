@@ -36,8 +36,9 @@
 </head>
 <body>
     <div class="container">
-        <h1>⚡ Config / Boilerplate Generator</h1>
-        <p class="subtitle">Select your stack and generate a ZIP</p>
+        <h1>🚀 ShipForge</h1>
+        <p class="subtitle">Generate production-ready stacks in seconds</p>
+        <p style="text-align: center; color: #4ade80; font-weight: bold; margin-bottom: 20px;">✨ 14-Day Free Trial Available</p>
 
         <form id="generatorForm">
             <div class="form-group">
@@ -67,7 +68,7 @@
         </form>
 
         <div class="nav">
-            <a href="pricing.html">💰 Pricing</a>
+            <a href="pricing.html">💰 Pricing & Free Trial</a>
             <a href="contact.html">📧 Contact</a>
         </div>
     </div>
@@ -82,22 +83,64 @@
             if (checked.length === 0) {
                 msg.textContent = '❌ Please select at least one stack';
                 msg.className = 'error';
-                gtag('event', 'generator_error', {'error': 'no_selection'});
+                
+                // Track drop-off point
+                gtag('event', 'generator_error', {
+                    'error': 'no_selection',
+                    'event_category': 'drop_off',
+                    'event_label': 'form_validation_failed'
+                });
             } else {
                 const stacks = Array.from(checked).map(c => c.value).join(', ');
                 msg.textContent = '✅ ZIP generated: ' + stacks;
                 msg.className = '';
                 
+                // Track successful generation (conversion event)
                 gtag('event', 'generate_zip', {
                     'event_category': 'engagement',
                     'event_label': stacks,
-                    'stacks_count': checked.length
+                    'stacks_count': checked.length,
+                    'value': 1
+                });
+                
+                // Track trial conversion funnel step
+                gtag('event', 'trial_funnel_step', {
+                    'event_category': 'conversion',
+                    'event_label': 'config_generated',
+                    'funnel_step': 'usage'
                 });
                 
                 setTimeout(() => {
                     console.log('ZIP Download triggered for:', stacks);
                 }, 500);
             }
+        });
+        
+        // Track page engagement for drop-off analysis
+        let engagementTracked = false;
+        document.querySelectorAll('input[name="stack"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (!engagementTracked) {
+                    gtag('event', 'user_engaged', {
+                        'event_category': 'engagement',
+                        'event_label': 'checkbox_interaction',
+                        'funnel_step': 'selection'
+                    });
+                    engagementTracked = true;
+                }
+            });
+        });
+        
+        // Track navigation clicks for conversion funnel
+        document.querySelectorAll('.nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const destination = this.getAttribute('href');
+                gtag('event', 'navigation_click', {
+                    'event_category': 'navigation',
+                    'event_label': destination,
+                    'funnel_step': destination.includes('pricing') ? 'pricing_view' : 'contact_view'
+                });
+            });
         });
     </script>
 </body>
