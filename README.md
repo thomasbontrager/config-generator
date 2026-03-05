@@ -1,15 +1,22 @@
-# Shipforge - SaaS Config Generator
+# ⚡ config-generator
 
-A real SaaS application with admin dashboard, user authentication, and subscription management.
+Generate full dev configs instantly
+
+Shipforge generates production-ready developer stacks as downloadable ZIP projects. No setup hell. Just ship.
+
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start the development server: `npm run dev`
+4. Open http://localhost:3001
 
 ## Features
 
-- 🔐 User authentication (register/login)
-- 👥 Admin dashboard for user management
-- 💳 Subscription status management
-- 🎛️ Manual subscription overrides (FREE → TRIAL → ACTIVE → CANCELLED)
-- 🔒 Backend-enforced admin protection
-- ⚙️ Config/boilerplate generator (subscription-locked)
+- Generate Vite + React stacks
+- Generate Express API stacks
+- Download as ZIP with Docker configs
+- Subscription-based SaaS model
 
 ## Project Structure
 
@@ -22,44 +29,32 @@ A real SaaS application with admin dashboard, user authentication, and subscript
 │   │   └── utils/
 │   └── prisma/       # Database schema
 │
-└── frontend/         # React + Vite frontend
-    └── src/
-        ├── context/  # Auth context
-        ├── pages/    # Login, Generator, Admin
-        └── ...
+├── frontend/         # Standalone React + Vite frontend (auth/admin UI)
+│   └── src/
+│       ├── context/  # Auth context
+│       ├── pages/    # Login, Generator, Admin
+│       └── templates/ # Downloadable project templates
+│
+└── src/              # Main public-facing app source (Vite + React)
+    ├── components/
+    ├── pages/
+    └── templates/    # Vite-React, Express project templates
 ```
 
-## Quick Start
+## Tech Stack
 
-### 1. Backend Setup
+**Frontend:**
+- React 19
+- Vite
+- React Router
+- Context API for state management
 
-```bash
-cd backend
-npm install
-npm run prisma:generate
-npm run prisma:migrate
-npm run dev
-```
-
-Backend runs on http://localhost:5000
-
-### 2. Frontend Setup
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Frontend runs on http://localhost:5173
-
-### 3. Make Yourself Admin
-
-1. Register an account via the UI
-2. Run `npm run prisma:studio` in the backend directory
-3. Open the User model
-4. Find your account and change `role` from `USER` to `ADMIN`
-5. Save and refresh the frontend
+**Backend:**
+- Express.js
+- Prisma ORM
+- SQLite (can be changed to PostgreSQL/MySQL)
+- JWT authentication
+- bcryptjs for password hashing
 
 ## Admin Dashboard
 
@@ -71,31 +66,6 @@ Once you're an admin, you can:
 - Emergency access control
 
 Visit `/admin` when logged in as an admin.
-
-## Tech Stack
-
-**Backend:**
-- Express.js
-- Prisma ORM
-- SQLite (can be changed to PostgreSQL/MySQL)
-- JWT authentication
-- bcryptjs for password hashing
-
-**Frontend:**
-- React 19
-- Vite
-- React Router
-- Context API for state management
-
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login
-
-### Admin (requires admin role)
-- `GET /api/admin/users` - Get all users
-- `POST /api/admin/subscription` - Update user subscription
 
 ## License
 
