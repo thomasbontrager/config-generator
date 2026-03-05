@@ -6,15 +6,6 @@ import adminRoutes from "./routes/admin.routes.js";
 
 dotenv.config();
 
-const requiredEnvVars = ["JWT_SECRET", "DATABASE_URL"];
-const missingEnvVars = requiredEnvVars.filter((key) => !process.env[key]);
-if (missingEnvVars.length > 0) {
-  console.error(
-    `FATAL: Missing required environment variables: ${missingEnvVars.join(", ")}`
-  );
-  process.exit(1);
-}
-
 const app = express();
 
 app.use(cors());

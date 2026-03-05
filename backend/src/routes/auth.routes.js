@@ -2,28 +2,13 @@ import { Router } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import prisma from "../utils/prisma.js";
-import { requireAuth } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
 router.post("/register", async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email) {
-      return res.status(400).json({ message: "Email is required" });
-    }
-
-    if (!password) {
-      return res.status(400).json({ message: "Password is required" });
-    }
-
-    if (password.length < 8) {
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 8 characters" });
-    }
-
+    
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -97,10 +82,6 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
-});
-
-router.get("/me", requireAuth, (req, res) => {
-  res.json({ user: req.user });
 });
 
 export default router;
