@@ -4,6 +4,9 @@ import { requireAdmin } from "../middleware/admin.middleware.js";
 import {
   getUsers,
   updateSubscription,
+  getMetrics,
+  getSettings,
+  saveSettings,
 } from "../controllers/admin.controller.js";
 
 const router = Router();
@@ -13,5 +16,8 @@ router.use(requireAdmin);
 
 router.get("/users", getUsers);
 router.post("/subscription", updateSubscription);
+router.get("/metrics", getMetrics);
+router.get("/settings", getSettings);
+router.post("/settings", saveSettings);
 
 export default router;
