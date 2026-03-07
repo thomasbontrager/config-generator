@@ -13,6 +13,11 @@ dist-ssr
 *.local
 output
 
+# Environment files
+.env
+.env.secrets
+.env.local
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -23,3 +28,14 @@ output
 *.njsproj
 *.sln
 *.sw?
+
+# Backend specific
+backend/node_modules
+backend/dist
+backend/.env
+backend/prisma/dev.db
+backend/prisma/dev.db-journal
+
+# Frontend specific
+frontend/node_modules
+frontend/dist
