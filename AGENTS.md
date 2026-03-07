@@ -1,276 +1,165 @@
-# Agent Architecture
+# Agent Graph Documentation
 
-This repository implements an agent mesh architecture that scales from solo dev → team → platform.
+## Overview
 
-## 🧠 Core Philosophy
+This document describes the agents (configuration generators) available in this project. Each agent is responsible for generating boilerplate configuration files for specific technology stacks.
 
-Instead of one god agent, we build:
-
-- **1 Orchestrator agent** - coordinates and delegates
-- **Many narrow, surgical sub-agents** - each with one responsibility
-
-Each agent = one responsibility, one mental model.
-
-This mirrors how real platforms scale.
-
-## 🏗️ Architecture Overview
+## Agent Architecture
 
 ```
-┌─────────────────────────────────┐
-│   Config Orchestrator Agent     │
-│  (Master Brain & Delegator)     │
-└───────────┬─────────────────────┘
-            │
-            │ Delegates to...
-            │
-    ┌───────┴───────┐
-    │               │
-    ▼               ▼
-┌─────────┐    ┌─────────┐
-│ Docker  │    │Frontend │
-│ Agent   │    │ Agent   │
-└─────────┘    └─────────┘
-    │               │
-    ▼               ▼
-┌─────────┐    ┌─────────┐
-│Backend  │    │ Infra   │
-│ Agent   │    │ Agent   │
-└─────────┘    └─────────┘
-    │               │
-    ▼               ▼
-┌─────────┐    ┌─────────┐
-│ CI/CD   │    │  Env    │
-│ Agent   │    │ Agent   │
-└─────────┘    └─────────┘
-    │               │
-    ▼               ▼
-┌─────────┐    ┌─────────┐
-│Security │    │  Docs   │
-│ Agent   │    │ Agent   │
-└─────────┘    └─────────┘
-    │               │
-    ▼               ▼
-┌─────────┐    ┌─────────┐
-│  Test   │    │Release  │
-│ Agent   │    │ Agent   │
-└─────────┘    └─────────┘
+config-generator/
+└── agents/
+    ├── vite-react     (Frontend: React + Vite)
+    └── express        (Backend: Node.js + Express)
 ```
 
-## 📋 Available Agents
+Each agent owns its templates in `src/templates/{agent-name}/` and can be selected independently or in combination.
 
-### 1. 🎯 Config Orchestrator
-**File:** `.github/agents/config-orchestrator.agent.md`
+## Available Agents
 
-**Role:** Master coordinator that:
-- Determines which specialized agent(s) should handle a request
-- Ensures outputs follow repository standards
-- Prevents duplicated or conflicting boilerplate
-- Coordinates multi-step scaffolding flows
+### 1. Vite + React Agent
 
-**Use when:** You have a complex request that spans multiple domains or you're unsure which agent to use.
+**Name:** `vite-react`  
+**Purpose:** Generate production-ready Vite + React application configuration  
+**Templates Location:** `src/templates/vite-react/`
 
----
+**Generated Files:**
+- `.env.example` - Environment variable template
+- `Dockerfile` - Container configuration for production
+- `docker-compose.yml` - Orchestration configuration
+- `README.md` - Setup and usage instructions
 
-### 2. 🐳 Docker Agent
-**File:** `.github/agents/docker.agent.md`
+**Use Case:** Frontend applications built with React and Vite bundler
 
-**Scope:**
-- Dockerfile creation and optimization
-- docker-compose.yml configuration
-- .dockerignore files
-- Multi-stage builds
-- Dev vs prod containers
-
-**Best Practices:**
-- Minimal images preferred
-- Multi-stage builds when applicable
-- Never bake secrets into images
-- Follow repo language/runtime conventions
+**Key Features:**
+- Modern React setup with Vite
+- Docker support for containerization
+- Environment configuration templates
+- Development and production ready
 
 ---
 
-### 3. 🎨 Frontend Agent
-**File:** `.github/agents/frontend.agent.md`
+### 2. Express Agent
 
-**Scope:**
-- Vite / Next / Create React App configs
-- ESLint, Prettier configuration
-- TypeScript configs
-- Environment handling
-- Build scripts
+**Name:** `express`  
+**Purpose:** Generate minimal production-ready Express API server configuration  
+**Templates Location:** `src/templates/express/`
 
-**Best Practices:**
-- Modern defaults
-- Optimized for developer experience and fast builds
-- No unnecessary UI libraries
-- Match existing frontend stack
+**Generated Files:**
+- `.env.example` - Environment variable template (PORT, etc.)
+- `Dockerfile` - Container configuration for Node.js
+- `docker-compose.yml` - Service orchestration
+- `README.md` - API setup instructions
 
----
+**Use Case:** Backend REST APIs or microservices with Express.js
 
-### 4. ⚙️ Backend Agent
-**File:** `.github/agents/backend.agent.md`
-
-**Scope:**
-- Express / Fastify / NestJS configs
-- API structure
-- Environment variable loading
-- Logging setup
-- Health checks
-
-**Best Practices:**
-- Production-safe defaults
-- Explicit error handling
-- No magic globals
-- Config over code
+**Key Features:**
+- Lightweight Express server setup
+- Docker containerization
+- Environment-based configuration
+- Production-ready defaults
 
 ---
 
-### 5. ☁️ Infrastructure Agent
-**File:** `.github/agents/infra.agent.md`
+## Agent Selection
 
-**Scope:**
-- Terraform configurations
-- Cloud platform configs (AWS, GCP, Azure)
-- Service definitions
-- Resource naming conventions
+### Web UI (Current)
+Users can select agents via checkboxes in the web interface:
+- Visit the web application
+- Check desired agents (Vite + React, Express)
+- Click "Generate ZIP" to download configurations
 
-**Best Practices:**
-- Idempotent outputs
-- Environment-aware
-- Secure by default
+### CLI (Available)
+Users can select agents via command-line interface:
+```bash
+# Generate all agents
+npm run cli
 
----
+# Generate specific agent(s)
+npm run cli -- --agents=vite-react
+npm run cli -- --agents=express
+npm run cli -- --agents=vite-react,express
+```
 
-### 6. 🔁 CI/CD Agent
-**File:** `.github/agents/ci-cd.agent.md`
+## Adding New Agents
 
-**Scope:**
-- GitHub Actions workflows
-- Build pipelines
-- Test automation pipelines
-- Release workflows
+To add a new agent:
 
-**Best Practices:**
-- Fail fast
-- Cache aggressively
-- Never expose secrets
+1. **Create template folder:**
+   ```
+   src/templates/{agent-name}/
+   ```
 
----
+2. **Add template files:**
+   - At minimum: `README.md`
+   - Common: `.env.example`, `Dockerfile`, `docker-compose.yml`
+   - Any other configuration files needed
 
-### 7. 🔐 Environment Agent
-**File:** `.github/agents/env.agent.md`
+3. **Update `generateZip.js`:**
+   - Import template files
+   - Add agent to zip generation logic
 
-**Scope:**
-- .env files and templates
-- Environment variable management
-- Config validation
-- Environment-specific settings
+4. **Update `App.jsx`:**
+   - Add checkbox for new agent
+   - Add state management
 
-**Best Practices:**
-- Never commit secrets
-- Provide .env.example templates
-- Document all required variables
-- Use sensible defaults where possible
+5. **Update CLI:**
+   - Add agent to available agents list
+   - Ensure agent can be selected via CLI
 
----
+6. **Update this document:**
+   - Document the new agent's purpose
+   - List generated files
+   - Describe use cases
 
-### 8. 🛡️ Security Agent
-**File:** `.github/agents/security.agent.md`
+## Agent Graph Visualization
 
-**Scope:**
-- Secret handling patterns
-- Permission configurations
-- Dependency safety checks
-- Security headers & policies
+```
+User Input
+    │
+    ├─→ Select: vite-react? ──→ [Vite+React Agent] ──→ Generate Frontend Config
+    │                                                        │
+    │                                                        ├─→ .env.example
+    │                                                        ├─→ Dockerfile
+    │                                                        ├─→ docker-compose.yml
+    │                                                        └─→ README.md
+    │
+    └─→ Select: express? ──→ [Express Agent] ──→ Generate Backend Config
+                                                     │
+                                                     ├─→ .env.example
+                                                     ├─→ Dockerfile
+                                                     ├─→ docker-compose.yml
+                                                     └─→ README.md
+```
 
-**Best Practices:**
-- Least privilege always
-- No secrets in repo
-- Explicit allowlists
+## Technical Details
 
----
+### Template Loading
+Templates are loaded using Vite's `?raw` import suffix, which imports files as raw strings:
+```javascript
+import templateFile from "./templates/{agent}/file.ext?raw";
+```
 
-### 9. 🧪 Test Agent
-**File:** `.github/agents/test.agent.md`
+### Zip Generation
+The JSZip library is used to bundle selected templates into a downloadable ZIP file. Each agent's files are organized into separate folders within the ZIP.
 
-**Scope:**
-- Test runner configurations
-- Coverage configs
-- Test environments
-- CI test integration
+### Agent Independence
+Agents are designed to be independent and composable:
+- Each agent can be used standalone
+- Multiple agents can be selected together
+- No dependencies between agents
+- Each agent maintains its own template files
 
-**Best Practices:**
-- Fast feedback loops
-- Deterministic tests
+## Future Extensions
 
----
+Potential new agents to consider:
+- **Next.js Agent** - Full-stack React framework
+- **FastAPI Agent** - Python API framework
+- **Django Agent** - Python web framework  
+- **PostgreSQL Agent** - Database configuration
+- **Redis Agent** - Cache/queue configuration
+- **Nginx Agent** - Reverse proxy configuration
+- **GitHub Actions Agent** - CI/CD workflows
+- **Terraform Agent** - Infrastructure as Code
 
-### 10. 📝 Docs Agent
-**File:** `.github/agents/docs.agent.md`
-
-**Scope:**
-- README files
-- Usage documentation
-- Setup guides
-- Inline config comments
-
-**Best Practices:**
-- Minimal but complete
-- Examples over theory
-
----
-
-### 11. 🚀 Release Agent
-**File:** `.github/agents/release.agent.md`
-
-**Scope:**
-- Semantic versioning
-- Changelog generation
-- Release automation
-
-**Best Practices:**
-- No breaking changes without signaling
-
----
-
-## 🎯 How to Use
-
-### For Users
-1. **Simple requests**: Directly invoke the specific agent you need
-2. **Complex requests**: Use the Config Orchestrator to coordinate multiple agents
-3. **Unsure which agent**: Start with the Config Orchestrator - it will delegate appropriately
-
-### For Contributors
-When adding new configuration capabilities:
-1. Identify which agent owns that domain
-2. Update that agent's configuration in `.github/agents/`
-3. Update this documentation if adding new agent types
-4. Keep agents focused - if an agent grows too large, consider splitting it
-
-## 🔥 Why This Architecture?
-
-### Traditional Approach ❌
-- One vague agent with unclear scope
-- Hallucinated configs
-- Inconsistent outputs
-- Hard to maintain
-
-### Our Agent Mesh ✅
-- Clear separation of concerns
-- Intent-based delegation
-- Predictable scaffolding
-- Enterprise-grade thinking
-- Easy to extend and maintain
-
-## 🚀 Future Enhancements
-
-Potential next-level improvements:
-- [ ] Add `templates/` folder with each agent owning specific templates
-- [ ] Build CLI that selects agents dynamically
-- [ ] Agent composition for complex multi-domain tasks
-- [ ] Agent versioning and compatibility tracking
-- [ ] Template validation and linting
-
----
-
-**This is how platforms are built, not demos.** 💪
+Each new agent should follow the established pattern and maintain independence from other agents.

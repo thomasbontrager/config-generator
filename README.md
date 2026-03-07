@@ -1,72 +1,89 @@
-# ⚡ config-generator
+# Config / Boilerplate Generator
 
-Generate full dev configs instantly
-
-Shipforge generates production-ready developer stacks as downloadable ZIP projects. No setup hell. Just ship.
-
-## Getting Started
-
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Start the development server: `npm run dev`
-4. Open http://localhost:3001
+Generate production-ready configuration files and boilerplates for your projects.
 
 ## Features
 
-- Generate Vite + React stacks
-- Generate Express API stacks
-- Download as ZIP with Docker configs
-- Subscription-based SaaS model
+- 🚀 **Vite + React** - Production-ready frontend setup
+- 🔧 **Express** - Minimal backend API server
+- 📦 **Multiple output formats** - Web UI, CLI, or ZIP download
+- 🎯 **Docker ready** - All templates include Docker configurations
+- 📝 **Environment configs** - Pre-configured .env examples
+
+## Quick Start
+
+### Web UI
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Start the dev server:
+```bash
+npm run dev
+```
+
+3. Open your browser and select the configurations you want to generate.
+
+### CLI
+
+Generate configs directly from the command line:
+
+```bash
+# List available agents
+npm run cli -- --list
+
+# Generate specific agent configs
+npm run cli -- --agents=vite-react
+npm run cli -- --agents=express
+npm run cli -- --agents=vite-react,express
+
+# Generate to custom directory
+npm run cli -- --agents=vite-react,express --output=./my-configs
+
+# Generate ZIP file
+npm run cli -- --agents=vite-react,express --output=./config.zip --zip
+
+# Show help
+npm run cli -- --help
+```
+
+## Available Agents
+
+- **vite-react** - Production-ready Vite + React starter
+- **express** - Minimal production-ready Express server starter
+
+See [AGENTS.md](./AGENTS.md) for detailed documentation on each agent.
 
 ## Project Structure
 
 ```
-├── backend/          # Express + Prisma backend
-│   ├── src/
-│   │   ├── controllers/
-│   │   ├── middleware/
-│   │   ├── routes/
-│   │   └── utils/
-│   └── prisma/       # Database schema
-│
-├── frontend/         # Standalone React + Vite frontend (auth/admin UI)
-│   └── src/
-│       ├── context/  # Auth context
-│       ├── pages/    # Login, Generator, Admin
-│       └── templates/ # Downloadable project templates
-│
-└── src/              # Main public-facing app source (Vite + React)
-    ├── components/
-    ├── pages/
-    └── templates/    # Vite-React, Express project templates
+config-generator/
+├── src/
+│   ├── templates/          # Template files for each agent
+│   │   ├── vite-react/     # Vite + React templates
+│   │   └── express/        # Express templates
+│   ├── App.jsx             # Web UI
+│   └── generateZip.js      # ZIP generation logic
+├── cli.js                  # CLI interface
+├── AGENTS.md              # Agent documentation
+└── README.md              # This file
 ```
 
-## Tech Stack
+## Build for Production
 
-**Frontend:**
-- React 19
-- Vite
-- React Router
-- Context API for state management
+```bash
+npm run build
+```
 
-**Backend:**
-- Express.js
-- Prisma ORM
-- SQLite (can be changed to PostgreSQL/MySQL)
-- JWT authentication
-- bcryptjs for password hashing
+## Deploy
 
-## Admin Dashboard
+```bash
+npm run deploy
+```
 
-Once you're an admin, you can:
+## Adding New Agents
 
-- View all users
-- See subscription status
-- Manually override subscriptions (FREE → TRIAL → ACTIVE → CANCELLED)
-- Emergency access control
+See [AGENTS.md](./AGENTS.md) for instructions on adding new configuration agents.
 
-Visit `/admin` when logged in as an admin.
-
-## License
-
-MIT

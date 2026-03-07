@@ -7,6 +7,12 @@ export default defineConfig([
   globalIgnores(['dist', 'src/templates/**']),
   {
     files: ['**/*.{js,jsx}'],
+    ignores: ['cli.js'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -29,4 +35,17 @@ export default defineConfig([
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
   },
-]
+  {
+    files: ['cli.js'],
+    languageOptions: {
+      globals: globals.node,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+])
