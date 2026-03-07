@@ -1,16 +1,72 @@
-# React + Vite
+# ⚡ config-generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Generate full dev configs instantly
 
-Currently, two official plugins are available:
+Shipforge generates production-ready developer stacks as downloadable ZIP projects. No setup hell. Just ship.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Getting Started
 
-## React Compiler
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start the development server: `npm run dev`
+4. Open http://localhost:3001
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+- Generate Vite + React stacks
+- Generate Express API stacks
+- Download as ZIP with Docker configs
+- Subscription-based SaaS model
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Project Structure
+
+```
+├── backend/          # Express + Prisma backend
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── middleware/
+│   │   ├── routes/
+│   │   └── utils/
+│   └── prisma/       # Database schema
+│
+├── frontend/         # Standalone React + Vite frontend (auth/admin UI)
+│   └── src/
+│       ├── context/  # Auth context
+│       ├── pages/    # Login, Generator, Admin
+│       └── templates/ # Downloadable project templates
+│
+└── src/              # Main public-facing app source (Vite + React)
+    ├── components/
+    ├── pages/
+    └── templates/    # Vite-React, Express project templates
+```
+
+## Tech Stack
+
+**Frontend:**
+- React 19
+- Vite
+- React Router
+- Context API for state management
+
+**Backend:**
+- Express.js
+- Prisma ORM
+- SQLite (can be changed to PostgreSQL/MySQL)
+- JWT authentication
+- bcryptjs for password hashing
+
+## Admin Dashboard
+
+Once you're an admin, you can:
+
+- View all users
+- See subscription status
+- Manually override subscriptions (FREE → TRIAL → ACTIVE → CANCELLED)
+- Emergency access control
+
+Visit `/admin` when logged in as an admin.
+
+## License
+
+MIT

@@ -9,6 +9,7 @@ import viteReadme from "./templates/vite-react/README.md?raw";
 
 // Express templates
 import expressEnv from "./templates/express/.env.example?raw";
+import expressGitignore from "./templates/express/.gitignore?raw";
 import expressDockerfile from "./templates/express/Dockerfile?raw";
 import expressCompose from "./templates/express/docker-compose.yml?raw";
 import expressReadme from "./templates/express/README.md?raw";
@@ -38,6 +39,7 @@ export async function generateZip({ vite, express }) {
     const expressFolder = zip.folder("express");
 
     expressFolder.file(".env.example", expressEnv);
+    expressFolder.file(".gitignore", expressGitignore);
     expressFolder.file("Dockerfile", expressDockerfile);
     expressFolder.file("docker-compose.yml", expressCompose);
     expressFolder.file("README.md", expressReadme);

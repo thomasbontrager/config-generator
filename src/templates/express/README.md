@@ -2,14 +2,27 @@
 
 Production-ready Express server with PayPal subscription billing integration.
 
-## Getting started
+## 🔐 Security Features
+
+- ✅ PayPal webhook signature verification
+- ✅ JWT authentication with 15-minute token expiry
+- ✅ Rate limiting (auth & API endpoints)
+- ✅ CORS lockdown
+- ✅ Bcrypt password hashing
+- ✅ Central error handling
+- ✅ Prisma ORM with PostgreSQL
+- ✅ No password exposure in API responses
+
+## Getting Started
+
+### 1. Install Dependencies
 
 ```bash
 npm install
 node app.js
 ```
 
-## Environment variables
+### 2. Setup Environment Variables
 
 Copy .env.example to .env and update with your PayPal credentials:
 
@@ -101,3 +114,11 @@ Use the subscription status field to gate features:
 ```bash
 docker-compose up --build
 ```
+
+## 📝 Notes
+
+- Tokens expire after 15 minutes for security
+- All passwords are bcrypt hashed (never exposed)
+- Rate limits prevent abuse
+- CORS is locked to configured origins only
+- All errors sanitized in production
