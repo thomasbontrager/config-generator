@@ -34,16 +34,20 @@ function Home() {
         </label>
       </div>
 
-      <div style={{ marginTop: 8 }}>
-        <label>
-          <input
-            type="checkbox"
-            checked={express}
-            onChange={(e) => setExpress(e.target.checked)}
-          />{" "}
-          Express
-        </label>
+function AdminRoute() {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="loading-screen">Loading…</div>;
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role !== "ADMIN") {
+    return (
+      <div className="access-denied">
+        <h2>Access Denied</h2>
+        <p>You need admin privileges to view this page.</p>
       </div>
+    );
+  }
+  return <Admin />;
+}
 
       <button
         style={{
