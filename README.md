@@ -1,6 +1,6 @@
 # ShipForge - Config & Boilerplate Generator
 
-A production-ready Next.js 14 SaaS application for generating configuration files and boilerplates for various tech stacks.
+A production-ready Next.js 15 SaaS application for generating configuration files and boilerplates for various tech stacks.
 
 ## 🚀 Features
 
