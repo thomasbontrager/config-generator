@@ -82,10 +82,18 @@ export async function POST(request: Request) {
         });
 
         if (paymentUser) {
-          await prisma.payment.create({
-            data: {
+          await prisma.payment.upsert({
+            where: {
+              stripePaymentId: invoice.id,
+            },
+            create: {
               userId: paymentUser.id,
               stripePaymentId: invoice.id,
+              amount: invoice.amount_paid,
+              status: 'SUCCEEDED',
+            },
+            update: {
+              // Re-assert current values to keep the operation idempotent
               amount: invoice.amount_paid,
               status: 'SUCCEEDED',
             },

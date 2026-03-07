@@ -1,6 +1,6 @@
 # Config / Boilerplate Generator
 
-Generate production-ready configuration files and boilerplates for your projects.
+A production-ready Next.js 15 SaaS application for generating configuration files and boilerplates for various tech stacks.
 
 ## Features
 

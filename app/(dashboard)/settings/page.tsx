@@ -19,25 +19,12 @@ export default function SettingsPage() {
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    try {
-      // TODO: Implement profile update API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast({
-        title: 'Profile updated',
-        description: 'Your profile has been updated successfully',
-      });
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to update profile',
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    toast({
+      title: 'Profile updates not available',
+      description: 'Profile changes cannot be saved yet in this demo.',
+      variant: 'destructive',
+    });
   };
 
   return (

@@ -47,21 +47,47 @@ export default function GeneratorPage() {
         body: JSON.stringify({ configTypes: selectedConfigs }),
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get('content-type') || '';
 
       if (!response.ok) {
-        throw new Error(data.error || 'Generation failed');
+        let errorMessage = 'Generation failed';
+
+        try {
+          if (contentType.includes('application/json')) {
+            const errorData = await response.json();
+            if (errorData && typeof errorData.error === 'string') {
+              errorMessage = errorData.error;
+            }
+          } else {
+            const text = await response.text();
+            if (text) {
+              errorMessage = text;
+            }
+          }
+        } catch {
+          // Ignore parsing errors and fall back to default message
+        }
+
+        throw new Error(errorMessage);
       }
+
+      // Successful response: treat as ZIP binary and trigger download
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      // Fallback filename; server may also suggest one via Content-Disposition
+      link.download = 'generated-config.zip';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(downloadUrl);
 
       toast({
         title: 'Success!',
         description: 'Your configuration has been generated',
       });
-
-      // Trigger download
-      if (data.downloadUrl) {
-        window.location.href = data.downloadUrl;
-      }
     } catch (error) {
       toast({
         variant: 'destructive',
