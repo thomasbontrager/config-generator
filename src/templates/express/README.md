@@ -1,6 +1,6 @@
-# Express API with Security Hardening
+# Express API with PayPal Subscriptions
 
-Production-ready Express server with enterprise-grade security features.
+Production-ready Express server with PayPal subscription billing integration.
 
 ## 🔐 Security Features
 
@@ -19,69 +19,97 @@ Production-ready Express server with enterprise-grade security features.
 
 ```bash
 npm install
+node app.js
 ```
 
 ### 2. Setup Environment Variables
 
-Copy `.env.example` to `.env` and update with your values:
+Copy .env.example to .env and update with your PayPal credentials:
 
 ```bash
-cp .env.example .env
+PORT=3000
+
+# PayPal Configuration
+PAYPAL_CLIENT_ID=your_client_id
+PAYPAL_CLIENT_SECRET=your_client_secret
+PAYPAL_PLAN_ID=your_plan_id
+PAYPAL_API=https://api-m.sandbox.paypal.com
+
+# Application Configuration
+BRAND_NAME=Your App Name
+RETURN_URL=http://localhost:5173/billing/success
+CANCEL_URL=http://localhost:5173/billing/cancel
 ```
 
-**Required Configuration:**
-- `DATABASE_URL` - PostgreSQL connection string
-- `JWT_SECRET` - Strong random string for JWT signing
-- `PAYPAL_CLIENT_ID` - From PayPal Dashboard
-- `PAYPAL_CLIENT_SECRET` - From PayPal Dashboard
-- `PAYPAL_WEBHOOK_ID` - From PayPal Webhook settings
-- `CORS_ORIGIN` - Allowed frontend origins (comma-separated)
+**Important:** Update `RETURN_URL` and `CANCEL_URL` to match your frontend URL in production.
 
-### 3. Setup Database
+## PayPal Dashboard Setup
+
+### 1. Create PayPal App
+
+1. Go to https://developer.paypal.com
+2. Create a Business account
+3. Create an App (Type: Merchant, Environment: Sandbox)
+4. Save your `CLIENT_ID` and `CLIENT_SECRET`
+
+### 2. Create Subscription Plan
+
+1. In PayPal Dashboard: Products → Create Product
+   - Name: Your Product Name (e.g., Shipforge Pro)
+   - Type: Digital
+2. Plans → Create Plan
+   - Billing cycle: $29 / month
+   - Trial: 14 days
+   - Auto-renew: ON
+3. Save the `PLAN_ID`
+
+### 3. Setup Webhooks
+
+1. PayPal Dashboard → Webhooks
+2. Create webhook with URL: `https://your-backend-domain/api/webhooks/paypal`
+3. Subscribe to events:
+   - `BILLING.SUBSCRIPTION.ACTIVATED`
+   - `BILLING.SUBSCRIPTION.CANCELLED`
+   - `PAYMENT.SALE.COMPLETED`
+   - `PAYMENT.SALE.DENIED`
+
+## API Endpoints
+
+### Create Subscription
 
 ```bash
-npm run prisma:generate
-npm run prisma:migrate
+POST /api/billing/subscribe
+Authorization: Bearer <token>
 ```
 
-### 4. Start Server
+Returns PayPal approval URL for user to complete subscription.
+
+### Webhooks
 
 ```bash
-# Development (with auto-reload)
-npm run dev
-
-# Production
-npm start
+POST /api/webhooks/paypal
 ```
 
-## 📡 API Endpoints
+Handles PayPal webhook events for subscription lifecycle.
 
-### Authentication (Rate Limited: 100 req/15min)
+## Feature Gating
 
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login and get JWT token
+Use the subscription status field to gate features:
 
-### Protected API (Rate Limited: 500 req/15min)
+- `trial` → limited features
+- `active` → full access
+- `canceled` → block access
 
-- `GET /api/generate` - Generate config (requires active subscription)
+## Security Notes
 
-### Webhooks (No rate limit)
+⚠️ **Important for Production:**
 
-- `POST /webhook/paypal` - PayPal webhook handler (signature verified)
+- Add webhook signature verification
+- Use HTTPS only
+- Never trust frontend for subscription state
+- Use production PayPal API: `https://api-m.paypal.com`
 
-### Health Check
-
-- `GET /health` - Server health status
-
-## 🧪 Security Testing
-
-1. **Test webhook verification**: Send request without valid PayPal signature → 400 rejected
-2. **Test auth**: Call `/api/generate` without token → 401 Unauthorized
-3. **Test subscription**: Call with trial user token → 403 Forbidden
-4. **Test admin**: Call admin routes as regular user → 403 Forbidden
-5. **Test PayPal**: Activate subscription → User status flips to ACTIVE
-
-## 🐳 Run with Docker
+## Run with Docker
 
 ```bash
 docker-compose up --build

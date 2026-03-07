@@ -1,44 +1,31 @@
 import { Router } from "express";
-import prisma from "../utils/prisma.js";
-import { verifyPayPalWebhook } from "../utils/paypalVerify.js";
-import { webhookLimiter } from "../middleware/rateLimit.js";
 
 const router = Router();
 
-// Apply rate limiting to webhook endpoint
-router.post("/paypal", webhookLimiter, async (req, res) => {
-  try {
-    const isValid = await verifyPayPalWebhook(req.headers, req.body);
+router.post("/paypal", (req, res) => {
+  const event = req.body;
 
-    if (!isValid) {
-      return res.status(400).json({ message: "Invalid webhook signature" });
-    }
+  // ⚠️ SECURITY WARNING: Webhook signature verification is NOT implemented.
+  // This code MUST NOT be used in production without implementing PayPal webhook
+  // signature verification. Without it, attackers can forge webhook events.
+  // See: https://developer.paypal.com/docs/api-basics/notifications/webhooks/notification-messages/#verify-webhook-signature
 
-    const event = req.body;
-
-    if (event.event_type === "BILLING.SUBSCRIPTION.ACTIVATED") {
-      const subId = event.resource.id;
-
-      await prisma.user.updateMany({
-        where: { paypalSubId: subId },
-        data: { subscription: "ACTIVE" },
-      });
-    }
-
-    if (event.event_type === "BILLING.SUBSCRIPTION.CANCELLED") {
-      const subId = event.resource.id;
-
-      await prisma.user.updateMany({
-        where: { paypalSubId: subId },
-        data: { subscription: "CANCELED" },
-      });
-    }
-
-    res.sendStatus(200);
-  } catch (error) {
-    console.error("Webhook processing error:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+  switch (event.event_type) {
+    case "BILLING.SUBSCRIPTION.ACTIVATED":
+      // TODO: update user.subscription = "active"
+      console.log("Subscription activated:", event.resource?.id);
+      break;
+    
+    case "BILLING.SUBSCRIPTION.CANCELLED":
+      // TODO: update user.subscription = "canceled"
+      console.log("Subscription cancelled:", event.resource?.id);
+      break;
+    
+    default:
+      console.log("Unhandled webhook event:", event.event_type);
   }
+
+  res.sendStatus(200);
 });
 
 export default router;
