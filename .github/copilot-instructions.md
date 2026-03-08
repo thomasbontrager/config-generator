@@ -1,63 +1,61 @@
-# Project Overview
-This is a Config/Boilerplate Generator web application built with React and Vite. The application allows users to select different technology stacks (Vite + React, Express) and generates a downloadable ZIP file containing the appropriate configuration files and boilerplate code.
+# Copilot Instructions
 
-# Tech Stack
-- React 19.2.0
-- Vite 7.2.4 (build tool and dev server)
-- JavaScript (ES2020+)
-- JSZip for generating ZIP files
-- FileSaver for downloading files
-- ESLint for code quality
-- gh-pages for deployment
+## Tech stack
+- Language: JavaScript (ES6+)
+- Framework: React 19
+- Build Tool: Vite 7
+- Package Manager: npm
+- Deployment: GitHub Pages
+- Additional Libraries: JSZip (for ZIP generation), file-saver
 
-# Coding Standards
-- Use functional components and React Hooks (no class components)
-- Use ES6+ JavaScript syntax (arrow functions, destructuring, etc.)
-- Follow ESLint recommended rules (configured in `eslint.config.js`)
-- Unused variables are allowed if they match pattern `^[A-Z_]` (uppercase or underscore prefix)
-- Use JSX for React components
-- ECMAScript version: 2020 with latest features
-- Source type: ES modules (type: "module" in package.json)
+## Project purpose
+This is a web-based config/boilerplate generator that allows users to select tech stacks (Vite+React, Express) and download a ZIP file containing configuration files, Dockerfiles, and setup instructions for their selected stack.
 
-# Code Style
-- Use double quotes for strings
-- Inline styles are acceptable for simple component styling
-- CSS modules via separate `.css` files (App.css, index.css)
-- Component file naming: PascalCase with `.jsx` extension (e.g., `App.jsx`)
-- Utility/helper files: camelCase with `.js` extension (e.g., `generateZip.js`)
-
-# Project Structure
-```
-/src
-  - App.jsx           # Main application component
-  - main.jsx          # React app entry point
-  - generateZip.js    # Utility for generating ZIP files
-  - templates/        # Configuration templates for different stacks
-  - assets/           # Static assets
-```
-
-# Development Workflow
-- Run dev server: `npm run dev`
-- Build for production: `npm run build`
-- Deploy to GitHub Pages: `npm run deploy`
-- Lint code: ESLint is configured but run via `eslint` command
-
-# Best Practices
+## Code style
+- Use functional React components with hooks
+- Use default exports for main component files (App.jsx follows this pattern)
+- ES6+ features: arrow functions, destructuring, template literals
+- Inline styles are acceptable for this project (currently used throughout)
 - Keep components simple and focused
-- Extract reusable logic into utility functions
-- Use template files in `src/templates/` for configuration generation
-- Maintain clean separation between UI components and utility logic
-- All generated files should be properly formatted and follow best practices for their respective technologies
+- Use clear, descriptive variable names
 
-# Dependencies Management
-- Use npm for package management
-- Lock versions in package-lock.json
-- Keep dependencies up to date but test thoroughly
-- Production dependencies: react, react-dom, file-saver, jszip
-- Development dependencies: vite, eslint, gh-pages, type definitions
+## Project structure
+- `/src` - React application source code
+  - `App.jsx` - Main application component
+  - `main.jsx` - React entry point
+  - `generateZip.js` - Core logic for creating ZIP files
+  - `/templates` - Template files for different tech stacks (imported as raw strings)
+  - `/assets` - Static assets like images
+- `/public` - Static files served directly
+- `/docs` - Additional documentation
+- Root HTML files (`index.html`, `contact.html`, etc.) - Static landing pages
+- `.github/workflows` - CI/CD configuration for GitHub Pages deployment
 
-# Deployment
-- The app is deployed to GitHub Pages
-- Custom domain configured via CNAME file
-- Build output goes to `dist/` directory (ignored in git)
-- Base path is "/" for custom domain (shipforge.dev)
+## Build and deployment
+- Development: `npm run dev` (starts Vite dev server)
+- Build: `npm run build` (outputs to `/dist`)
+- Deploy: Automatic via GitHub Actions on push to main branch
+- ESLint is configured but there are no tests currently
+
+## Linting
+- ESLint with React Hooks and React Refresh plugins
+- Config file: `eslint.config.js` (flat config format)
+- Unused variables are allowed if they start with uppercase or underscore
+- Run: `npx eslint .`
+
+## Testing
+- No testing framework is currently configured
+- When adding tests in the future, consider Jest + React Testing Library
+
+## Conventions
+- No TypeScript - this is a JavaScript-only project
+- Template files are imported as raw strings using Vite's `?raw` suffix
+- Keep the project lightweight and focused on its core purpose
+- Deployment target is GitHub Pages (static site)
+
+## Important constraints
+- This is a frontend-only application
+- No backend server or API
+- All template generation happens client-side using JSZip
+- Must work as a static site deployed to GitHub Pages
+- Domain: shipforge.dev
