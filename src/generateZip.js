@@ -9,9 +9,12 @@ import viteReadme from "./templates/vite-react/README.md?raw";
 
 // Express templates
 import expressEnv from "./templates/express/.env.example?raw";
+import expressGitignore from "./templates/express/.gitignore?raw";
 import expressDockerfile from "./templates/express/Dockerfile?raw";
 import expressCompose from "./templates/express/docker-compose.yml?raw";
 import expressReadme from "./templates/express/README.md?raw";
+import expressPackageJson from "./templates/express/package.json?raw";
+import expressAppJs from "./templates/express/app.js?raw";
 
 // Express Backend (PostgreSQL + Prisma) templates
 import backendGitignore from "./templates/express/backend/.gitignore?raw";
@@ -42,6 +45,7 @@ export async function generateZip({ vite, express }) {
     const expressFolder = zip.folder("express");
 
     expressFolder.file(".env.example", expressEnv);
+    expressFolder.file(".gitignore", expressGitignore);
     expressFolder.file("Dockerfile", expressDockerfile);
     expressFolder.file("docker-compose.yml", expressCompose);
     expressFolder.file("README.md", expressReadme);
@@ -80,7 +84,23 @@ export async function generateZip({ vite, express }) {
     utilsFolder.file("jwt.js", backendJwtUtil);
   }
 
-  if (!vite && !express) {
+  if (nextjs) {
+    const nextjsFolder = zip.folder("nextjs");
+
+    nextjsFolder.file(".env.example", nextjsEnv);
+    nextjsFolder.file("Dockerfile", nextjsDockerfile);
+    nextjsFolder.file("docker-compose.yml", nextjsCompose);
+    nextjsFolder.file("README.md", nextjsReadme);
+  }
+
+  if (githubRulesets) {
+    const githubFolder = zip.folder("github-rulesets");
+
+    githubFolder.file("branch-protection-ruleset.json", githubRulesetJson);
+    githubFolder.file("README.md", githubRulesetReadme);
+  }
+
+  if (!vite && !express && !nextjs && !githubRulesets) {
     alert("Please select at least one stack.");
     return;
   }
@@ -88,3 +108,4 @@ export async function generateZip({ vite, express }) {
   const blob = await zip.generateAsync({ type: "blob" });
   saveAs(blob, "config-generator.zip");
 }
+

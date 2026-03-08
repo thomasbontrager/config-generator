@@ -1,0 +1,55 @@
+services:
+  mongo:
+    image: mongo:6
+    container_name: shipforge_mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: shipforge_backend
+    restart: always
+    env_file: ./backend/.env
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./frontend
+    container_name: shipforge_frontend
+    restart: always
+    env_file: ./frontend/.env
+    depends_on:
+      - backend
+
+  letsencrypt:
+    # linuxserver/swag is the actively maintained successor to linuxserver/letsencrypt.
+    # It bundles Nginx, Certbot (Let's Encrypt / ZeroSSL), and fail2ban.
+    image: linuxserver/swag
+    container_name: shipforge_ssl
+    restart: always
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - URL=shipforge.dev
+      - SUBDOMAINS=api,www
+      - VALIDATION=http
+      # REQUIRED: replace with your real email address before deploying.
+      # Let's Encrypt uses this for certificate expiry notifications and account recovery.
+      - EMAIL=your-email@example.com
+    volumes:
+      - ./nginx/letsencrypt:/config
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  mongo_data:
