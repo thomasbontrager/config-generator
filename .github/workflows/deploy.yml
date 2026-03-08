@@ -1,17 +1,13 @@
-name: Deploy to GitHub Pages
+name: Shipforge Auto Deploy
 
 on:
   push:
     branches:
       - main
 
-permissions:
-  contents: write
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -19,17 +15,38 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '20.19'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      # 2️⃣ Set up Docker
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
 
-      - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
+      # 3️⃣ Deploy to server via SSH
+      - name: Deploy and Monitor
+        uses: appleboy/ssh-action@v0.1.9
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          cname: shipforge.dev
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_SSH_PORT }}
+          script: |
+            cd /home/${{ secrets.SERVER_USER }}/shipforge
+            git pull origin main
+            docker-compose up -d --build
+            docker exec -it shipforge_backend node scripts/create-admin.js || true
+            
+            # Wait for services to start
+            sleep 30
+            
+            # Health checks
+            if curl -f --max-time 10 https://shipforge.dev > /dev/null && curl -f --max-time 10 https://api.shipforge.dev > /dev/null; then
+              echo "Deployment successful - services are healthy"
+            else
+              echo "Deployment failed - rolling back to previous commit"
+              git reset --hard HEAD~1
+              docker-compose up -d --build
+              echo "Rollback complete"
+            fi
