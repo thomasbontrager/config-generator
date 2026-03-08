@@ -1,11 +1,8 @@
 import { Link } from "react-router-dom";
-import ParallaxBackground from "../components/ParallaxBackground";
 
 export default function Home() {
   return (
     <div className="min-h-screen flex items-center justify-center px-6">
-      <ParallaxBackground />
-
       <div className="max-w-6xl w-full grid md:grid-cols-2 gap-12 items-center">
         <div>
           <h1 className="text-5xl font-bold leading-tight">
