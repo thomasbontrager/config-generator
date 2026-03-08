@@ -14,8 +14,11 @@ export default function BillingSuccess() {
       }}
     >
       <h1>✅ Subscription Successful!</h1>
-      <p style={{ marginTop: 20, fontSize: 18 }}>
-        Your subscription has been activated. Webhook will finalize the setup.
+      <p style={{ marginTop: 20, fontSize: 18, color: "#4ade80" }}>
+        Your PayPal subscription has been approved.
+      </p>
+      <p style={{ marginTop: 10, fontSize: 14, color: "#999" }}>
+        You will receive a confirmation email shortly.
       </p>
       <a
         href="/"
@@ -26,6 +29,7 @@ export default function BillingSuccess() {
           color: "#fff",
           textDecoration: "none",
           borderRadius: 5,
+          fontSize: 16,
         }}
       >
         Go to Home

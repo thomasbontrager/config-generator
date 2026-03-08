@@ -14,8 +14,11 @@ export default function BillingCancel() {
       }}
     >
       <h1>❌ Subscription Cancelled</h1>
-      <p style={{ marginTop: 20, fontSize: 18 }}>
-        You cancelled the subscription process. No charges were made.
+      <p style={{ marginTop: 20, fontSize: 18, color: "#ff6b6b" }}>
+        You cancelled the subscription process.
+      </p>
+      <p style={{ marginTop: 10, fontSize: 14, color: "#999" }}>
+        No charges have been made.
       </p>
       <a
         href="/pricing"
@@ -26,6 +29,7 @@ export default function BillingCancel() {
           color: "#fff",
           textDecoration: "none",
           borderRadius: 5,
+          fontSize: 16,
         }}
       >
         Back to Pricing

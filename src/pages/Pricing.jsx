@@ -12,40 +12,41 @@ export default function Pricing() {
       }}
     >
       <h1>💰 Pricing</h1>
-      <p style={{ marginTop: 20 }}>
+      <p style={{ marginTop: 10, color: "#aaa" }}>
         Choose a subscription plan that suits you best!
       </p>
 
       <div
         style={{
           marginTop: 40,
+          maxWidth: 400,
           padding: 30,
           background: "#2d2d2d",
           borderRadius: 10,
-          maxWidth: 400,
+          border: "2px solid #4a9eff",
         }}
       >
-        <h2>Pro Plan</h2>
-        <p style={{ fontSize: 32, fontWeight: "bold", marginTop: 10 }}>
-          $9.99<span style={{ fontSize: 16, fontWeight: "normal" }}>/mo</span>
+        <h2 style={{ color: "#4a9eff", marginBottom: 10 }}>Pro Plan</h2>
+        <p style={{ fontSize: 32, fontWeight: "bold", marginBottom: 10 }}>
+          $9.99<span style={{ fontSize: 16, color: "#aaa" }}>/month</span>
         </p>
-        <ul style={{ marginTop: 20, lineHeight: 2 }}>
-          <li>✅ All features unlocked</li>
-          <li>✅ Priority support</li>
-          <li>✅ 7-day free trial</li>
+        <ul style={{ listStyle: "none", padding: 0, marginBottom: 30 }}>
+          <li style={{ marginBottom: 8 }}>✅ Unlimited config generation</li>
+          <li style={{ marginBottom: 8 }}>✅ Priority support</li>
+          <li style={{ marginBottom: 8 }}>✅ Advanced templates</li>
+          <li style={{ marginBottom: 8 }}>✅ 7-day free trial</li>
         </ul>
         <button
           onClick={startSubscription}
           style={{
-            marginTop: 30,
-            padding: "12px 24px",
-            fontSize: 16,
+            width: "100%",
+            padding: "12px 20px",
             background: "linear-gradient(135deg, #4a9eff, #2a7dd8)",
-            color: "#fff",
+            color: "white",
             border: "none",
             borderRadius: 5,
             cursor: "pointer",
-            width: "100%",
+            fontSize: 16,
             fontWeight: "bold",
           }}
         >
