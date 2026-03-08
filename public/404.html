@@ -8,8 +8,14 @@
     <script>
       // SPA fallback: redirect all routes to index.html for React Router to handle
       const path = location.pathname + location.search + location.hash;
-      // Only store if it's a valid relative path (starts with /)
-      if (path.startsWith('/') && !path.includes('://')) {
+      // Only store if it's a valid relative path (starts with /), not protocol-relative (//),
+      // and does not contain backslashes or a scheme delimiter.
+      if (
+        path.startsWith('/') &&
+        !path.startsWith('//') &&
+        !path.includes('://') &&
+        !path.includes('\\')
+      ) {
         sessionStorage.setItem('redirect', path);
       }
       location.replace('/');
