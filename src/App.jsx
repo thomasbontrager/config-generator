@@ -9,6 +9,8 @@ import "./App.css";
 function Home() {
   const [vite, setVite] = useState(false);
   const [express, setExpress] = useState(false);
+  const [nextjs, setNextjs] = useState(false);
+  const [githubRulesets, setGithubRulesets] = useState(false);
 
   return (
     <div
@@ -49,6 +51,28 @@ function AdminRoute() {
   return <Admin />;
 }
 
+      <div style={{ marginTop: 8 }}>
+        <label>
+          <input
+            type="checkbox"
+            checked={nextjs}
+            onChange={(e) => setNextjs(e.target.checked)}
+          />{" "}
+          Next.js
+        </label>
+      </div>
+
+      <div style={{ marginTop: 8 }}>
+        <label>
+          <input
+            type="checkbox"
+            checked={githubRulesets}
+            onChange={(e) => setGithubRulesets(e.target.checked)}
+          />{" "}
+          GitHub Branch Protection Rulesets
+        </label>
+      </div>
+
       <button
         style={{
           marginTop: 20,
@@ -56,8 +80,8 @@ function AdminRoute() {
           fontSize: 16,
           cursor: "pointer",
         }}
-        onClick={() => generateZip({ vite, express })}
-        disabled={!vite && !express}
+        onClick={() => generateZip({ vite, express, nextjs, githubRulesets })}
+        disabled={!vite && !express && !nextjs && !githubRulesets}
       >
         Generate ZIP
       </button>
