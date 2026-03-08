@@ -1,4 +1,40 @@
-# Config / Boilerplate Generator
+# Config Generator
+
+A React + Vite configuration generator for web development projects.
+
+## Features
+
+- React 19 with Vite for fast development
+- ESLint configuration
+- GitHub Pages deployment
+- Branch protection configured
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Deploy to GitHub Pages
+npm run deploy
+```
+
+## Branch Protection
+
+This repository has branch protection configured for the `main` branch to prevent:
+- Force pushes
+- Branch deletion
+- Direct commits without pull request review
+
+For more information, see [Branch Protection Documentation](docs/BRANCH_PROTECTION.md).
+
+## React + Vite Setup
 
 A production-ready Next.js 15 SaaS application for generating configuration files and boilerplates for various tech stacks.
 
