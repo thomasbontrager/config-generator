@@ -1,87 +1,141 @@
-# Config / Boilerplate Generator
+# ⚡ ShipForge Config Generator
 
-## What is this?
+A web-based tool that generates ready-to-use configuration files and boilerplate code for popular tech stacks. Select your stack, download a ZIP file, and start building immediately.
 
-A lightweight web application that generates configuration files and boilerplate code for popular tech stacks. Users select their desired technologies (Vite+React, Express, etc.) and instantly download a ZIP containing Dockerfiles, docker-compose configurations, environment templates, and setup instructions.
+🌐 **Live Demo:** [shipforge.dev](https://shipforge.dev)
 
-**Live at:** [shipforge.dev](https://shipforge.dev)
+## 🚀 Features
 
-## Who is this for?
+- **Zero Configuration Required** - Select your tech stack and get production-ready configs instantly
+- **Multiple Stack Support** - Generate configs for frontend and backend frameworks
+- **Docker Ready** - Includes Dockerfiles and docker-compose configurations
+- **Environment Templates** - Pre-configured `.env.example` files for each stack
+- **Download as ZIP** - Get all files in a convenient ZIP archive
 
-- Developers who want to quickly bootstrap new projects
-- Teams standardizing their tech stack setup
-- Anyone tired of copying config files between projects
-- Learners who want to see best-practice configurations
+## 🛠️ Supported Stacks
 
-## What "good" looks like
+### Frontend
+- **Vite + React** - Modern React development with Vite build tool
+  - Environment configuration (.env.example)
+  - Docker setup (Dockerfile, docker-compose.yml)
+  - README with setup instructions
 
-A successful implementation should:
-- Generate valid, working configurations that can be used immediately
-- Be fast and intuitive - select stacks, click generate, get files
-- Require zero backend infrastructure (fully client-side)
-- Work reliably as a static site on GitHub Pages
-- Be easily extensible to add new tech stacks
+### Backend
+- **Express.js** - Minimal Node.js web framework
+  - Environment configuration (.env.example)
+  - Docker setup (Dockerfile, docker-compose.yml)
+  - README with setup instructions
 
-## Key constraints
+## 📦 What You Get
 
-- **Frontend-only**: This is a static web app with no backend/API
-- **Client-side ZIP generation**: All file bundling happens in the browser using JSZip
-- **Template-based**: New stacks are added by creating template files in `/src/templates`
-- **GitHub Pages**: Must remain deployable as a static site
+When you select a stack and generate a ZIP, you'll receive:
 
-## Tech stack
+```
+config-generator.zip
+├── vite-react/              (if Vite + React selected)
+│   ├── .env.example
+│   ├── Dockerfile
+│   ├── docker-compose.yml
+│   └── README.md
+└── express/                 (if Express selected)
+    ├── .env.example
+    ├── Dockerfile
+    ├── docker-compose.yml
+    └── README.md
+```
 
-- **React 19** with functional components and hooks
-- **Vite 7** for fast development and optimized builds
-- **JSZip** for creating ZIP archives in the browser
-- **file-saver** for triggering downloads
-- **ESLint** for code quality
+## 🏃 Quick Start
 
-## Getting started
+### Using the Web App
+
+1. Visit [shipforge.dev](https://shipforge.dev)
+2. Select your desired tech stacks (Frontend and/or Backend)
+3. Click "Generate ZIP"
+4. Extract the downloaded ZIP file
+5. Follow the README in each folder to get started
+
+### Local Development
+
+Clone and run the generator locally:
 
 ```bash
+# Clone the repository
+git clone https://github.com/thomasbontrager/config-generator.git
+cd config-generator
+
 # Install dependencies
 npm install
 
 # Start development server
 npm run dev
+```
 
-# Build for production
+The app will be available at `http://localhost:5173`
+
+## 🔨 Development
+
+### Built With
+
+- **React** - UI framework
+- **Vite** - Build tool and dev server
+- **JSZip** - ZIP file generation
+- **FileSaver.js** - File download handling
+
+### Project Structure
+
+```
+config-generator/
+├── src/
+│   ├── App.jsx              # Main React component
+│   ├── generateZip.js       # ZIP generation logic
+│   └── templates/           # Template files for each stack
+│       ├── vite-react/
+│       └── express/
+├── public/                  # Static assets
+├── index.html               # Main HTML landing page
+├── dashboard.html           # Dashboard page
+├── todo.html                # Task management page
+└── package.json
+```
+
+### Available Scripts
+
+- `npm run dev` - Start development server with hot reload
+- `npm run build` - Build for production
+- `npm run deploy` - Deploy to GitHub Pages
+
+## 🚢 Deployment
+
+The project is configured to deploy to GitHub Pages automatically on push to the `main` branch.
+
+### Manual Deployment
+
+```bash
 npm run build
-
-# Deploy (requires gh-pages setup)
 npm run deploy
 ```
 
-## Project structure
+## 🌐 Additional Pages
 
-```
-├── src/
-│   ├── App.jsx              # Main application component
-│   ├── generateZip.js       # Core ZIP generation logic
-│   └── templates/           # Config templates for each stack
-├── index.html               # Main landing page
-├── contact.html             # Contact page
-├── pricing.html             # Pricing information
-└── .github/workflows/       # Automated deployment
-```
+- **Pricing** (`/pricing.html`) - Subscription plans
+- **Contact** (`/contact.html`) - Contact form
+- **Dashboard** (`/dashboard.html`) - User dashboard
+- **Todo** (`/todo.html`) - Task management
 
-## Adding a new tech stack
-
-1. Create a new folder in `src/templates/your-stack/`
-2. Add template files (Dockerfile, .env.example, README.md, etc.)
-3. Import templates in `src/generateZip.js` as raw strings
-4. Update the UI in `src/App.jsx` to include the new option
-5. Add corresponding logic in `generateZip()` function
-
-## Contributing
-
-Contributions are welcome! When adding new features:
-- Keep it simple and lightweight
-- Ensure templates are production-ready
-- Test that generated ZIPs work as expected
-- Follow existing code style and patterns
-
-## License
+## 📝 License
 
 This project is open source and available under the MIT License.
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/thomasbontrager/config-generator/issues).
+
+## 👤 Author
+
+**Thomas Bontrager**
+
+- GitHub: [@thomasbontrager](https://github.com/thomasbontrager)
+
+## ⭐ Show Your Support
+
+Give a ⭐️ if this project helped you!
