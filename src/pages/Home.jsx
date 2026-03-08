@@ -31,8 +31,11 @@ export default function Home() {
 
         <div className="rounded-xl p-6 border border-white/10" style={{ backgroundColor: '#121826' }}>
           <p className="text-sm mb-2" style={{ color: '#9ca3af' }}>Preview</p>
-          <div className="h-64 bg-black/40 rounded flex items-center justify-center" style={{ color: '#9ca3af' }}>
-            Generator Dashboard (Live Soon)
+          <div className="h-64 bg-black/40 rounded flex flex-col items-center justify-center gap-4" style={{ color: '#9ca3af' }}>
+            <span>Generator Dashboard</span>
+            <Link to="/generator" className="px-4 py-2 rounded text-sm font-medium hover:opacity-90" style={{ backgroundColor: '#3b82f6', color: 'white' }}>
+              Try Generator Now →
+            </Link>
           </div>
         </div>
       </div>
