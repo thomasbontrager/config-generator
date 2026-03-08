@@ -1,16 +1,125 @@
-# React + Vite
+# Config Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + Vite configuration generator for web development projects.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React 19 with Vite for fast development
+- ESLint configuration
+- GitHub Pages deployment
+- Branch protection configured
 
-## React Compiler
+## Development
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+# Install dependencies
+npm install
 
-## Expanding the ESLint configuration
+# Run development server
+npm run dev
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Build for production
+npm run build
+
+# Deploy to GitHub Pages
+npm run deploy
+```
+
+## Branch Protection
+
+This repository has branch protection configured for the `main` branch to prevent:
+- Force pushes
+- Branch deletion
+- Direct commits without pull request review
+
+For more information, see [Branch Protection Documentation](docs/BRANCH_PROTECTION.md).
+
+## React + Vite Setup
+
+A production-ready Next.js 15 SaaS application for generating configuration files and boilerplates for various tech stacks.
+
+## Features
+
+- 🚀 **Vite + React** - Production-ready frontend setup
+- 🔧 **Express** - Minimal backend API server
+- 📦 **Multiple output formats** - Web UI, CLI, or ZIP download
+- 🎯 **Docker ready** - All templates include Docker configurations
+- 📝 **Environment configs** - Pre-configured .env examples
+
+## Quick Start
+
+### Web UI
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Start the dev server:
+```bash
+npm run dev
+```
+
+3. Open your browser and select the configurations you want to generate.
+
+### CLI
+
+Generate configs directly from the command line:
+
+```bash
+# List available agents
+npm run cli -- --list
+
+# Generate specific agent configs
+npm run cli -- --agents=vite-react
+npm run cli -- --agents=express
+npm run cli -- --agents=vite-react,express
+
+# Generate to custom directory
+npm run cli -- --agents=vite-react,express --output=./my-configs
+
+# Generate ZIP file
+npm run cli -- --agents=vite-react,express --output=./config.zip --zip
+
+# Show help
+npm run cli -- --help
+```
+
+## Available Agents
+
+- **vite-react** - Production-ready Vite + React starter
+- **express** - Minimal production-ready Express server starter
+
+See [AGENTS.md](./AGENTS.md) for detailed documentation on each agent.
+
+## Project Structure
+
+```
+config-generator/
+├── src/
+│   ├── templates/          # Template files for each agent
+│   │   ├── vite-react/     # Vite + React templates
+│   │   └── express/        # Express templates
+│   ├── App.jsx             # Web UI
+│   └── generateZip.js      # ZIP generation logic
+├── cli.js                  # CLI interface
+├── AGENTS.md              # Agent documentation
+└── README.md              # This file
+```
+
+## Build for Production
+
+```bash
+npm run build
+```
+
+## Deploy
+
+```bash
+npm run deploy
+```
+
+## Adding New Agents
+
+See [AGENTS.md](./AGENTS.md) for instructions on adding new configuration agents.
+
