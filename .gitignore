@@ -18,6 +18,9 @@ output
 .env.secrets
 .env.local
 
+# Backend environment variables
+backend/.env
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
