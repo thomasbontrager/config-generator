@@ -1,16 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function ParallaxBackground() {
   const [pos, setPos] = useState({ x: 50, y: 50 });
+  const frameRef = useRef(null);
+  const latestPosRef = useRef({ x: 50, y: 50 });
 
   useEffect(() => {
     const move = (e) => {
       const x = (e.clientX / window.innerWidth) * 100;
       const y = (e.clientY / window.innerHeight) * 100;
-      setPos({ x, y });
+      latestPosRef.current = { x, y };
+
+      if (frameRef.current === null) {
+        frameRef.current = window.requestAnimationFrame(() => {
+          frameRef.current = null;
+          const { x: latestX, y: latestY } = latestPosRef.current;
+          setPos({ x: latestX, y: latestY });
+        });
+      }
     };
-    window.addEventListener("mousemove", move);
-    return () => window.removeEventListener("mousemove", move);
+
+    window.addEventListener("pointermove", move, { passive: true });
+
+   return () => {
+      if (frameRef.current !== null) {
+        window.cancelAnimationFrame(frameRef.current);
+        frameRef.current = null;
+      }
+      window.removeEventListener("pointermove", move, { passive: true });
+    };
   }, []);
 
   return (
