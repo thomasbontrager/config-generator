@@ -7,7 +7,11 @@
     <title>ShipForge - Ship production-ready stacks</title>
     <script>
       // SPA fallback: redirect all routes to index.html for React Router to handle
-      sessionStorage.setItem('redirect', location.pathname + location.search + location.hash);
+      const path = location.pathname + location.search + location.hash;
+      // Only store if it's a valid relative path (starts with /)
+      if (path.startsWith('/') && !path.includes('://')) {
+        sessionStorage.setItem('redirect', path);
+      }
       location.replace('/');
     </script>
   </head>
