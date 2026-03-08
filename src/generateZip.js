@@ -16,24 +16,20 @@ import expressReadme from "./templates/express/README.md?raw";
 import expressPackageJson from "./templates/express/package.json?raw";
 import expressAppJs from "./templates/express/app.js?raw";
 
-// Express PayPal integration files
-import expressPaypalUtil from "./templates/express/src/utils/paypal.js?raw";
-import expressBillingController from "./templates/express/src/controllers/billing.controller.js?raw";
-import expressBillingRoutes from "./templates/express/src/routes/billing.routes.js?raw";
-import expressWebhookRoutes from "./templates/express/src/routes/webhook.routes.js?raw";
-import expressAuthMiddleware from "./templates/express/src/middleware/auth.middleware.js?raw";
+// Express Backend (PostgreSQL + Prisma) templates
+import backendGitignore from "./templates/express/backend/.gitignore?raw";
+import backendEnv from "./templates/express/backend/.env.example?raw";
+import backendPackage from "./templates/express/backend/package.json?raw";
+import backendReadme from "./templates/express/backend/README.md?raw";
+import backendIndex from "./templates/express/backend/src/index.js?raw";
+import backendPrismaSchema from "./templates/express/backend/prisma/schema.prisma?raw";
+import backendPrismaUtil from "./templates/express/backend/src/utils/prisma.js?raw";
+import backendJwtUtil from "./templates/express/backend/src/utils/jwt.js?raw";
+import backendAuthController from "./templates/express/backend/src/controllers/auth.controller.js?raw";
+import backendAuthMiddleware from "./templates/express/backend/src/middleware/auth.middleware.js?raw";
+import backendAuthRoutes from "./templates/express/backend/src/routes/auth.routes.js?raw";
 
-// Next.js templates
-import nextjsEnv from "./templates/nextjs/.env.example?raw";
-import nextjsDockerfile from "./templates/nextjs/Dockerfile?raw";
-import nextjsCompose from "./templates/nextjs/docker-compose.yml?raw";
-import nextjsReadme from "./templates/nextjs/README.md?raw";
-
-// GitHub Rulesets templates
-import githubRulesetJson from "./templates/github-rulesets/branch-protection-ruleset.json?raw";
-import githubRulesetReadme from "./templates/github-rulesets/README.md?raw";
-
-export async function generateZip({ vite, express, nextjs, githubRulesets }) {
+export async function generateZip({ vite, express }) {
   const zip = new JSZip();
 
   if (vite) {
@@ -53,15 +49,39 @@ export async function generateZip({ vite, express, nextjs, githubRulesets }) {
     expressFolder.file("Dockerfile", expressDockerfile);
     expressFolder.file("docker-compose.yml", expressCompose);
     expressFolder.file("README.md", expressReadme);
-    expressFolder.file("package.json", expressPackageJson);
-    expressFolder.file("app.js", expressAppJs);
 
-    // PayPal integration files
-    expressFolder.file("src/utils/paypal.js", expressPaypalUtil);
-    expressFolder.file("src/controllers/billing.controller.js", expressBillingController);
-    expressFolder.file("src/routes/billing.routes.js", expressBillingRoutes);
-    expressFolder.file("src/routes/webhook.routes.js", expressWebhookRoutes);
-    expressFolder.file("src/middleware/auth.middleware.js", expressAuthMiddleware);
+    // Add backend subfolder with complete PostgreSQL + Prisma setup
+    const backendFolder = expressFolder.folder("backend");
+    
+    backendFolder.file(".gitignore", backendGitignore);
+    backendFolder.file(".env.example", backendEnv);
+    backendFolder.file("package.json", backendPackage);
+    backendFolder.file("README.md", backendReadme);
+    
+    // Prisma
+    const prismaFolder = backendFolder.folder("prisma");
+    prismaFolder.file("schema.prisma", backendPrismaSchema);
+    
+    // Source files
+    const srcFolder = backendFolder.folder("src");
+    srcFolder.file("index.js", backendIndex);
+    
+    // Controllers
+    const controllersFolder = srcFolder.folder("controllers");
+    controllersFolder.file("auth.controller.js", backendAuthController);
+    
+    // Middleware
+    const middlewareFolder = srcFolder.folder("middleware");
+    middlewareFolder.file("auth.middleware.js", backendAuthMiddleware);
+    
+    // Routes
+    const routesFolder = srcFolder.folder("routes");
+    routesFolder.file("auth.routes.js", backendAuthRoutes);
+    
+    // Utils
+    const utilsFolder = srcFolder.folder("utils");
+    utilsFolder.file("prisma.js", backendPrismaUtil);
+    utilsFolder.file("jwt.js", backendJwtUtil);
   }
 
   if (nextjs) {
