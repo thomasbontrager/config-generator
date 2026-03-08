@@ -9,9 +9,19 @@ import viteReadme from "./templates/vite-react/README.md?raw";
 
 // Express templates
 import expressEnv from "./templates/express/.env.example?raw";
+import expressGitignore from "./templates/express/.gitignore?raw";
 import expressDockerfile from "./templates/express/Dockerfile?raw";
 import expressCompose from "./templates/express/docker-compose.yml?raw";
 import expressReadme from "./templates/express/README.md?raw";
+import expressPackageJson from "./templates/express/package.json?raw";
+import expressAppJs from "./templates/express/app.js?raw";
+
+// Express PayPal integration files
+import expressPaypalUtil from "./templates/express/src/utils/paypal.js?raw";
+import expressBillingController from "./templates/express/src/controllers/billing.controller.js?raw";
+import expressBillingRoutes from "./templates/express/src/routes/billing.routes.js?raw";
+import expressWebhookRoutes from "./templates/express/src/routes/webhook.routes.js?raw";
+import expressAuthMiddleware from "./templates/express/src/middleware/auth.middleware.js?raw";
 
 // Next.js templates
 import nextjsEnv from "./templates/nextjs/.env.example?raw";
@@ -39,9 +49,19 @@ export async function generateZip({ vite, express, nextjs, githubRulesets }) {
     const expressFolder = zip.folder("express");
 
     expressFolder.file(".env.example", expressEnv);
+    expressFolder.file(".gitignore", expressGitignore);
     expressFolder.file("Dockerfile", expressDockerfile);
     expressFolder.file("docker-compose.yml", expressCompose);
     expressFolder.file("README.md", expressReadme);
+    expressFolder.file("package.json", expressPackageJson);
+    expressFolder.file("app.js", expressAppJs);
+
+    // PayPal integration files
+    expressFolder.file("src/utils/paypal.js", expressPaypalUtil);
+    expressFolder.file("src/controllers/billing.controller.js", expressBillingController);
+    expressFolder.file("src/routes/billing.routes.js", expressBillingRoutes);
+    expressFolder.file("src/routes/webhook.routes.js", expressWebhookRoutes);
+    expressFolder.file("src/middleware/auth.middleware.js", expressAuthMiddleware);
   }
 
   if (nextjs) {
@@ -68,3 +88,4 @@ export async function generateZip({ vite, express, nextjs, githubRulesets }) {
   const blob = await zip.generateAsync({ type: "blob" });
   saveAs(blob, "config-generator.zip");
 }
+
