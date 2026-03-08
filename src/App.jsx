@@ -9,6 +9,8 @@ import "./App.css";
 function Home() {
   const [vite, setVite] = useState(false);
   const [express, setExpress] = useState(false);
+  const [nextjs, setNextjs] = useState(false);
+  const [githubRulesets, setGithubRulesets] = useState(false);
 
   return (
     <div
@@ -34,14 +36,40 @@ function Home() {
         </label>
       </div>
 
+function AdminRoute() {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="loading-screen">Loading…</div>;
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role !== "ADMIN") {
+    return (
+      <div className="access-denied">
+        <h2>Access Denied</h2>
+        <p>You need admin privileges to view this page.</p>
+      </div>
+    );
+  }
+  return <Admin />;
+}
+
       <div style={{ marginTop: 8 }}>
         <label>
           <input
             type="checkbox"
-            checked={express}
-            onChange={(e) => setExpress(e.target.checked)}
+            checked={nextjs}
+            onChange={(e) => setNextjs(e.target.checked)}
           />{" "}
-          Express
+          Next.js
+        </label>
+      </div>
+
+      <div style={{ marginTop: 8 }}>
+        <label>
+          <input
+            type="checkbox"
+            checked={githubRulesets}
+            onChange={(e) => setGithubRulesets(e.target.checked)}
+          />{" "}
+          GitHub Branch Protection Rulesets
         </label>
       </div>
 
@@ -52,8 +80,8 @@ function Home() {
           fontSize: 16,
           cursor: "pointer",
         }}
-        onClick={() => generateZip({ vite, express })}
-        disabled={!vite && !express}
+        onClick={() => generateZip({ vite, express, nextjs, githubRulesets })}
+        disabled={!vite && !express && !nextjs && !githubRulesets}
       >
         Generate ZIP
       </button>
