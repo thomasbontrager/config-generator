@@ -11,7 +11,17 @@ function AppWithRedirect() {
     const redirect = sessionStorage.getItem('redirect');
     if (redirect) {
       sessionStorage.removeItem('redirect');
-      navigate(redirect);
+      // Validate redirect path before navigation
+      if (
+        redirect.startsWith('/') &&
+        !redirect.startsWith('//') &&
+        !redirect.includes('://') &&
+        !redirect.includes('\\')
+      ) {
+        navigate(redirect);
+      } else {
+        navigate('/');
+      }
     }
   }, [navigate]);
 
