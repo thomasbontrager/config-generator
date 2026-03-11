@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-
-const API_BASE = import.meta.env.VITE_API_URL || "";
+import { API_URL } from "../config/api";
 
 function getToken() {
   return localStorage.getItem("token");
@@ -34,7 +33,7 @@ export default function Admin() {
   }, []);
 
   async function apiFetch(path, options = {}) {
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(`${API_URL}${path}`, {
       ...options,
       headers: {
         Authorization: `Bearer ${getToken()}`,
