@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { startSubscription } from "../api/billing";
@@ -8,12 +9,19 @@ export default function Pricing() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  const [subscribeError, setSubscribeError] = useState("");
+
   async function handleSubscribe() {
     if (!user) {
       navigate("/signup");
       return;
     }
-    await startSubscription();
+    setSubscribeError("");
+    try {
+      await startSubscription();
+    } catch (err) {
+      setSubscribeError(err.message || "Failed to start subscription. Please try again.");
+    }
   }
 
   return (
@@ -170,6 +178,12 @@ export default function Pricing() {
           >
             {user ? "Start Free Trial" : "Sign up & Start Free Trial"}
           </button>
+
+          {subscribeError && (
+            <div className="alert alert-error" style={{ marginTop: 12 }}>
+              {subscribeError}
+            </div>
+          )}
 
           <p
             style={{

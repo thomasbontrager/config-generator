@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 /**
  * ShipforgeFollower – a neon "⚡ Shipforge" label that follows the cursor.
  *
- * Behaviour:
+ * Behavior:
  *  • Smoothly tracks the mouse with a slight lag for a "alive" feel.
  *  • Hides while the cursor is hovering any <button> or <a> element (so it
  *    doesn't overlap interactive controls) and fades back in on move-away.

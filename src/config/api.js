@@ -15,7 +15,15 @@ export async function apiFetch(path, options = {}) {
       ...options.headers,
     },
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Request failed");
+
+  // Only try to parse JSON when the response body is JSON to avoid
+  // crashing on HTML error pages (e.g. 502/503 from a proxy).
+  const contentType = res.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
+  const data = isJson ? await res.json() : null;
+
+  if (!res.ok) {
+    throw new Error((data && data.message) || `Request failed: ${res.status}`);
+  }
   return data;
 }
