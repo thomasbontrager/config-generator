@@ -17,6 +17,8 @@ const STAR_FADE_DURATION_MS = 500;
 function createStar(button) {
   const rect = button.getBoundingClientRect();
   const star = document.createElement("div");
+  star.setAttribute("aria-hidden", "true");
+  star.setAttribute("role", "presentation");
   star.className = "btn-star";
 
   const side = Math.floor(Math.random() * 4);
