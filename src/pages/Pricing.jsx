@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { startSubscription } from "../api/billing";
 
 export default function Pricing() {
@@ -54,8 +55,8 @@ export default function Pricing() {
         </button>
       </div>
 
-      <a
-        href="/"
+      <Link
+        to="/"
         style={{
           display: "inline-block",
           marginTop: 30,
@@ -64,7 +65,7 @@ export default function Pricing() {
         }}
       >
         ← Back to Home
-      </a>
+      </Link>
     </div>
   );
 }

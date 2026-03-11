@@ -26,6 +26,10 @@ export async function createSubscription(req, res) {
       return res.status(503).json({ message: "PayPal is not configured" });
     }
 
+    if (!process.env.PAYPAL_PLAN_ID) {
+      return res.status(503).json({ message: "PayPal plan ID is not configured" });
+    }
+
     const token = await getPayPalToken();
 
     const response = await fetch(
