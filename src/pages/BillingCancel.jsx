@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function BillingCancel() {
   return (
     <div
@@ -20,8 +22,8 @@ export default function BillingCancel() {
       <p style={{ marginTop: 10, fontSize: 14, color: "#999" }}>
         No charges have been made.
       </p>
-      <a
-        href="/pricing"
+      <Link
+        to="/pricing"
         style={{
           marginTop: 30,
           padding: "10px 20px",
@@ -33,7 +35,7 @@ export default function BillingCancel() {
         }}
       >
         Back to Pricing
-      </a>
+      </Link>
     </div>
   );
 }

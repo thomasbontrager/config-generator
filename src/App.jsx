@@ -7,6 +7,7 @@ import Admin from "./pages/Admin";
 import BillingSuccess from "./pages/BillingSuccess";
 import BillingCancel from "./pages/BillingCancel";
 import Pricing from "./pages/Pricing";
+import ShipforgeFollower from "./components/ShipforgeFollower";
 import "./App.css";
 
 function ProtectedRoute({ children, adminOnly = false }) {
@@ -21,6 +22,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <ShipforgeFollower />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
