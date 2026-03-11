@@ -1052,14 +1052,14 @@ tr:hover td {
   box-shadow:
     /* top edge */
     0px -10px 0 2px #6366f1,
-    calc(25%) -10px 0 1.5px #8b5cf6,
-    calc(75%) -10px 0 1.5px #06b6d4,
-    100% -10px 0 2px #6366f1,
+    32px -10px 0 1.5px #8b5cf6,
+    96px -10px 0 1.5px #06b6d4,
+    128px -10px 0 2px #6366f1,
     /* bottom edge */
     0px 10px 0 2px #8b5cf6,
-    calc(25%) 10px 0 1.5px #06b6d4,
-    calc(75%) 10px 0 1.5px #6366f1,
-    100% 10px 0 2px #8b5cf6;
+    32px 10px 0 1.5px #06b6d4,
+    96px 10px 0 1.5px #6366f1,
+    128px 10px 0 2px #8b5cf6;
   animation: none;
 }
 
