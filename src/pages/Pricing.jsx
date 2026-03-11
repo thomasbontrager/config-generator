@@ -1,70 +1,99 @@
+import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import { startSubscription } from "../api/billing";
 
 export default function Pricing() {
   return (
-    <div
-      style={{
-        padding: 32,
-        fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",
-        background: "#1e1e1e",
-        minHeight: "100vh",
-        color: "#fff",
-      }}
-    >
-      <h1>💰 Pricing</h1>
-      <p style={{ marginTop: 10, color: "#aaa" }}>
-        Choose a subscription plan that suits you best!
-      </p>
-
+    <>
+      <div className="grid-bg" />
+      <Navbar />
       <div
         style={{
-          marginTop: 40,
-          maxWidth: 400,
-          padding: 30,
-          background: "#2d2d2d",
-          borderRadius: 10,
-          border: "2px solid #4a9eff",
+          maxWidth: 560,
+          margin: "0 auto",
+          padding: "80px 24px",
+          textAlign: "center",
+          animation: "fadeInUp 0.6s ease both",
         }}
       >
-        <h2 style={{ color: "#4a9eff", marginBottom: 10 }}>Pro Plan</h2>
-        <p style={{ fontSize: 32, fontWeight: "bold", marginBottom: 10 }}>
-          $9.99<span style={{ fontSize: 16, color: "#aaa" }}>/month</span>
-        </p>
-        <ul style={{ listStyle: "none", padding: 0, marginBottom: 30 }}>
-          <li style={{ marginBottom: 8 }}>✅ Unlimited config generation</li>
-          <li style={{ marginBottom: 8 }}>✅ Priority support</li>
-          <li style={{ marginBottom: 8 }}>✅ Advanced templates</li>
-          <li style={{ marginBottom: 8 }}>✅ 7-day free trial</li>
-        </ul>
-        <button
-          onClick={startSubscription}
+        <span className="hero-badge">💰 Plans &amp; Pricing</span>
+        <h1
           style={{
-            width: "100%",
-            padding: "12px 20px",
-            background: "linear-gradient(135deg, #4a9eff, #2a7dd8)",
-            color: "white",
-            border: "none",
-            borderRadius: 5,
-            cursor: "pointer",
-            fontSize: 16,
-            fontWeight: "bold",
+            fontSize: "clamp(2rem, 5vw, 3rem)",
+            fontWeight: 900,
+            marginBottom: 14,
+            letterSpacing: "-0.03em",
           }}
         >
-          Start Free Trial
-        </button>
-      </div>
+          Simple,{" "}
+          <span className="gradient-text">transparent</span> pricing
+        </h1>
+        <p style={{ color: "var(--text-secondary)", fontSize: 16, marginBottom: 52 }}>
+          One plan. Everything included. No surprises.
+        </p>
 
-      <a
-        href="/"
-        style={{
-          display: "inline-block",
-          marginTop: 30,
-          color: "#4a9eff",
-          textDecoration: "none",
-        }}
-      >
-        ← Back to Home
-      </a>
-    </div>
+        <div
+          className="glass-card pricing-cta-card"
+          style={{ padding: "44px 40px", position: "relative", overflow: "hidden" }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "var(--gradient-glow)",
+              opacity: 0.06,
+              pointerEvents: "none",
+            }}
+          />
+          <div className="pricing-cta-badge">Most Popular</div>
+          <h2
+            style={{
+              fontSize: "1.6rem",
+              fontWeight: 800,
+              marginBottom: 12,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Pro Plan
+          </h2>
+          <div className="pricing-cta-price">
+            <span className="pricing-cta-amount">$9.99</span>
+            <span className="pricing-cta-period">/month</span>
+          </div>
+          <p className="pricing-cta-desc" style={{ marginTop: 8, marginBottom: 28 }}>
+            Everything you need to ship faster, forever.
+          </p>
+          <ul className="pricing-cta-features">
+            {[
+              "Unlimited config generation",
+              "All stacks: Vite, Express, Next.js &amp; more",
+              "Priority support",
+              "Advanced templates",
+              "14-day free trial",
+              "Cancel anytime",
+            ].map((f) => (
+              <li key={f} className="pricing-cta-feature">
+                <span className="pricing-cta-check">✓</span>
+                <span dangerouslySetInnerHTML={{ __html: f }} />
+              </li>
+            ))}
+          </ul>
+          <button
+            className="btn btn-primary btn-lg pricing-cta-btn generator-btn"
+            onClick={startSubscription}
+          >
+            Start Free Trial →
+          </button>
+          <p className="pricing-cta-note">No credit card required · Cancel anytime</p>
+        </div>
+
+        <div style={{ marginTop: 40 }}>
+          <Link to="/" className="btn btn-ghost">
+            ← Back to Home
+          </Link>
+        </div>
+      </div>
+    </>
   );
 }
+
