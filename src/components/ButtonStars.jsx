@@ -104,21 +104,43 @@ export default function ButtonStars() {
 
     const attached = new WeakSet();
 
-    function attachToButtons() {
-      document
-        .querySelectorAll("button, a, [role='button']")
-        .forEach((btn) => {
-          if (!attached.has(btn)) {
-            attached.add(btn);
-            btn.addEventListener("mouseenter", onEnter);
-            btn.addEventListener("mouseleave", onLeave);
-          }
-        });
+    function attachToButton(btn) {
+      if (!btn || attached.has(btn)) return;
+      attached.add(btn);
+      btn.addEventListener("mouseenter", onEnter);
+      btn.addEventListener("mouseleave", onLeave);
     }
 
-    attachToButtons();
+    function attachToButtonsInRoot(root) {
+      if (!root) return;
 
-    const observer = new MutationObserver(attachToButtons);
+      const isElement = root instanceof Element;
+      const selector = "button, a, [role='button']";
+
+      if (isElement && root.matches(selector)) {
+        attachToButton(root);
+      }
+
+      const scope = isElement || root instanceof Document ? root : document;
+      if (scope && typeof scope.querySelectorAll === "function") {
+        scope.querySelectorAll(selector).forEach((btn) => {
+          attachToButton(btn);
+        });
+      }
+    }
+
+    // Initial attachment for all existing buttons on the page.
+    attachToButtonsInRoot(document);
+
+    const observer = new MutationObserver((mutationsList) => {
+      mutationsList.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof Element) {
+            attachToButtonsInRoot(node);
+          }
+        });
+      });
+    });
     observer.observe(document.body, { childList: true, subtree: true });
 
     return () => {
