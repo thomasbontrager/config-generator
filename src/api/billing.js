@@ -7,7 +7,7 @@ export async function startSubscription() {
       return;
     }
 
-    const res = await fetch("http://localhost:5000/api/billing/subscribe", {
+    const res = await fetch("/api/billing/subscribe", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

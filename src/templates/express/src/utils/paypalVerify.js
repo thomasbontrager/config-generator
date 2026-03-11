@@ -1,5 +1,3 @@
-import fetch from "node-fetch";
-
 export async function verifyPayPalWebhook(headers, body) {
   try {
     const tokenRes = await fetch(
