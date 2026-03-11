@@ -45,6 +45,9 @@
   /* Shadows */
   --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.15);
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+
+  /* v4 Animation timings */
+  --grid-drift-duration: 18s;
 }
 
 html {
@@ -177,6 +180,11 @@ body {
   padding: 14px 28px;
   font-size: 16px;
   border-radius: var(--radius-lg);
+}
+
+.btn-sm {
+  padding: 7px 16px;
+  font-size: 13px;
 }
 
 /* ── Form inputs ── */
@@ -970,6 +978,257 @@ tr:hover td {
   .site-footer__inner {
     flex-direction: column;
     text-align: center;
+  }
+}
+
+/* ==============================================
+   ⚡ Shipforge v4 — Viral Neon Effects
+   ============================================== */
+
+/* ── Animated grid background (v4: slow drift) ── */
+@keyframes grid-drift {
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: 60px 60px, 60px 60px; }
+}
+
+.grid-bg {
+  animation: grid-drift var(--grid-drift-duration) linear infinite;
+}
+
+/* ── v4 Hero glow blob ── */
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 480px;
+  background: radial-gradient(ellipse, rgba(99,102,241,0.18) 0%, rgba(139,92,246,0.1) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+  animation: hero-blob 6s ease-in-out infinite alternate;
+}
+
+.hero-section {
+  position: relative;
+}
+
+@keyframes hero-blob {
+  0%   { opacity: 0.7; transform: translateX(-50%) scale(1); }
+  100% { opacity: 1;   transform: translateX(-50%) scale(1.12); }
+}
+
+/* ── v4 Hero title animated gradient ── */
+.hero-title .gradient-text {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4, #f59e0b, #6366f1);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: title-shine 4s linear infinite;
+}
+
+@keyframes title-shine {
+  0%   { background-position: 0% center; }
+  100% { background-position: 300% center; }
+}
+
+/* ── v4 Primary button — shimmer sweep ── */
+.btn-primary {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  background-size: 200% auto;
+  transition: background-position 0.4s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-position: right center;
+}
+
+/* ── v4 Generator panel glow border ── */
+.generator-panel {
+  border: 1px solid rgba(99,102,241,0.18);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.generator-panel:hover {
+  border-color: rgba(99,102,241,0.35);
+  box-shadow: 0 0 50px rgba(99,102,241,0.12), 0 8px 40px rgba(0,0,0,0.5);
+}
+
+/* ── v4 Feature cards — bottom neon bar on hover ── */
+.feature-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 80%;
+  height: 2px;
+  background: var(--gradient);
+  opacity: 0;
+  border-radius: 2px;
+  transition: opacity 0.3s ease;
+}
+
+.feature-card:hover::after {
+  opacity: 1;
+}
+
+/* ── v4 Selected stack card pulse ── */
+@keyframes card-selected-pulse {
+  0%, 100% { box-shadow: 0 0 24px rgba(99,102,241,0.2); }
+  50%       { box-shadow: 0 0 38px rgba(99,102,241,0.4), 0 0 60px rgba(139,92,246,0.2); }
+}
+
+.stack-card--selected {
+  animation: card-selected-pulse 2.5s ease-in-out infinite;
+}
+
+/* ── v4 Navbar — subtle top-glow line ── */
+.navbar {
+  box-shadow: 0 1px 0 rgba(99,102,241,0.15), 0 4px 24px rgba(0,0,0,0.3);
+}
+
+/* ── v4 Footer gradient brand ── */
+.site-footer__brand {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: title-shine 4s linear infinite;
+}
+
+/* ==============================================
+   ⚡ SHIPFORGE CURSOR — Viral neon mouse follower
+   ============================================== */
+
+.sf-cursor {
+  position: fixed;
+  z-index: 99998;
+  pointer-events: none;
+  /* rAF sets left/top directly — keep transform only for centering */
+  transform: translate(-50%, -58%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px 7px 10px;
+  border-radius: 40px;
+  background: rgba(8, 8, 18, 0.88);
+  border: 1px solid rgba(99, 102, 241, 0.55);
+  backdrop-filter: blur(10px);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fff;
+  /* Hidden by default */
+  opacity: 0;
+  scale: 0.5;
+  transition:
+    opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    scale  0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow:
+    0 0 10px rgba(99,102,241,0.7),
+    0 0 25px rgba(139,92,246,0.5),
+    0 0 55px rgba(6,182,212,0.25),
+    inset 0 0 10px rgba(99,102,241,0.08);
+  will-change: left, top, opacity, scale;
+  animation: sf-pulse 2.5s ease-in-out infinite;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.sf-cursor--show {
+  opacity: 1;
+  scale: 1;
+}
+
+.sf-cursor__bolt {
+  font-size: 16px;
+  display: inline-block;
+  animation: sf-bolt 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px #facc15);
+}
+
+.sf-cursor__text {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 300% auto;
+  animation: sf-shine 2.5s linear infinite;
+}
+
+@keyframes sf-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 10px rgba(99,102,241,0.7),
+      0 0 25px rgba(139,92,246,0.5),
+      0 0 55px rgba(6,182,212,0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 18px rgba(99,102,241,1),
+      0 0 45px rgba(139,92,246,0.75),
+      0 0 90px rgba(6,182,212,0.45);
+  }
+}
+
+@keyframes sf-bolt {
+  0%, 100% { transform: scale(1) rotate(-5deg); filter: drop-shadow(0 0 4px #facc15); }
+  50%       { transform: scale(1.35) rotate(5deg); filter: drop-shadow(0 0 10px #facc15) drop-shadow(0 0 20px #f59e0b); }
+}
+
+@keyframes sf-shine {
+  0%   { background-position: 0% center; }
+  100% { background-position: 300% center; }
+}
+
+/* ==============================================
+   ★ BUTTON SPARKLE STARS — Viral neon edge stars
+   ============================================== */
+
+.btn-stars-wrap {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99997;
+}
+
+.btn-sparkle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 99997;
+  user-select: none;
+  will-change: transform, opacity;
+}
+
+@keyframes btn-sparkle-anim {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1.4) rotate(25deg);
+  }
+  55% {
+    opacity: 0.85;
+    transform: scale(1.0) rotate(-15deg) translateY(-5px);
+  }
+  80% {
+    opacity: 0.45;
+    transform: scale(0.75) rotate(35deg) translateY(-10px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.1) rotate(70deg) translateY(-18px);
   }
 }
 

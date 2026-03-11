@@ -29,7 +29,7 @@ import backendAuthController from "./templates/express/backend/src/controllers/a
 import backendAuthMiddleware from "./templates/express/backend/src/middleware/auth.middleware.js?raw";
 import backendAuthRoutes from "./templates/express/backend/src/routes/auth.routes.js?raw";
 
-export async function generateZip({ vite, express }) {
+export async function generateZip({ vite, express, nextjs, githubRulesets }) {
   const zip = new JSZip();
 
   if (vite) {
