@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function BillingSuccess() {
   return (
     <div
@@ -20,8 +22,8 @@ export default function BillingSuccess() {
       <p style={{ marginTop: 10, fontSize: 14, color: "#999" }}>
         You will receive a confirmation email shortly.
       </p>
-      <a
-        href="/"
+      <Link
+        to="/"
         style={{
           marginTop: 30,
           padding: "10px 20px",
@@ -33,7 +35,7 @@ export default function BillingSuccess() {
         }}
       >
         Go to Home
-      </a>
+      </Link>
     </div>
   );
 }
