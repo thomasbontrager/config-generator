@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+
+  shipforge-core:
+    image: python:3.11-slim
+    container_name: shipforge-core
+    command: python -m http.server 5000
+    ports:
+      - "5000:5000"
+
+  shipforge-dashboard:
+    image: node:18
+    container_name: shipforge-dashboard
+    working_dir: /app
+    command: npx serve
+    ports:
+      - "8080:3000"
