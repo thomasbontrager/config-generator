@@ -83,7 +83,6 @@ export default function ShipforgeCursor() {
         clearTimeout(revealTimer.current);
         revealTimer.current = setTimeout(() => {
           stateRef.current.active = true;
-          stateRef.current.onInteractive = false;
           syncShow();
         }, REVEAL_DELAY_MS);
       }
