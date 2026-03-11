@@ -1,3 +1,5 @@
+import prisma from "../utils/prisma.js";
+
 async function getPayPalToken() {
   const credentials = Buffer.from(
     `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`
@@ -24,6 +26,10 @@ export async function createSubscription(req, res) {
   try {
     if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) {
       return res.status(503).json({ message: "PayPal is not configured" });
+    }
+
+    if (!process.env.PAYPAL_PLAN_ID) {
+      return res.status(503).json({ message: "PayPal plan is not configured" });
     }
 
     const token = await getPayPalToken();
@@ -60,6 +66,14 @@ export async function createSubscription(req, res) {
       return res.status(response.status).json({
         message: "Failed to create PayPal subscription",
         details: data,
+      });
+    }
+
+    // Store the pending subscription ID on the user so the webhook can link it
+    if (data.id && req.user?.id) {
+      await prisma.user.update({
+        where: { id: req.user.id },
+        data: { paypalSubscriptionId: data.id },
       });
     }
 

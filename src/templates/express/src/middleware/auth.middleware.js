@@ -1,9 +1,20 @@
-// TODO: Implement authentication middleware
-// This is a placeholder for the requireAuth middleware
+import jwt from "jsonwebtoken";
+
 export function requireAuth(req, res, next) {
-  // Add your authentication logic here
-  // Example: check JWT token, session, etc.
-  
-  // For now, just pass through
-  next();
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  const token = authHeader.substring(7);
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    console.warn("JWT verification failed:", error.message);
+    return res.status(401).json({ message: "Invalid token" });
+  }
 }
