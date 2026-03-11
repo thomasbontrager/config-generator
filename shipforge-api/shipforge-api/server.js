@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
 import authRoutes from "./routes/auth.js";
 import billingRoutes from "./routes/billing.js";
 import adminRoutes from "./routes/admin.js";
@@ -24,6 +25,25 @@ app.use(
   })
 );
 
+// ── Rate limiting ────────────────────────────────────────────────────────────
+// Auth endpoints — strict limit to prevent brute-force attacks
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many requests, please try again later." },
+});
+
+// Billing/admin endpoints — moderate limit
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many requests, please try again later." },
+});
+
 // Raw body needed for Stripe webhook — must come before express.json()
 app.use("/api/billing/stripe/webhook", express.raw({ type: "application/json" }));
 
@@ -35,9 +55,9 @@ app.get("/health", (_req, res) => {
 });
 
 // ── API routes ───────────────────────────────────────────────────────────────
-app.use("/api/auth", authRoutes);
-app.use("/api/billing", billingRoutes);
-app.use("/api/admin", adminRoutes);
+app.use("/api/auth", authLimiter, authRoutes);
+app.use("/api/billing", apiLimiter, billingRoutes);
+app.use("/api/admin", apiLimiter, adminRoutes);
 
 // ── 404 catch-all ────────────────────────────────────────────────────────────
 app.use((_req, res) => {

@@ -152,7 +152,7 @@ router.post("/stripe/webhook", express.raw({ type: "application/json" }), async 
       case "customer.subscription.updated": {
         const sub = event.data.object;
         const user = await prisma.user.findFirst({
-          where: { subscriptionId: sub.customer },
+          where: { subscriptionId: sub.id },
         });
         if (user) {
           await prisma.user.update({
@@ -168,7 +168,7 @@ router.post("/stripe/webhook", express.raw({ type: "application/json" }), async 
       case "customer.subscription.deleted": {
         const sub = event.data.object;
         await prisma.user.updateMany({
-          where: { subscriptionId: sub.customer },
+          where: { subscriptionId: sub.id },
           data: { subscriptionStatus: "CANCELED" },
         });
         break;
@@ -176,7 +176,7 @@ router.post("/stripe/webhook", express.raw({ type: "application/json" }), async 
       case "invoice.payment_succeeded": {
         const invoice = event.data.object;
         const user = await prisma.user.findFirst({
-          where: { subscriptionId: invoice.customer },
+          where: { subscriptionId: invoice.subscription },
         });
         if (user) {
           await prisma.user.update({

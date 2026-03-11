@@ -61,7 +61,7 @@ router.get("/metrics", requireAuth, requireAdmin, async (_req, res) => {
 // POST /api/admin/subscription — manually set a user's subscription
 router.post("/subscription", requireAuth, requireAdmin, async (req, res) => {
   const { userId, subscription } = req.body;
-  const allowed = ["FREE", "TRIAL", "ACTIVE", "CANCELLED"];
+  const allowed = ["FREE", "TRIAL", "ACTIVE", "CANCELED"];
   if (!userId || !allowed.includes(subscription)) {
     return res.status(400).json({ message: "Invalid userId or subscription value" });
   }
