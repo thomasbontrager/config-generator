@@ -1,3 +1,5 @@
+const API_BASE = import.meta.env.VITE_API_URL || "";
+
 export async function startSubscription() {
   try {
     const token = localStorage.getItem("token");
@@ -7,7 +9,7 @@ export async function startSubscription() {
       return;
     }
 
-    const res = await fetch("http://localhost:5000/api/billing/subscribe", {
+    const res = await fetch(`${API_BASE}/api/billing/subscribe`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

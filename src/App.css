@@ -973,3 +973,281 @@ tr:hover td {
   }
 }
 
+/* ============================================================
+   Shipforge v4 — Viral Mouse Follower & Button Star Effects
+   ============================================================ */
+
+/* ── Follower element ── */
+.sf-follower {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 100px;
+  background: rgba(10, 10, 20, 0.65);
+  border: 1px solid rgba(99, 102, 241, 0.5);
+  box-shadow:
+    0 0 14px rgba(99, 102, 241, 0.55),
+    0 0 32px rgba(139, 92, 246, 0.3),
+    inset 0 0 12px rgba(99, 102, 241, 0.08);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: #fff;
+  user-select: none;
+  will-change: transform;
+  transition: opacity 0.25s ease, box-shadow 0.25s ease;
+  animation: sf-pulse 2.4s ease-in-out infinite;
+  /* offset so the cursor sits just past the logo */
+  margin-left: 16px;
+  margin-top: -8px;
+}
+
+.sf-follower--hidden {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.sf-follower__bolt {
+  font-size: 15px;
+  animation: sf-bolt 1.2s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 6px #6366f1);
+}
+
+.sf-follower__text {
+  background: linear-gradient(90deg, #a5b4fc, #c4b5fd, #67e8f9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 100%;
+  animation: sf-shimmer 2s linear infinite;
+}
+
+.sf-follower__glow {
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at center, rgba(99,102,241,0.25), transparent 70%);
+  pointer-events: none;
+  animation: sf-glow-spin 3s linear infinite;
+}
+
+@keyframes sf-pulse {
+  0%, 100% { box-shadow: 0 0 14px rgba(99,102,241,0.55), 0 0 32px rgba(139,92,246,0.3); }
+  50%       { box-shadow: 0 0 22px rgba(99,102,241,0.85), 0 0 48px rgba(139,92,246,0.55), 0 0 70px rgba(6,182,212,0.2); }
+}
+
+@keyframes sf-bolt {
+  from { transform: scale(1) rotate(-5deg); filter: drop-shadow(0 0 4px #6366f1); }
+  to   { transform: scale(1.25) rotate(5deg); filter: drop-shadow(0 0 10px #a5b4fc) drop-shadow(0 0 18px #8b5cf6); }
+}
+
+@keyframes sf-shimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes sf-glow-spin {
+  from { transform: rotate(0deg) scale(1); }
+  to   { transform: rotate(360deg) scale(1.1); }
+}
+
+/* ── Stars container ── */
+.sf-stars-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  overflow: visible;
+}
+
+/* ── Individual star ── */
+.sf-star {
+  position: fixed;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: sf-star-burst 0.8s ease-out forwards;
+  text-shadow: 0 0 8px currentColor, 0 0 16px currentColor;
+}
+
+@keyframes sf-star-burst {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0) rotate(0deg); }
+  30%  { opacity: 1; transform: translate(-50%, -50%) scale(1.4) rotate(60deg); }
+  70%  { opacity: 0.9; transform: translate(-50%, -50%) scale(1) rotate(120deg); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5) rotate(200deg); }
+}
+
+/* ── v4 Enhanced button glow on hover ── */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    transparent 0deg,
+    rgba(99, 102, 241, 0.6) 60deg,
+    transparent 120deg,
+    rgba(139, 92, 246, 0.5) 180deg,
+    transparent 240deg,
+    rgba(6, 182, 212, 0.5) 300deg,
+    transparent 360deg
+  );
+  animation: sf-border-spin 2.5s linear infinite;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.btn-primary:hover::after {
+  opacity: 1;
+}
+
+@keyframes sf-border-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── v4 enhanced grid background ── */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(99, 102, 241, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.06) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  animation: sf-grid-drift 20s ease-in-out infinite alternate;
+}
+
+@keyframes sf-grid-drift {
+  from { background-position: 0 0; }
+  to   { background-position: 30px 30px; }
+}
+
+/* ── v4 Neon navbar brand ── */
+.navbar-brand {
+  filter: drop-shadow(0 0 8px rgba(99,102,241,0.4));
+  transition: filter 0.2s ease;
+}
+
+.navbar-brand:hover {
+  filter: drop-shadow(0 0 16px rgba(99,102,241,0.8)) drop-shadow(0 0 32px rgba(139,92,246,0.5));
+}
+
+/* ── v4 Hero title enhanced ── */
+.hero-title .gradient-text {
+  text-shadow: 0 0 40px rgba(99,102,241,0.3);
+}
+
+/* ── v4 glass-card enhanced ── */
+.glass-card {
+  position: relative;
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at 30% 0%, rgba(99,102,241,0.06), transparent 60%);
+  pointer-events: none;
+}
+
+/* ── v4 Feature card icon glow ── */
+.feature-card__icon {
+  filter: drop-shadow(0 0 8px rgba(99,102,241,0.35));
+}
+
+/* ── v4 Stack card selected glow ── */
+.stack-card--selected {
+  box-shadow: 0 0 24px rgba(99,102,241,0.25), inset 0 0 20px rgba(99,102,241,0.05);
+}
+
+/* ── v4 Pricing CTA neon border ── */
+.pricing-cta-card {
+  box-shadow: 0 0 60px rgba(99,102,241,0.12), var(--shadow-card);
+}
+
+/* ── v4 Animated aurora background (global) ── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse 800px 600px at 20% 10%, rgba(99,102,241,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 600px 500px at 80% 80%, rgba(139,92,246,0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 400px at 50% 50%, rgba(6,182,212,0.03) 0%, transparent 70%);
+  animation: sf-aurora 8s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes sf-aurora {
+  0%   { opacity: 0.6; transform: scale(1) translateY(0px); }
+  100% { opacity: 1;   transform: scale(1.05) translateY(-20px); }
+}
+
+/* ── v4 Input focus neon ring ── */
+.input:focus {
+  border-color: var(--accent-1);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.18), 0 0 16px rgba(99,102,241,0.12);
+}
+
+/* ── v4 Hero badge neon pulse ── */
+.hero-badge {
+  animation: sf-badge-glow 3s ease-in-out infinite;
+}
+
+@keyframes sf-badge-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(99,102,241,0.2); }
+  50%       { box-shadow: 0 0 20px rgba(99,102,241,0.5), 0 0 40px rgba(99,102,241,0.2); }
+}
+
+/* ── v4 Generator button mega glow ── */
+.generator-btn {
+  box-shadow:
+    0 0 30px rgba(99,102,241,0.45),
+    0 0 60px rgba(99,102,241,0.2);
+}
+
+.generator-btn:hover:not(:disabled) {
+  box-shadow:
+    0 0 50px rgba(99,102,241,0.7),
+    0 0 90px rgba(99,102,241,0.35),
+    0 0 130px rgba(139,92,246,0.2);
+  transform: translateY(-2px) scale(1.01);
+}
+
+/* ── v4 Scrollbar styling ── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(99,102,241,0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99,102,241,0.55);
+}
+
+/* ── v4 Selection highlight ── */
+::selection {
+  background: rgba(99,102,241,0.35);
+  color: #fff;
+}
+
