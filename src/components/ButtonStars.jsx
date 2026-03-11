@@ -89,7 +89,13 @@ export default function ButtonStars() {
 
       // Spawn a burst immediately then keep spawning
       for (let i = 0; i < INITIAL_STAR_BURST; i++) spawnStar(btn, container);
-      const id = setInterval(() => spawnStar(btn, container), STAR_SPAWN_INTERVAL);
+      const id = setInterval(() => {
+        if (!btn.isConnected) {
+          stopStars(btn);
+          return;
+        }
+        spawnStar(btn, container);
+      }, STAR_SPAWN_INTERVAL);
       timers.set(btn, id);
     }
 
