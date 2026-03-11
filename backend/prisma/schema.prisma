@@ -15,6 +15,7 @@ model User {
   subscription String   @default("FREE")
   stripeCustomerId String?
   stripeSubscriptionId String?
+  paypalSubscriptionId String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

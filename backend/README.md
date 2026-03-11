@@ -1,55 +1,78 @@
 # Shipforge Backend API
 
-Production-ready Node + Express + JWT authentication backend.
+Production-ready Node + Express + JWT authentication backend with PayPal subscription billing.
 
 ## Features
 
 - ✅ Express API with JWT authentication
 - ✅ Secure password hashing with bcrypt
-- ✅ Role-based access control (user, admin)
-- ✅ Ready for PayPal subscriptions
+- ✅ Role-based access control (USER, ADMIN)
+- ✅ SQLite (dev) / PostgreSQL (production) via Prisma ORM
+- ✅ PayPal subscription billing
+- ✅ PayPal webhook signature verification
 - ✅ CORS enabled for frontend integration
 - ✅ Health check endpoint
 
-## Installation
+## Quick Start
+
+### 1. Install dependencies
 
 ```bash
 cd backend
 npm install
 ```
 
-## Configuration
+### 2. Configure environment
 
-Create a `.env` file in the backend directory:
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and set at minimum:
 
 ```env
+DATABASE_URL="file:./dev.db"
+JWT_SECRET=your-super-secret-key-at-least-32-chars
 PORT=5000
-JWT_SECRET=super-secret-change-this
 ```
 
-**Important:** Change the `JWT_SECRET` to a secure random string in production.
+### 3. Set up the database
 
-## Running the Server
-
-### Development mode (with auto-reload):
 ```bash
+npx prisma migrate dev --name init
+```
+
+### 4. (Optional) Create an admin user
+
+```bash
+# Set ADMIN_EMAIL and ADMIN_PASS in .env first
+node scripts/create-admin.js
+```
+
+### 5. Run the server
+
+```bash
+# Development (auto-reload):
 npm run dev
-```
 
-### Production mode:
-```bash
+# Production:
 npm start
 ```
 
-The server will start on `http://localhost:5000`
+The server runs on `http://localhost:5000`.
+
+---
 
 ## API Endpoints
 
 ### Health Check
+
 ```
 GET /api/health
 ```
 Returns: `{ "status": "ok" }`
+
+---
 
 ### Authentication
 
@@ -58,10 +81,7 @@ Returns: `{ "status": "ok" }`
 POST /api/auth/signup
 Content-Type: application/json
 
-{
-  "email": "user@example.com",
-  "password": "yourpassword"
-}
+{ "email": "user@example.com", "password": "minlength8" }
 ```
 Returns: `{ "token": "jwt-token-here" }`
 
@@ -70,10 +90,7 @@ Returns: `{ "token": "jwt-token-here" }`
 POST /api/auth/login
 Content-Type: application/json
 
-{
-  "email": "user@example.com",
-  "password": "yourpassword"
-}
+{ "email": "user@example.com", "password": "yourpassword" }
 ```
 Returns: `{ "token": "jwt-token-here" }`
 
@@ -82,105 +99,128 @@ Returns: `{ "token": "jwt-token-here" }`
 GET /api/auth/me
 Authorization: Bearer <your-jwt-token>
 ```
-Returns: `{ "user": { "id": 1, "role": "user", "iat": ..., "exp": ... } }`
+Returns: `{ "user": { "id": "...", "email": "...", "role": "USER", "subscription": "TRIAL", "createdAt": "..." } }`
 
-## Testing with cURL
+---
 
-### Test Health Endpoint
-```bash
-curl http://localhost:5000/api/health
+### Billing
+
+#### Create PayPal Subscription (Protected)
+```
+POST /api/billing/subscribe
+Authorization: Bearer <your-jwt-token>
+```
+Returns: PayPal subscription object with `links[].rel === "approve"` redirect URL.
+
+---
+
+### Webhooks
+
+#### PayPal Webhook
+```
+POST /api/webhooks/paypal
+```
+Handles `BILLING.SUBSCRIPTION.ACTIVATED`, `BILLING.SUBSCRIPTION.CANCELLED`, and other PayPal events. Verifies webhook signature before processing.
+
+---
+
+## PayPal Setup
+
+### 1. Create a PayPal Developer App
+
+1. Go to https://developer.paypal.com
+2. Sign in with a Business account
+3. Create an App (Type: Merchant, Environment: Sandbox for testing)
+4. Copy `CLIENT_ID` and `CLIENT_SECRET` → add to `.env`
+
+### 2. Create a Subscription Plan
+
+1. PayPal Dashboard → Products & Plans → Create Product (Type: Digital)
+2. Create a Plan (e.g. $29/month, 14-day trial, auto-renew ON)
+3. Copy the `Plan ID` → set `PAYPAL_PLAN_ID` in `.env`
+
+### 3. Configure Webhooks
+
+1. PayPal Dashboard → Webhooks → Add Webhook
+2. URL: `https://your-backend-domain/api/webhooks/paypal`
+3. Subscribe to:
+   - `BILLING.SUBSCRIPTION.ACTIVATED`
+   - `BILLING.SUBSCRIPTION.CANCELLED`
+   - `BILLING.SUBSCRIPTION.SUSPENDED`
+   - `BILLING.SUBSCRIPTION.EXPIRED`
+   - `PAYMENT.SALE.COMPLETED`
+   - `PAYMENT.SALE.DENIED`
+4. Copy the Webhook ID → set `PAYPAL_WEBHOOK_ID` in `.env`
+
+### 4. Update `.env` for PayPal
+
+```env
+PAYPAL_API=https://api-m.sandbox.paypal.com
+PAYPAL_CLIENT_ID=your-client-id
+PAYPAL_CLIENT_SECRET=your-client-secret
+PAYPAL_PLAN_ID=your-plan-id
+PAYPAL_WEBHOOK_ID=your-webhook-id
+RETURN_URL=https://shipforge.dev/billing/success
+CANCEL_URL=https://shipforge.dev/billing/cancel
 ```
 
-### Sign Up
-```bash
-curl -X POST http://localhost:5000/api/auth/signup \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"testpass123"}'
-```
+---
 
-### Login
-```bash
-curl -X POST http://localhost:5000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"testpass123"}'
-```
+## Security Notes
 
-### Get Current User
-```bash
-# First, save the token from login response
-TOKEN="your-jwt-token-here"
+- Passwords are hashed using bcrypt (10 salt rounds)
+- JWT tokens expire after 7 days
+- PayPal webhooks are verified with PayPal's signature verification API
+- CORS is restricted to configured origins (`CORS_ORIGIN`)
+- Never expose `JWT_SECRET` or PayPal credentials in source code
 
-curl -X GET http://localhost:5000/api/auth/me \
-  -H "Authorization: Bearer $TOKEN"
-```
+---
 
 ## Project Structure
 
 ```
 backend/
+├── prisma/
+│   ├── schema.prisma         # Database schema (User, AdminSettings)
+│   └── migrations/           # Migration history
 ├── src/
 │   ├── index.js              # Entry point
-│   ├── app.js                # Express app setup
+│   ├── app.js                # Express app setup + route mounting
 │   ├── config/
-│   │   └── env.js            # Environment configuration
-│   ├── routes/
-│   │   └── auth.routes.js    # Auth route definitions
+│   │   └── env.js            # Environment config
 │   ├── controllers/
-│   │   └── auth.controller.js # Auth business logic
+│   │   ├── auth.controller.js    # Signup, login, me
+│   │   ├── billing.controller.js # PayPal subscription creation
+│   │   ├── webhook.controller.js # PayPal webhook handler
+│   │   └── admin.controller.js   # Admin user/metrics management
 │   ├── middleware/
-│   │   └── auth.middleware.js # JWT authentication middleware
+│   │   ├── auth.middleware.js    # JWT verification
+│   │   └── admin.middleware.js   # Admin role check
+│   ├── routes/
+│   │   ├── auth.routes.js        # /api/auth/*
+│   │   ├── billing.routes.js     # /api/billing/*
+│   │   ├── webhook.routes.js     # /api/webhooks/*
+│   │   └── admin.routes.js       # /api/admin/*
 │   └── utils/
-│       └── jwt.js            # JWT utility functions
-├── .env                       # Environment variables (not in git)
-└── package.json              # Dependencies and scripts
+│       ├── jwt.js                # JWT sign/verify helpers
+│       ├── paypalVerify.js       # PayPal webhook signature verification
+│       └── prisma.js             # Prisma client singleton
+├── scripts/
+│   └── create-admin.js       # Seed admin user
+├── .env.example              # Environment variable template
+└── package.json
 ```
 
-## Security Notes
-
-- Passwords are hashed using bcrypt with 10 salt rounds
-- JWT tokens expire after 7 days
-- Tokens are verified on protected routes
-- **Important:** Change `JWT_SECRET` in production
-- **Note:** Currently uses in-memory storage - replace with a database for production
-
-## User Model
-
-Each user has the following structure:
-```javascript
-{
-  id: number,
-  email: string,
-  password: string (hashed),
-  role: "user" | "admin",
-  subscription: string
-}
-```
-
-## Next Steps
-
-- [ ] Add database integration (PostgreSQL, MongoDB, etc.)
-- [ ] Add password reset functionality
-- [ ] Add email verification
-- [ ] Implement PayPal subscription integration
-- [ ] Add rate limiting
-- [ ] Add request logging
-- [ ] Add input validation middleware
-- [ ] Add API documentation with Swagger/OpenAPI
+---
 
 ## Deployment
 
-This backend can be deployed to:
-- VPS (Ubuntu/Debian)
-- Fly.io
-- Railway
-- Cloudflare Workers (with adapter)
-- Heroku
-- AWS EC2/ECS
-- DigitalOcean
+Deploy to Railway, Fly.io, Render, or any VPS. Remember to:
 
-Remember to:
-1. Set environment variables on your hosting platform
-2. Use a production-grade database
-3. Enable HTTPS
-4. Configure CORS for your frontend domain
-5. Set up proper error logging and monitoring
+1. Set all environment variables on your hosting platform
+2. Use `DATABASE_URL` pointing to PostgreSQL for production
+3. Run `npx prisma migrate deploy` on first deployment
+4. Use HTTPS in production
+5. Set `CORS_ORIGIN` to your frontend domain
+6. Use production PayPal API: `https://api-m.paypal.com`
+
