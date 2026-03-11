@@ -1,3 +1,5 @@
+const API_BASE = import.meta.env.VITE_API_URL || "";
+
 export async function startSubscription() {
   try {
     const token = localStorage.getItem("token");
@@ -7,7 +9,7 @@ export async function startSubscription() {
       return;
     }
 
-    const res = await fetch("http://localhost:5000/api/billing/subscribe", {
+    const res = await fetch(`${API_BASE}/api/billing/subscribe`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -23,16 +25,20 @@ export async function startSubscription() {
 
     const data = await res.json();
 
-    const approval = data.links?.find(
-      (link) => link.rel === "approve"
-    );
-
-    if (!approval?.href) {
-      alert("PayPal approval URL not found");
+    // PayPal subscription — follow approval link
+    const approval = data.links?.find((link) => link.rel === "approve");
+    if (approval?.href) {
+      window.location.href = approval.href;
       return;
     }
 
-    window.location.href = approval.href;
+    // Stripe checkout session — redirect to hosted page
+    if (data.url) {
+      window.location.href = data.url;
+      return;
+    }
+
+    alert("Subscription approval URL not found");
   } catch (error) {
     console.error("Subscription error:", error);
     alert("An error occurred while starting subscription. Please try again.");
