@@ -40,7 +40,14 @@ function StackCard({ stack, selected, onSelect }) {
       role="checkbox"
       aria-checked={selected}
       tabIndex={stack.available ? 0 : -1}
-      onKeyDown={e => e.key === " " && stack.available && onSelect(stack.id)}
+      onKeyDown={e => {
+        if (e.key === " ") {
+          e.preventDefault();
+          if (stack.available) {
+            onSelect(stack.id);
+          }
+        }
+      }}
     >
       <div className="stack-card__icon">{stack.icon}</div>
       <div className="stack-card__content">
