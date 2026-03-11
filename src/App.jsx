@@ -90,8 +90,14 @@ function Home() {
     const anySelected = Object.values(selected).some(Boolean);
     if (!anySelected || generating) return;
     setGenerating(true);
-    await generateZip(selected);
-    setGenerating(false);
+    try {
+      await generateZip(selected);
+    } catch (error) {
+      // Optional: log or surface the error
+      console.error("Failed to generate ZIP:", error);
+    } finally {
+      setGenerating(false);
+    }
   }
 
   const anySelected = Object.values(selected).some(Boolean);
