@@ -3,6 +3,14 @@ import { getPayPalToken } from "../utils/paypal.js";
 
 export async function createSubscription(req, res) {
   try {
+    if (!process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET) {
+      return res.status(503).json({ message: "PayPal is not configured" });
+    }
+
+    if (!process.env.PAYPAL_PLAN_ID) {
+      return res.status(503).json({ message: "PayPal plan is not configured" });
+    }
+
     const token = await getPayPalToken();
 
     const response = await fetch(
