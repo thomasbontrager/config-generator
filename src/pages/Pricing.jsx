@@ -71,12 +71,15 @@ export default function Pricing() {
               "Advanced templates",
               "14-day free trial",
               "Cancel anytime",
-            ].map((f) => (
-              <li key={f} className="pricing-cta-feature">
-                <span className="pricing-cta-check">✓</span>
-                <span dangerouslySetInnerHTML={{ __html: f }} />
-              </li>
-            ))}
+            ].map((f) => {
+              const featureText = f.replace(/&amp;/g, "&");
+              return (
+                <li key={f} className="pricing-cta-feature">
+                  <span className="pricing-cta-check">✓</span>
+                  <span>{featureText}</span>
+                </li>
+              );
+            })}
           </ul>
           <button
             className="btn btn-primary btn-lg pricing-cta-btn generator-btn"
