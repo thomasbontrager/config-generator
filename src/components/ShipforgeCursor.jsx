@@ -1,5 +1,10 @@
 import { useEffect, useRef } from "react";
 
+const CURSOR_OFFSET_X = 50;
+const CURSOR_OFFSET_Y = 32;
+const CURSOR_SMOOTHING = 0.1;
+const REVEAL_DELAY_MS = 1200;
+
 export default function ShipforgeCursor() {
   const cursorRef = useRef(null);
 
@@ -36,8 +41,8 @@ export default function ShipforgeCursor() {
     }
 
     function onMouseMove(e) {
-      targetX = e.clientX - 50;
-      targetY = e.clientY - 32;
+      targetX = e.clientX - CURSOR_OFFSET_X;
+      targetY = e.clientY - CURSOR_OFFSET_Y;
     }
 
     function onMouseOver(e) {
@@ -66,13 +71,13 @@ export default function ShipforgeCursor() {
           if (!overButton) {
             setVisible(true);
           }
-        }, 1200);
+        }, REVEAL_DELAY_MS);
       }
     }
 
     function animate() {
-      currentX += (targetX - currentX) * 0.1;
-      currentY += (targetY - currentY) * 0.1;
+      currentX += (targetX - currentX) * CURSOR_SMOOTHING;
+      currentY += (targetY - currentY) * CURSOR_SMOOTHING;
       if (visible) {
         el.style.transform = `translate(${currentX}px, ${currentY}px) scale(1)`;
       }
@@ -102,3 +107,4 @@ export default function ShipforgeCursor() {
     </div>
   );
 }
+

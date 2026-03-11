@@ -11,6 +11,8 @@ const NEON_COLORS = [
   "#60a5fa",
   "#a78bfa",
 ];
+const STAR_COUNT = 14;
+const STAR_FADE_DURATION_MS = 500;
 
 function createStar(button) {
   const rect = button.getBoundingClientRect();
@@ -67,7 +69,6 @@ function createStar(button) {
 
 export default function ButtonStars() {
   useEffect(() => {
-    const STAR_COUNT = 14;
     const starsMap = new Map();
 
     function addStars(button) {
@@ -86,10 +87,10 @@ export default function ButtonStars() {
       if (!list) return;
       starsMap.delete(button);
       list.forEach((star) => {
-        star.style.animation = "sf-star-fade 0.5s ease forwards";
+        star.style.animation = `sf-star-fade ${STAR_FADE_DURATION_MS}ms ease forwards`;
         setTimeout(() => {
           if (star.parentNode) star.parentNode.removeChild(star);
-        }, 500);
+        }, STAR_FADE_DURATION_MS);
       });
     }
 
