@@ -13,8 +13,6 @@ import expressGitignore from "./templates/express/.gitignore?raw";
 import expressDockerfile from "./templates/express/Dockerfile?raw";
 import expressCompose from "./templates/express/docker-compose.yml?raw";
 import expressReadme from "./templates/express/README.md?raw";
-import expressPackageJson from "./templates/express/package.json?raw";
-import expressAppJs from "./templates/express/app.js?raw";
 
 // Express Backend (PostgreSQL + Prisma) templates
 import backendGitignore from "./templates/express/backend/.gitignore?raw";
@@ -29,7 +27,17 @@ import backendAuthController from "./templates/express/backend/src/controllers/a
 import backendAuthMiddleware from "./templates/express/backend/src/middleware/auth.middleware.js?raw";
 import backendAuthRoutes from "./templates/express/backend/src/routes/auth.routes.js?raw";
 
-export async function generateZip({ vite, express }) {
+// Next.js templates
+import nextjsEnv from "./templates/nextjs/.env.example?raw";
+import nextjsDockerfile from "./templates/nextjs/Dockerfile?raw";
+import nextjsCompose from "./templates/nextjs/docker-compose.yml?raw";
+import nextjsReadme from "./templates/nextjs/README.md?raw";
+
+// GitHub rulesets templates
+import githubRulesetJson from "./templates/github-rulesets/branch-protection-ruleset.json?raw";
+import githubRulesetReadme from "./templates/github-rulesets/README.md?raw";
+
+export async function generateZip({ vite, express, nextjs, githubRulesets }) {
   const zip = new JSZip();
 
   if (vite) {
