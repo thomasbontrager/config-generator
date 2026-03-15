@@ -1,7 +1,7 @@
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
-import { verifyPayPalWebhook } from "../utils/paypalVerify.js";
 import prisma from "../utils/prisma.js";
+import { verifyPayPalWebhook } from "../utils/paypalVerify.js";
 
 const router = Router();
 
@@ -73,7 +73,7 @@ router.post("/paypal", webhookLimiter, async (req, res) => {
       }
 
       default:
-        console.log("Unhandled PayPal webhook event:", event.event_type);
+        console.log("Unhandled webhook event:", event.event_type);
     }
 
     res.sendStatus(200);
