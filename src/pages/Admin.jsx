@@ -33,7 +33,8 @@ export default function Admin() {
   }, []);
 
   async function apiFetch(path, options = {}) {
-    const res = await fetch(`${API_URL}${path}`, {
+    const url = new URL(path, API_URL);
+    const res = await fetch(url.toString(), {
       ...options,
       headers: {
         Authorization: `Bearer ${getToken()}`,
