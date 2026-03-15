@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import { getPayPalToken } from "../utils/paypal.js";
 
 export async function createSubscription(req, res) {

@@ -1,6 +1,7 @@
 /* ============================================
-   Shipforge — Global Design System
-   Dark theme · Glass panels · Gradient accents
+   Shipforge — Global Design System v4
+   Dark neon · Glass panels · Vivid accents
+   Viral cursor · Button stars · Alive effects
    ============================================ */
 
 *, *::before, *::after {
@@ -11,22 +12,24 @@
 
 :root {
   /* Colors */
-  --bg-base: #0a0a0f;
-  --bg-surface: #111118;
+  --bg-base: #05050d;
+  --bg-surface: #0c0c18;
   --bg-card: rgba(255, 255, 255, 0.04);
-  --bg-card-hover: rgba(255, 255, 255, 0.07);
-  --border: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(255, 255, 255, 0.15);
+  --bg-card-hover: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.09);
+  --border-hover: rgba(139, 92, 246, 0.5);
 
-  --text-primary: #f0f0f5;
-  --text-secondary: #a0a0b0;
-  --text-muted: #606070;
+  --text-primary: #f2f2fa;
+  --text-secondary: #9898b8;
+  --text-muted: #55556a;
 
   --accent-1: #6366f1;
   --accent-2: #8b5cf6;
   --accent-3: #06b6d4;
-  --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
-  --gradient-glow: linear-gradient(135deg, rgba(99,102,241,0.4) 0%, rgba(139,92,246,0.4) 100%);
+  --accent-4: #f472b6;
+  --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 40%, #06b6d4 100%);
+  --gradient-vivid: linear-gradient(135deg, #4f52e8 0%, #7c3aed 50%, #0891b2 100%);
+  --gradient-glow: linear-gradient(135deg, rgba(99,102,241,0.45) 0%, rgba(139,92,246,0.45) 100%);
 
   --success: #10b981;
   --warning: #f59e0b;
@@ -41,10 +44,14 @@
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
+  --radius-2xl: 32px;
 
   /* Shadows */
   --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.15);
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+
+  /* v4 Animation timings */
+  --grid-drift-duration: 18s;
 }
 
 html {
@@ -59,6 +66,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 #root {
@@ -79,14 +87,15 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  backdrop-filter: blur(12px);
-  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  backdrop-filter: blur(16px);
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
 
 .glass-card:hover {
   background: var(--bg-card-hover);
   border-color: var(--border-hover);
   box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
 }
 
 /* ── Buttons ── */
@@ -110,7 +119,7 @@ body {
 .btn-primary {
   background: var(--gradient);
   color: #fff;
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 0 24px rgba(99, 102, 241, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
 }
@@ -119,7 +128,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   opacity: 0;
   transition: opacity 0.2s ease;
 }
@@ -129,8 +138,8 @@ body {
 }
 
 .btn-primary:hover {
-  box-shadow: 0 0 35px rgba(99, 102, 241, 0.55);
-  transform: translateY(-1px);
+  box-shadow: 0 0 40px rgba(99, 102, 241, 0.7), 0 0 80px rgba(139, 92, 246, 0.3), 0 4px 16px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .btn-primary:disabled {
@@ -179,6 +188,11 @@ body {
   border-radius: var(--radius-lg);
 }
 
+.btn-sm {
+  padding: 7px 16px;
+  font-size: 13px;
+}
+
 /* ── Form inputs ── */
 .input {
   width: 100%;
@@ -211,20 +225,23 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 0 32px;
-  height: 60px;
-  background: rgba(10, 10, 15, 0.8);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
+  height: 64px;
+  background: rgba(5, 5, 13, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(99,102,241,0.15);
+  box-shadow: 0 1px 40px rgba(99,102,241,0.08);
 }
 
 .navbar-brand {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 19px;
+  font-weight: 800;
   text-decoration: none;
   background: var(--gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  letter-spacing: -0.02em;
+  filter: drop-shadow(0 0 8px rgba(99,102,241,0.4));
 }
 
 .navbar-links {
@@ -266,10 +283,16 @@ body {
   inset: 0;
   z-index: -1;
   background-image:
-    linear-gradient(rgba(99, 102, 241, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
-  background-size: 60px 60px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+    linear-gradient(rgba(99, 102, 241, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 30%, transparent 100%);
+  animation: grid-drift 20s linear infinite;
+}
+
+@keyframes grid-drift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 56px 56px; }
 }
 
 /* ── Badge / chip ── */
@@ -516,7 +539,7 @@ tr:hover td {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  transition: background 0.1s ease;
+  transition: background 0.08s ease;
 }
 
 /* ── Fade-in animation ── */
@@ -528,59 +551,68 @@ tr:hover td {
 /* ── Hero section ── */
 .hero-section {
   text-align: center;
-  padding: 110px 24px 90px;
-  max-width: 720px;
+  padding: 120px 24px 100px;
+  max-width: 740px;
   margin: 0 auto;
-  animation: fadeInUp 0.6s ease both;
+  animation: fadeInUp 0.7s ease both;
+  position: relative;
 }
 
 .hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 14px;
+  padding: 5px 16px;
   border-radius: 100px;
-  border: 1px solid rgba(99,102,241,0.35);
-  background: rgba(99,102,241,0.08);
+  border: 1px solid rgba(99,102,241,0.45);
+  background: rgba(99,102,241,0.1);
   font-size: 12px;
-  font-weight: 600;
-  color: var(--accent-1);
-  margin-bottom: 28px;
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  color: #a5b4fc;
+  margin-bottom: 32px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+  box-shadow: 0 0 20px rgba(99,102,241,0.2);
+  animation: badge-glow 3s ease-in-out infinite;
+}
+
+@keyframes badge-glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(99,102,241,0.2); }
+  50% { box-shadow: 0 0 30px rgba(99,102,241,0.5), 0 0 60px rgba(139,92,246,0.2); }
 }
 
 .hero-title {
-  font-size: clamp(2.8rem, 8vw, 5rem);
-  font-weight: 800;
-  line-height: 1.1;
-  margin-bottom: 20px;
-  letter-spacing: -0.03em;
+  font-size: clamp(3rem, 9vw, 5.5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  margin-bottom: 24px;
+  letter-spacing: -0.04em;
+  text-shadow: 0 0 80px rgba(99,102,241,0.3);
 }
 
 .hero-subtitle {
-  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  font-size: clamp(1.15rem, 2.8vw, 1.5rem);
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .hero-subtext {
-  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  font-size: clamp(1rem, 2.2vw, 1.15rem);
   color: var(--text-secondary);
-  margin-bottom: 40px;
+  margin-bottom: 44px;
 }
 
 .hero-ctas {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .hero-ctas .btn-lg {
-  min-width: 180px;
+  min-width: 190px;
 }
 
 .hero-note {
@@ -970,6 +1002,257 @@ tr:hover td {
   .site-footer__inner {
     flex-direction: column;
     text-align: center;
+  }
+}
+
+/* ==============================================
+   ⚡ Shipforge v4 — Viral Neon Effects
+   ============================================== */
+
+/* ── Animated grid background (v4: slow drift) ── */
+@keyframes grid-drift {
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: 60px 60px, 60px 60px; }
+}
+
+.grid-bg {
+  animation: grid-drift var(--grid-drift-duration) linear infinite;
+}
+
+/* ── v4 Hero glow blob ── */
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 480px;
+  background: radial-gradient(ellipse, rgba(99,102,241,0.18) 0%, rgba(139,92,246,0.1) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+  animation: hero-blob 6s ease-in-out infinite alternate;
+}
+
+.hero-section {
+  position: relative;
+}
+
+@keyframes hero-blob {
+  0%   { opacity: 0.7; transform: translateX(-50%) scale(1); }
+  100% { opacity: 1;   transform: translateX(-50%) scale(1.12); }
+}
+
+/* ── v4 Hero title animated gradient ── */
+.hero-title .gradient-text {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4, #f59e0b, #6366f1);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: title-shine 4s linear infinite;
+}
+
+@keyframes title-shine {
+  0%   { background-position: 0% center; }
+  100% { background-position: 300% center; }
+}
+
+/* ── v4 Primary button — shimmer sweep ── */
+.btn-primary {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  background-size: 200% auto;
+  transition: background-position 0.4s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-position: right center;
+}
+
+/* ── v4 Generator panel glow border ── */
+.generator-panel {
+  border: 1px solid rgba(99,102,241,0.18);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.generator-panel:hover {
+  border-color: rgba(99,102,241,0.35);
+  box-shadow: 0 0 50px rgba(99,102,241,0.12), 0 8px 40px rgba(0,0,0,0.5);
+}
+
+/* ── v4 Feature cards — bottom neon bar on hover ── */
+.feature-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 80%;
+  height: 2px;
+  background: var(--gradient);
+  opacity: 0;
+  border-radius: 2px;
+  transition: opacity 0.3s ease;
+}
+
+.feature-card:hover::after {
+  opacity: 1;
+}
+
+/* ── v4 Selected stack card pulse ── */
+@keyframes card-selected-pulse {
+  0%, 100% { box-shadow: 0 0 24px rgba(99,102,241,0.2); }
+  50%       { box-shadow: 0 0 38px rgba(99,102,241,0.4), 0 0 60px rgba(139,92,246,0.2); }
+}
+
+.stack-card--selected {
+  animation: card-selected-pulse 2.5s ease-in-out infinite;
+}
+
+/* ── v4 Navbar — subtle top-glow line ── */
+.navbar {
+  box-shadow: 0 1px 0 rgba(99,102,241,0.15), 0 4px 24px rgba(0,0,0,0.3);
+}
+
+/* ── v4 Footer gradient brand ── */
+.site-footer__brand {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: title-shine 4s linear infinite;
+}
+
+/* ==============================================
+   ⚡ SHIPFORGE CURSOR — Viral neon mouse follower
+   ============================================== */
+
+.sf-cursor {
+  position: fixed;
+  z-index: 99998;
+  pointer-events: none;
+  /* rAF sets left/top directly — keep transform only for centering */
+  transform: translate(-50%, -58%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px 7px 10px;
+  border-radius: 40px;
+  background: rgba(8, 8, 18, 0.88);
+  border: 1px solid rgba(99, 102, 241, 0.55);
+  backdrop-filter: blur(10px);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fff;
+  /* Hidden by default */
+  opacity: 0;
+  scale: 0.5;
+  transition:
+    opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    scale  0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow:
+    0 0 10px rgba(99,102,241,0.7),
+    0 0 25px rgba(139,92,246,0.5),
+    0 0 55px rgba(6,182,212,0.25),
+    inset 0 0 10px rgba(99,102,241,0.08);
+  will-change: left, top, opacity, scale;
+  animation: sf-pulse 2.5s ease-in-out infinite;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.sf-cursor--show {
+  opacity: 1;
+  scale: 1;
+}
+
+.sf-cursor__bolt {
+  font-size: 16px;
+  display: inline-block;
+  animation: sf-bolt 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px #facc15);
+}
+
+.sf-cursor__text {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 300% auto;
+  animation: sf-shine 2.5s linear infinite;
+}
+
+@keyframes sf-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 10px rgba(99,102,241,0.7),
+      0 0 25px rgba(139,92,246,0.5),
+      0 0 55px rgba(6,182,212,0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 18px rgba(99,102,241,1),
+      0 0 45px rgba(139,92,246,0.75),
+      0 0 90px rgba(6,182,212,0.45);
+  }
+}
+
+@keyframes sf-bolt {
+  0%, 100% { transform: scale(1) rotate(-5deg); filter: drop-shadow(0 0 4px #facc15); }
+  50%       { transform: scale(1.35) rotate(5deg); filter: drop-shadow(0 0 10px #facc15) drop-shadow(0 0 20px #f59e0b); }
+}
+
+@keyframes sf-shine {
+  0%   { background-position: 0% center; }
+  100% { background-position: 300% center; }
+}
+
+/* ==============================================
+   ★ BUTTON SPARKLE STARS — Viral neon edge stars
+   ============================================== */
+
+.btn-stars-wrap {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99997;
+}
+
+.btn-sparkle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 99997;
+  user-select: none;
+  will-change: transform, opacity;
+}
+
+@keyframes btn-sparkle-anim {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1.4) rotate(25deg);
+  }
+  55% {
+    opacity: 0.85;
+    transform: scale(1.0) rotate(-15deg) translateY(-5px);
+  }
+  80% {
+    opacity: 0.45;
+    transform: scale(0.75) rotate(35deg) translateY(-10px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.1) rotate(70deg) translateY(-18px);
   }
 }
 
