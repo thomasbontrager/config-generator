@@ -25,6 +25,8 @@ export default function Admin() {
   useEffect(() => {
     fetchUsers();
     fetchMetrics();
+    // We intentionally run this effect only once on mount; fetchUsers/fetchMetrics are stable for this purpose.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // run once on mount
 
   async function fetchUsers() {
