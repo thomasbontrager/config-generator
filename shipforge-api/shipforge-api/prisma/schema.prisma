@@ -4,12 +4,27 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  role      String   @default("USER")
-  createdAt DateTime @default(now())
+  id                 String             @id @default(uuid())
+  email              String             @unique
+  password           String
+  name               String?
+  role               String             @default("USER")
+  subscriptionStatus SubscriptionStatus @default(FREE)
+  subscriptionId     String?            @unique
+  trialEndsAt        DateTime?
+  renewalDate        DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+}
+
+enum SubscriptionStatus {
+  FREE
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
 }

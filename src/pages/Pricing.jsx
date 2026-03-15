@@ -1,8 +1,40 @@
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { startSubscription } from "../api/billing";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function Pricing() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const [subscribeError, setSubscribeError] = useState("");
+
+  async function handleSubscribe() {
+    if (!user) {
+      navigate("/signup");
+      return;
+    }
+    // Clear any previous error before starting a new subscription attempt
+    setSubscribeError("");
+
+    const result = await startSubscription();
+
+    // If startSubscription is refactored to return an error instead of alerting,
+    // surface that error inline on the Pricing page.
+    if (result) {
+      if (typeof result === "string") {
+        setSubscribeError(result);
+      } else if (result && typeof result === "object") {
+        const message =
+          result.error ||
+          result.message ||
+          "Failed to start subscription. Please try again.";
+        setSubscribeError(message);
+      }
+    }
+  }
+
   return (
     <>
       <div className="grid-bg" />

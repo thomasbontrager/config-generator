@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-
-const API_BASE = import.meta.env.VITE_API_URL || "";
+import { API_URL } from "../config/api";
 
 function getToken() {
   return localStorage.getItem("token");
@@ -30,11 +29,13 @@ export default function Admin() {
   useEffect(() => {
     fetchUsers();
     fetchMetrics();
+    // We intentionally run this effect only once on mount; fetchUsers/fetchMetrics are stable for this purpose.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function apiFetch(path, options = {}) {
-    const res = await fetch(`${API_BASE}${path}`, {
+    const url = new URL(path, API_URL);
+    const res = await fetch(url.toString(), {
       ...options,
       headers: {
         Authorization: `Bearer ${getToken()}`,
