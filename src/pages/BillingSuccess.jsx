@@ -23,7 +23,7 @@ export default function BillingSuccess() {
         You will receive a confirmation email shortly.
       </p>
       <Link
-        to="/"
+        to="/dashboard"
         style={{
           marginTop: 30,
           padding: "10px 20px",
@@ -34,7 +34,7 @@ export default function BillingSuccess() {
           fontSize: 16,
         }}
       >
-        Go to Home
+        Go to Dashboard
       </Link>
     </div>
   );

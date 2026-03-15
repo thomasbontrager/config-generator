@@ -25,16 +25,20 @@ export async function startSubscription() {
 
     const data = await res.json();
 
-    const approval = data.links?.find(
-      (link) => link.rel === "approve"
-    );
-
-    if (!approval?.href) {
-      alert("PayPal approval URL not found");
+    // PayPal subscription — follow approval link
+    const approval = data.links?.find((link) => link.rel === "approve");
+    if (approval?.href) {
+      window.location.href = approval.href;
       return;
     }
 
-    window.location.href = approval.href;
+    // Stripe checkout session — redirect to hosted page
+    if (data.url) {
+      window.location.href = data.url;
+      return;
+    }
+
+    alert("Subscription approval URL not found");
   } catch (error) {
     console.error("Subscription error:", error);
     alert("An error occurred while starting subscription. Please try again.");
