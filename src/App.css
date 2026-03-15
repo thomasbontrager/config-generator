@@ -973,3 +973,138 @@ tr:hover td {
   }
 }
 
+/* ============================================
+   ShipforgeFollower — neon cursor companion
+   ============================================ */
+
+.sf-follower {
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* offset so the label is slightly to the right and below cursor */
+  translate: 16px 16px;
+  pointer-events: none;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 100px;
+  background: rgba(10, 10, 15, 0.75);
+  border: 1px solid rgba(99, 102, 241, 0.5);
+  backdrop-filter: blur(8px);
+  white-space: nowrap;
+  opacity: 0;
+  scale: 0.7;
+  transition: opacity 0.25s ease, scale 0.25s ease;
+  /* Neon glow */
+  box-shadow:
+    0 0 8px rgba(99, 102, 241, 0.6),
+    0 0 24px rgba(99, 102, 241, 0.3),
+    inset 0 0 8px rgba(99, 102, 241, 0.08);
+  /* Prevent the follower moving transform from fighting the lerp */
+  will-change: transform;
+}
+
+.sf-follower--visible {
+  opacity: 1;
+  scale: 1;
+}
+
+.sf-follower__bolt {
+  font-size: 13px;
+  animation: sf-pulse 2s ease-in-out infinite;
+}
+
+.sf-follower__text {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes sf-pulse {
+  0%, 100% { filter: drop-shadow(0 0 3px #6366f1) drop-shadow(0 0 6px #8b5cf6); }
+  50%       { filter: drop-shadow(0 0 8px #06b6d4) drop-shadow(0 0 18px #6366f1); }
+}
+
+/* ── Button star-burst effect ── */
+
+/* Every .btn gets a hidden ::after pseudo-element that becomes a ring of
+   sparkles when hovered. Done with animated box-shadow "stars". */
+.btn {
+  position: relative;
+  isolation: isolate;
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  /* 8 "star" dots scattered around the button border */
+  box-shadow:
+    /* top edge */
+    0px -10px 0 2px #6366f1,
+    32px -10px 0 1.5px #8b5cf6,
+    96px -10px 0 1.5px #06b6d4,
+    128px -10px 0 2px #6366f1,
+    /* bottom edge */
+    0px 10px 0 2px #8b5cf6,
+    32px 10px 0 1.5px #06b6d4,
+    96px 10px 0 1.5px #6366f1,
+    128px 10px 0 2px #8b5cf6;
+  animation: none;
+}
+
+.btn:hover::after {
+  opacity: 1;
+  animation: sf-stars 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes sf-stars {
+  0% {
+    box-shadow:
+      0px -12px 0 2.5px #6366f1,
+      32px -10px 0 1.5px #8b5cf6,
+      96px -10px 0 1.5px #06b6d4,
+      128px -12px 0 2.5px #6366f1,
+      0px 12px 0 2.5px #8b5cf6,
+      32px 10px 0 1.5px #06b6d4,
+      96px 10px 0 1.5px #6366f1,
+      128px 12px 0 2.5px #8b5cf6;
+    filter: blur(0px);
+  }
+  50% {
+    box-shadow:
+      0px -16px 0 3px #a855f7,
+      32px -14px 0 2px #06b6d4,
+      96px -14px 0 2px #6366f1,
+      128px -16px 0 3px #a855f7,
+      0px 16px 0 3px #06b6d4,
+      32px 14px 0 2px #6366f1,
+      96px 14px 0 2px #a855f7,
+      128px 16px 0 3px #06b6d4;
+    filter: blur(0.5px);
+  }
+  100% {
+    box-shadow:
+      0px -10px 0 1.5px #06b6d4,
+      32px -8px 0 1px #6366f1,
+      96px -8px 0 1px #8b5cf6,
+      128px -10px 0 1.5px #06b6d4,
+      0px 10px 0 1.5px #6366f1,
+      32px 8px 0 1px #8b5cf6,
+      96px 8px 0 1px #06b6d4,
+      128px 10px 0 1.5px #6366f1;
+    filter: blur(0px);
+  }
+}
+
+

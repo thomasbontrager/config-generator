@@ -7,14 +7,15 @@ import Admin from "./pages/Admin";
 import Pricing from "./pages/Pricing";
 import BillingSuccess from "./pages/BillingSuccess";
 import BillingCancel from "./pages/BillingCancel";
-import ShipforgeCursor from "./components/ShipforgeCursor";
+import Pricing from "./pages/Pricing";
+import ShipforgeFollower from "./components/ShipforgeFollower";
 import "./App.css";
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <ShipforgeCursor />
+    <AuthProvider>
+      <BrowserRouter>
+        <ShipforgeFollower />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />

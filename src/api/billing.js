@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || "";
+import { API_URL } from "../config/api";
 
 export async function startSubscription() {
   try {
@@ -9,7 +9,7 @@ export async function startSubscription() {
       return;
     }
 
-    const res = await fetch(`${API_BASE}/api/billing/subscribe`, {
+    const res = await fetch(`${API_URL}/api/billing/subscribe`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

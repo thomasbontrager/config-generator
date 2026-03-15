@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-
-const API_BASE = import.meta.env.VITE_API_URL || "";
-
-function getToken() {
-  return localStorage.getItem("token");
-}
+import { apiFetch } from "../config/api";
 
 function SubscriptionBadge({ status }) {
   const map = {
@@ -30,22 +25,9 @@ export default function Admin() {
   useEffect(() => {
     fetchUsers();
     fetchMetrics();
+    // We intentionally run this effect only once on mount; fetchUsers/fetchMetrics are stable for this purpose.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function apiFetch(path, options = {}) {
-    const res = await fetch(`${API_BASE}${path}`, {
-      ...options,
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-        "Content-Type": "application/json",
-        ...options.headers,
-      },
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Request failed");
-    return data;
-  }
+  }, []); // run once on mount
 
   async function fetchUsers() {
     try {
