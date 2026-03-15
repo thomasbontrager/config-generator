@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import { apiFetch } from "../config/api";
+import { API_URL } from "../config/api";
+
+function getToken() {
+  return localStorage.getItem("token");
+}
 
 function SubscriptionBadge({ status }) {
   const map = {
@@ -27,7 +31,22 @@ export default function Admin() {
     fetchMetrics();
     // We intentionally run this effect only once on mount; fetchUsers/fetchMetrics are stable for this purpose.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // run once on mount
+  }, []);
+
+  async function apiFetch(path, options = {}) {
+    const url = new URL(path, API_URL);
+    const res = await fetch(url.toString(), {
+      ...options,
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Request failed");
+    return data;
+  }
 
   async function fetchUsers() {
     try {

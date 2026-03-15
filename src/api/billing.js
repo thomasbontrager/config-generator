@@ -9,7 +9,7 @@ export async function startSubscription() {
       return;
     }
 
-    const res = await fetch(`${API_URL}/api/billing/subscribe`, {
+    const res = await fetch(new URL("/api/billing/subscribe", API_URL), {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
