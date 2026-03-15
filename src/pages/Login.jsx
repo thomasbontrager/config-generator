@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-
-const API_BASE = import.meta.env.VITE_API_URL || "";
+import { API_URL } from "../config/api";
 
 export default function Login({ signup: isSignupProp = false }) {
   const [isRegister, setIsRegister] = useState(isSignupProp);
@@ -20,7 +19,7 @@ export default function Login({ signup: isSignupProp = false }) {
 
     try {
       const endpoint = isRegister ? "/api/auth/signup" : "/api/auth/login";
-      const res = await fetch(`${API_BASE}${endpoint}`, {
+      const res = await fetch(new URL(endpoint, API_URL), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
