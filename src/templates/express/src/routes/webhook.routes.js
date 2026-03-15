@@ -1,7 +1,7 @@
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
-import prisma from "../utils/prisma.js";
 import { verifyPayPalWebhook } from "../utils/paypalVerify.js";
+import prisma from "../utils/prisma.js";
 
 const router = Router();
 
@@ -33,10 +33,15 @@ router.post("/paypal", webhookLimiter, async (req, res) => {
             where: { email: payerEmail },
             data: {
               subscription: "ACTIVE",
-              paypalSubscriptionId: subscriptionId,
+              paypalSubId: subscriptionId,
             },
           });
           console.log("Subscription activated for:", payerEmail);
+        } else if (subscriptionId) {
+          await prisma.user.updateMany({
+            where: { paypalSubId: subscriptionId },
+            data: { subscription: "ACTIVE" },
+          });
         }
         break;
       }
@@ -49,28 +54,26 @@ router.post("/paypal", webhookLimiter, async (req, res) => {
         if (payerEmail) {
           await prisma.user.updateMany({
             where: { email: payerEmail },
-            data: { subscription: "CANCELLED" },
+            data: { subscription: "CANCELED" },
           });
           console.log(`Subscription ${event.event_type} for:`, payerEmail);
         } else if (subscriptionId) {
           await prisma.user.updateMany({
-            where: { paypalSubscriptionId: subscriptionId },
-            data: { subscription: "CANCELLED" },
+            where: { paypalSubId: subscriptionId },
+            data: { subscription: "CANCELED" },
           });
         }
         break;
       }
 
-      case "PAYMENT.SALE.COMPLETED": {
+      case "PAYMENT.SALE.COMPLETED":
         console.log("Payment completed:", event.resource?.id);
         break;
-      }
 
       case "PAYMENT.SALE.DENIED":
-      case "PAYMENT.SALE.REFUNDED": {
+      case "PAYMENT.SALE.REFUNDED":
         console.log("Payment denied/refunded:", event.resource?.id);
         break;
-      }
 
       default:
         console.log("Unhandled webhook event:", event.event_type);

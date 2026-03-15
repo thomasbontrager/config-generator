@@ -25,6 +25,12 @@ export async function handlePayPalWebhook(req, res) {
             },
           });
           console.log("Subscription activated for:", payerEmail);
+        } else if (subscriptionId) {
+          await prisma.user.updateMany({
+            where: { paypalSubscriptionId: subscriptionId },
+            data: { subscription: "ACTIVE" },
+          });
+          console.log("Subscription activated for subscriptionId:", subscriptionId);
         }
         break;
       }

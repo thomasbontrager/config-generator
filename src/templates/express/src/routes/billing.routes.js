@@ -10,17 +10,9 @@ const billingLimiter = rateLimit({
   max: 10,
   standardHeaders: true,
   legacyHeaders: false,
-  // Prefer a user-based key to avoid IP-based DoS; fall back to IP if no user is available
-  keyGenerator: (req) => {
-    const user = req.user;
-    if (user) {
-      return user.id || user.userId || user.email || user.username || req.ip;
-    }
-    return req.ip;
-  },
   message: { message: "Too many subscription requests, please try again later" },
 });
 
-router.post("/subscribe", requireAuth, billingLimiter, createSubscription);
+router.post("/subscribe", billingLimiter, requireAuth, createSubscription);
 
 export default router;

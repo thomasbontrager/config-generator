@@ -30,9 +30,9 @@ export async function signup(req, res) {
 
     const token = signToken({ id: user.id, role: user.role });
 
-    res.json({ token });
-  } catch (err) {
-    console.error("Signup error:", err.message);
+    res.status(201).json({ token });
+  } catch (error) {
+    console.error("Signup error:", error);
     res.status(500).json({ message: "Failed to create account" });
   }
 }
@@ -58,8 +58,8 @@ export async function login(req, res) {
     const token = signToken({ id: user.id, role: user.role });
 
     res.json({ token });
-  } catch (err) {
-    console.error("Login error:", err.message);
+  } catch (error) {
+    console.error("Login error:", error);
     res.status(500).json({ message: "Login failed" });
   }
 }
@@ -81,8 +81,8 @@ export async function me(req, res) {
     }
 
     res.json({ user });
-  } catch (err) {
-    console.error("Me error:", err.message);
+  } catch (error) {
+    console.error("User fetch error:", error);
     res.status(500).json({ message: "Failed to fetch user" });
   }
 }
