@@ -13,8 +13,6 @@ import expressGitignore from "./templates/express/.gitignore?raw";
 import expressDockerfile from "./templates/express/Dockerfile?raw";
 import expressCompose from "./templates/express/docker-compose.yml?raw";
 import expressReadme from "./templates/express/README.md?raw";
-import expressPackageJson from "./templates/express/package.json?raw";
-import expressAppJs from "./templates/express/app.js?raw";
 
 // Express Backend (PostgreSQL + Prisma) templates
 import backendGitignore from "./templates/express/backend/.gitignore?raw";
@@ -29,7 +27,7 @@ import backendAuthController from "./templates/express/backend/src/controllers/a
 import backendAuthMiddleware from "./templates/express/backend/src/middleware/auth.middleware.js?raw";
 import backendAuthRoutes from "./templates/express/backend/src/routes/auth.routes.js?raw";
 
-export async function generateZip({ vite, express }) {
+export async function generateZip({ vite, express, nextjs, githubRulesets }) {
   const zip = new JSZip();
 
   if (vite) {
@@ -82,27 +80,6 @@ export async function generateZip({ vite, express }) {
     const utilsFolder = srcFolder.folder("utils");
     utilsFolder.file("prisma.js", backendPrismaUtil);
     utilsFolder.file("jwt.js", backendJwtUtil);
-  }
-
-  if (nextjs) {
-    const nextjsFolder = zip.folder("nextjs");
-
-    nextjsFolder.file(".env.example", nextjsEnv);
-    nextjsFolder.file("Dockerfile", nextjsDockerfile);
-    nextjsFolder.file("docker-compose.yml", nextjsCompose);
-    nextjsFolder.file("README.md", nextjsReadme);
-  }
-
-  if (githubRulesets) {
-    const githubFolder = zip.folder("github-rulesets");
-
-    githubFolder.file("branch-protection-ruleset.json", githubRulesetJson);
-    githubFolder.file("README.md", githubRulesetReadme);
-  }
-
-  if (!vite && !express && !nextjs && !githubRulesets) {
-    alert("Please select at least one stack.");
-    return;
   }
 
   const blob = await zip.generateAsync({ type: "blob" });
