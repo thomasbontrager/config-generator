@@ -19,7 +19,7 @@ export default function Login({ signup: isSignupProp = false }) {
 
     try {
       const endpoint = isRegister ? "/api/auth/signup" : "/api/auth/login";
-      const res = await fetch(`${API_URL}${endpoint}`, {
+      const res = await fetch(new URL(endpoint, API_URL), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
