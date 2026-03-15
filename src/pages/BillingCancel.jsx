@@ -1,41 +1,47 @@
 import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 export default function BillingCancel() {
   return (
-    <div
-      style={{
-        padding: 32,
-        fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",
-        background: "#1e1e1e",
-        minHeight: "100vh",
-        color: "#fff",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <h1>❌ Subscription Cancelled</h1>
-      <p style={{ marginTop: 20, fontSize: 18, color: "#ff6b6b" }}>
-        You cancelled the subscription process.
-      </p>
-      <p style={{ marginTop: 10, fontSize: 14, color: "#999" }}>
-        No charges have been made.
-      </p>
-      <Link
-        to="/pricing"
+    <>
+      <div className="grid-bg" />
+      <Navbar />
+      <div
         style={{
-          marginTop: 30,
-          padding: "10px 20px",
-          background: "#4a9eff",
-          color: "#fff",
-          textDecoration: "none",
-          borderRadius: 5,
-          fontSize: 16,
+          maxWidth: 480,
+          margin: "0 auto",
+          padding: "100px 24px",
+          textAlign: "center",
+          animation: "fadeInUp 0.6s ease both",
         }}
       >
-        Back to Pricing
-      </Link>
-    </div>
+        <div style={{ fontSize: 64, marginBottom: 24, filter: "drop-shadow(0 0 20px rgba(239,68,68,0.5))" }}>
+          ❌
+        </div>
+        <h1
+          style={{
+            fontSize: "clamp(1.8rem, 5vw, 2.6rem)",
+            fontWeight: 900,
+            marginBottom: 16,
+            letterSpacing: "-0.03em",
+          }}
+        >
+          Subscription <span style={{ color: "var(--danger)" }}>Cancelled</span>
+        </h1>
+        <p style={{ color: "var(--text-secondary)", fontSize: 16, marginBottom: 40 }}>
+          No charges have been made. You can subscribe anytime to unlock
+          all Shipforge features.
+        </p>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+          <Link to="/pricing" className="btn btn-primary btn-lg">
+            View Plans →
+          </Link>
+          <Link to="/" className="btn btn-secondary btn-lg">
+            Back to Home
+          </Link>
+        </div>
+      </div>
+    </>
   );
 }
+

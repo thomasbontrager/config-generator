@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import { startSubscription } from "../api/billing";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -40,62 +39,36 @@ export default function Pricing() {
     <>
       <div className="grid-bg" />
       <Navbar />
-
       <div
         style={{
           maxWidth: 560,
           margin: "0 auto",
-          padding: "64px 24px 80px",
+          padding: "80px 24px",
           textAlign: "center",
+          animation: "fadeInUp 0.6s ease both",
         }}
       >
-        {/* Header */}
-        <div style={{ marginBottom: 48 }}>
-          <span
-            style={{
-              display: "inline-block",
-              padding: "3px 14px",
-              borderRadius: 100,
-              background: "var(--gradient)",
-              fontSize: 11,
-              fontWeight: 700,
-              color: "#fff",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              marginBottom: 20,
-            }}
-          >
-            Pricing
-          </span>
-          <h1
-            style={{
-              fontSize: "2.4rem",
-              fontWeight: 800,
-              letterSpacing: "-0.03em",
-              marginBottom: 12,
-            }}
-          >
-            Simple,{" "}
-            <span className="gradient-text">transparent</span> pricing
-          </h1>
-          <p style={{ color: "var(--text-secondary)", fontSize: 16 }}>
-            One plan. Everything included. Cancel anytime.
-          </p>
-        </div>
-
-        {/* Pro Plan card */}
-        <div
-          className="glass-card"
+        <span className="hero-badge">💰 Plans &amp; Pricing</span>
+        <h1
           style={{
-            padding: "40px 36px",
-            position: "relative",
-            overflow: "hidden",
-            textAlign: "left",
+            fontSize: "clamp(2rem, 5vw, 3rem)",
+            fontWeight: 900,
+            marginBottom: 14,
+            letterSpacing: "-0.03em",
           }}
         >
-          {/* Gradient background overlay */}
+          Simple,{" "}
+          <span className="gradient-text">transparent</span> pricing
+        </h1>
+        <p style={{ color: "var(--text-secondary)", fontSize: 16, marginBottom: 52 }}>
+          One plan. Everything included. No surprises.
+        </p>
+
+        <div
+          className="glass-card pricing-cta-card"
+          style={{ padding: "44px 40px", position: "relative", overflow: "hidden" }}
+        >
           <div
-            aria-hidden="true"
             style={{
               position: "absolute",
               inset: 0,
@@ -104,125 +77,58 @@ export default function Pricing() {
               pointerEvents: "none",
             }}
           />
-
-          <div
+          <div className="pricing-cta-badge">Most Popular</div>
+          <h2
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              marginBottom: 24,
-              flexWrap: "wrap",
-              gap: 12,
+              fontSize: "1.6rem",
+              fontWeight: 800,
+              marginBottom: 12,
+              letterSpacing: "-0.02em",
             }}
           >
-            <div>
-              <p style={{ fontSize: 13, fontWeight: 700, color: "var(--accent-1)", marginBottom: 4 }}>
-                SHIPFORGE PRO
-              </p>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
-                <span
-                  style={{
-                    fontSize: "3rem",
-                    fontWeight: 800,
-                    background: "var(--gradient)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                  }}
-                >
-                  $9.99
-                </span>
-                <span style={{ color: "var(--text-secondary)", fontSize: 15 }}>/month</span>
-              </div>
-            </div>
-            <span
-              style={{
-                display: "inline-block",
-                padding: "4px 12px",
-                background: "rgba(16,185,129,0.12)",
-                border: "1px solid rgba(16,185,129,0.3)",
-                borderRadius: 100,
-                fontSize: 12,
-                fontWeight: 700,
-                color: "var(--success)",
-              }}
-            >
-              7-day free trial
-            </span>
+            Pro Plan
+          </h2>
+          <div className="pricing-cta-price">
+            <span className="pricing-cta-amount">$9.99</span>
+            <span className="pricing-cta-period">/month</span>
           </div>
-
-          <ul
-            style={{
-              listStyle: "none",
-              padding: 0,
-              marginBottom: 32,
-              display: "grid",
-              gap: 12,
-            }}
-          >
+          <p className="pricing-cta-desc" style={{ marginTop: 8, marginBottom: 28 }}>
+            Everything you need to ship faster, forever.
+          </p>
+          <ul className="pricing-cta-features">
             {[
               "Unlimited config generation",
-              "All stack templates (Vite, Express, Docker, CI)",
+              "All stacks: Vite, Express, Next.js &amp; more",
               "Priority support",
               "Advanced templates",
+              "14-day free trial",
               "Cancel anytime",
-            ].map((feature) => (
-              <li
-                key={feature}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  fontSize: 14,
-                  color: "var(--text-secondary)",
-                }}
-              >
-                <span style={{ color: "var(--success)", fontWeight: 700 }}>✓</span>
-                {feature}
-              </li>
-            ))}
+            ].map((f) => {
+              const featureText = f.replace(/&amp;/g, "&");
+              return (
+                <li key={f} className="pricing-cta-feature">
+                  <span className="pricing-cta-check">✓</span>
+                  <span>{featureText}</span>
+                </li>
+              );
+            })}
           </ul>
-
           <button
-            onClick={handleSubscribe}
-            className="btn btn-primary"
-            style={{ width: "100%", justifyContent: "center", padding: "13px 0", fontSize: 15 }}
+            className="btn btn-primary btn-lg pricing-cta-btn generator-btn"
+            onClick={startSubscription}
           >
-            {user ? "Start Free Trial" : "Sign up & Start Free Trial"}
+            Start Free Trial →
           </button>
-
-          {subscribeError && (
-            <div className="alert alert-error" style={{ marginTop: 12 }}>
-              {subscribeError}
-            </div>
-          )}
-
-          <p
-            style={{
-              marginTop: 12,
-              textAlign: "center",
-              fontSize: 12,
-              color: "var(--text-muted)",
-            }}
-          >
-            No credit card required for trial · Cancel anytime
-          </p>
+          <p className="pricing-cta-note">No credit card required · Cancel anytime</p>
         </div>
 
-        <Link
-          to="/"
-          style={{
-            display: "inline-block",
-            marginTop: 32,
-            fontSize: 14,
-            color: "var(--text-secondary)",
-          }}
-        >
-          ← Back to Home
-        </Link>
+        <div style={{ marginTop: 40 }}>
+          <Link to="/" className="btn btn-ghost">
+            ← Back to Home
+          </Link>
+        </div>
       </div>
-
-      <Footer />
     </>
   );
 }
+

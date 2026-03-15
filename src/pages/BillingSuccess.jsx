@@ -1,41 +1,42 @@
 import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 export default function BillingSuccess() {
   return (
-    <div
-      style={{
-        padding: 32,
-        fontFamily: "system-ui, -apple-system, BlinkMacSystemFont",
-        background: "#1e1e1e",
-        minHeight: "100vh",
-        color: "#fff",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <h1>✅ Subscription Successful!</h1>
-      <p style={{ marginTop: 20, fontSize: 18, color: "#4ade80" }}>
-        Your PayPal subscription has been approved.
-      </p>
-      <p style={{ marginTop: 10, fontSize: 14, color: "#999" }}>
-        You will receive a confirmation email shortly.
-      </p>
-      <Link
-        to="/dashboard"
+    <>
+      <div className="grid-bg" />
+      <Navbar />
+      <div
         style={{
-          marginTop: 30,
-          padding: "10px 20px",
-          background: "#4a9eff",
-          color: "#fff",
-          textDecoration: "none",
-          borderRadius: 5,
-          fontSize: 16,
+          maxWidth: 480,
+          margin: "0 auto",
+          padding: "100px 24px",
+          textAlign: "center",
+          animation: "fadeInUp 0.6s ease both",
         }}
       >
-        Go to Dashboard
-      </Link>
-    </div>
+        <div style={{ fontSize: 64, marginBottom: 24, filter: "drop-shadow(0 0 20px rgba(16,185,129,0.6))" }}>
+          ✅
+        </div>
+        <h1
+          style={{
+            fontSize: "clamp(1.8rem, 5vw, 2.6rem)",
+            fontWeight: 900,
+            marginBottom: 16,
+            letterSpacing: "-0.03em",
+          }}
+        >
+          Subscription <span className="gradient-text">Activated!</span>
+        </h1>
+        <p style={{ color: "var(--text-secondary)", fontSize: 16, marginBottom: 40 }}>
+          Welcome to Pro! Your subscription has been approved. Start generating
+          production-ready stacks immediately.
+        </p>
+        <Link to="/dashboard" className="btn btn-primary btn-lg generator-btn">
+          Go to Dashboard →
+        </Link>
+      </div>
+    </>
   );
 }
+
