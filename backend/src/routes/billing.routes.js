@@ -1,7 +1,7 @@
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
 import { requireAuth } from "../middleware/auth.middleware.js";
-import { createSubscription } from "../controllers/billing.controller.js";
+import { createStripeCheckout } from "../controllers/stripe.controller.js";
 
 const router = Router();
 
@@ -13,6 +13,7 @@ const billingLimiter = rateLimit({
   message: { message: "Too many subscription requests, please try again later" },
 });
 
-router.post("/subscribe", billingLimiter, requireAuth, createSubscription);
+// POST /api/billing/stripe/checkout — create a Stripe checkout session
+router.post("/stripe/checkout", billingLimiter, requireAuth, createStripeCheckout);
 
 export default router;

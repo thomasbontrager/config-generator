@@ -5,6 +5,7 @@ import authRoutes from "./routes/auth.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import billingRoutes from "./routes/billing.routes.js";
 import webhookRoutes from "./routes/webhook.routes.js";
+import { handleStripeWebhook } from "./controllers/stripe.controller.js";
 
 dotenv.config();
 
@@ -19,6 +20,13 @@ app.use(
     origin: allowedOrigins,
     credentials: true,
   })
+);
+
+// Stripe webhook MUST be registered before express.json() — Stripe requires the raw body
+app.post(
+  "/api/billing/stripe/webhook",
+  express.raw({ type: "application/json" }),
+  handleStripeWebhook
 );
 
 app.use(express.json());
