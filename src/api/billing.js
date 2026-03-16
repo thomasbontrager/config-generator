@@ -1,46 +1,25 @@
-import { API_URL } from "../config/api";
+import { apiFetch } from "../config/api";
 
 export async function startSubscription() {
   try {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      alert("Please log in to start a subscription");
-      return;
+      return "Please log in to start a subscription";
     }
 
-    const res = await fetch(new URL("/api/billing/subscribe", API_URL), {
+    const data = await apiFetch("/api/billing/stripe/checkout", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
     });
 
-    if (!res.ok) {
-      const error = await res.json();
-      alert(error.message || "Failed to create subscription");
-      return;
-    }
-
-    const data = await res.json();
-
-    // PayPal subscription — follow approval link
-    const approval = data.links?.find((link) => link.rel === "approve");
-    if (approval?.href) {
-      window.location.href = approval.href;
-      return;
-    }
-
-    // Stripe checkout session — redirect to hosted page
-    if (data.url) {
+    if (data?.url) {
       window.location.href = data.url;
       return;
     }
 
-    alert("Subscription approval URL not found");
+    return "Checkout URL not found. Please try again.";
   } catch (error) {
     console.error("Subscription error:", error);
-    alert("An error occurred while starting subscription. Please try again.");
+    return error.message || "An error occurred while starting subscription. Please try again.";
   }
 }

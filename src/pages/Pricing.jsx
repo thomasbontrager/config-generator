@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import { startSubscription } from "../api/billing";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { useAuth } from "../context/AuthContext";
+import { startSubscription } from "../api/billing";
 
 export default function Pricing() {
   const { user } = useAuth();
@@ -115,10 +116,15 @@ export default function Pricing() {
           </ul>
           <button
             className="btn btn-primary btn-lg pricing-cta-btn generator-btn"
-            onClick={startSubscription}
+            onClick={handleSubscribe}
           >
             Start Free Trial →
           </button>
+          {subscribeError && (
+            <p style={{ color: "var(--error, #f87171)", marginTop: 12, fontSize: 14 }}>
+              {subscribeError}
+            </p>
+          )}
           <p className="pricing-cta-note">No credit card required · Cancel anytime</p>
         </div>
 
