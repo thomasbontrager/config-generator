@@ -58,14 +58,13 @@ export async function getSettings(req, res) {
   try {
     let settings = await prisma.adminSettings.findFirst();
     if (!settings) {
-      settings = { stripeKey: "", paypalClient: "", paypalSecret: "", webhookSecret: "" };
+      settings = { stripeSecretKey: "", stripeWebhookSecret: "", stripePriceId: "" };
     }
     // Never return actual secrets — return masked values
     res.json({
-      stripeKey: settings.stripeKey ? "••••••••" : "",
-      paypalClient: settings.paypalClient ? "••••••••" : "",
-      paypalSecret: settings.paypalSecret ? "••••••••" : "",
-      webhookSecret: settings.webhookSecret ? "••••••••" : "",
+      stripeSecretKey: settings.stripeSecretKey ? "••••••••" : "",
+      stripeWebhookSecret: settings.stripeWebhookSecret ? "••••••••" : "",
+      stripePriceId: settings.stripePriceId || "",
     });
   } catch {
     res.status(500).json({ message: "Failed to fetch settings" });
@@ -74,26 +73,24 @@ export async function getSettings(req, res) {
 
 export async function saveSettings(req, res) {
   try {
-    const { stripeKey, paypalClient, paypalSecret, webhookSecret } = req.body;
+    const { stripeSecretKey, stripeWebhookSecret, stripePriceId } = req.body;
 
     const existing = await prisma.adminSettings.findFirst();
     if (existing) {
       await prisma.adminSettings.update({
         where: { id: existing.id },
         data: {
-          ...(stripeKey && stripeKey !== "••••••••" ? { stripeKey } : {}),
-          ...(paypalClient && paypalClient !== "••••••••" ? { paypalClient } : {}),
-          ...(paypalSecret && paypalSecret !== "••••••••" ? { paypalSecret } : {}),
-          ...(webhookSecret && webhookSecret !== "••••••••" ? { webhookSecret } : {}),
+          ...(stripeSecretKey && stripeSecretKey !== "••••••••" ? { stripeSecretKey } : {}),
+          ...(stripeWebhookSecret && stripeWebhookSecret !== "••••••••" ? { stripeWebhookSecret } : {}),
+          ...(stripePriceId !== undefined ? { stripePriceId: stripePriceId || "" } : {}),
         },
       });
     } else {
       await prisma.adminSettings.create({
         data: {
-          stripeKey: stripeKey || "",
-          paypalClient: paypalClient || "",
-          paypalSecret: paypalSecret || "",
-          webhookSecret: webhookSecret || "",
+          stripeSecretKey: stripeSecretKey || "",
+          stripeWebhookSecret: stripeWebhookSecret || "",
+          stripePriceId: stripePriceId || "",
         },
       });
     }

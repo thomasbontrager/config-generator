@@ -182,7 +182,7 @@ router.post("/stripe/webhook", async (req, res) => {
         if (subscription.status === "trialing") nextStatus = "TRIAL";
         if (subscription.status === "past_due") nextStatus = "PAST_DUE";
         if (subscription.status === "unpaid") nextStatus = "PAST_DUE";
-        if (subscription.status === "canceled") nextStatus = "CANCELED";
+        if (subscription.status === "canceled") nextStatus = "CANCELLED";
         if (subscription.status === "incomplete") nextStatus = "PENDING";
 
         await prisma.user.updateMany({
@@ -208,7 +208,7 @@ router.post("/stripe/webhook", async (req, res) => {
         await prisma.user.updateMany({
           where: { stripeSubscriptionId },
           data: {
-            subscription: "CANCELED",
+            subscription: "CANCELLED",
           },
         });
         break;

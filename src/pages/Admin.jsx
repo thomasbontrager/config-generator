@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
+import { API_URL } from "../config/api";
 
-const API_BASE = import.meta.env.VITE_API_URL || "";
+const API_BASE = API_URL;
 
 function getToken() {
   return localStorage.getItem("token");
@@ -23,7 +24,7 @@ export default function Admin() {
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [loadingMetrics, setLoadingMetrics] = useState(true);
   const [error, setError] = useState("");
-  const [settings, setSettings] = useState({ stripeKey: "", paypalClient: "", paypalSecret: "", webhookSecret: "" });
+  const [settings, setSettings] = useState({ stripeSecretKey: "", stripeWebhookSecret: "", stripePriceId: "" });
   const [settingsSaved, setSettingsSaved] = useState(false);
   const [tab, setTab] = useState("users");
 
@@ -264,10 +265,9 @@ export default function Admin() {
               onSubmit={saveSettings}
             >
               {[
-                { key: "stripeKey", label: "Stripe Secret Key", placeholder: "sk_live_…" },
-                { key: "paypalClient", label: "PayPal Client ID", placeholder: "AX…" },
-                { key: "paypalSecret", label: "PayPal Secret", placeholder: "ES…" },
-                { key: "webhookSecret", label: "Webhook Secret", placeholder: "whsec_…" },
+                { key: "stripeSecretKey", label: "Stripe Secret Key", placeholder: "sk_live_…" },
+                { key: "stripeWebhookSecret", label: "Stripe Webhook Secret", placeholder: "whsec_…" },
+                { key: "stripePriceId", label: "Stripe Price ID", placeholder: "price_…" },
               ].map(({ key, label, placeholder }) => (
                 <div key={key}>
                   <label
