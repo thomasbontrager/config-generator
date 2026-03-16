@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-const API_BASE = import.meta.env.VITE_API_URL || "";
+const API_BASE = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 
 export default function Login({ signup: isSignupProp = false }) {
   const [isRegister, setIsRegister] = useState(isSignupProp);
@@ -23,10 +23,15 @@ export default function Login({ signup: isSignupProp = false }) {
       const res = await fetch(`${API_BASE}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email: email.trim(),
+          password,
+        }),
       });
 
-      const data = await res.json();
+      const contentType = res.headers.get("content-type") || "";
+      const isJson = contentType.includes("application/json");
+      const data = isJson ? await res.json() : { message: "Unexpected server response" };
 
       if (!res.ok) {
         setError(data.message || "Authentication failed");
@@ -35,7 +40,8 @@ export default function Login({ signup: isSignupProp = false }) {
 
       login(data.token, data.user);
       navigate("/dashboard");
-    } catch {
+    } catch (err) {
+      console.error("Auth request failed:", err);
       setError("Unable to connect to server. Please try again.");
     } finally {
       setLoading(false);
@@ -56,7 +62,6 @@ export default function Login({ signup: isSignupProp = false }) {
         }}
       >
         <div style={{ width: "100%", maxWidth: 400 }}>
-          {/* Logo */}
           <div style={{ textAlign: "center", marginBottom: 32 }}>
             <Link
               to="/"
@@ -146,7 +151,12 @@ export default function Login({ signup: isSignupProp = false }) {
                 type="submit"
                 className="btn btn-primary"
                 disabled={loading}
-                style={{ marginTop: 4, padding: "12px 0", width: "100%", justifyContent: "center" }}
+                style={{
+                  marginTop: 4,
+                  padding: "12px 0",
+                  width: "100%",
+                  justifyContent: "center",
+                }}
               >
                 {loading ? "Please wait…" : isRegister ? "Create Account" : "Sign In"}
               </button>
@@ -168,7 +178,10 @@ export default function Login({ signup: isSignupProp = false }) {
                   <button
                     className="btn btn-ghost"
                     style={{ padding: "0 4px", fontSize: 13, color: "var(--accent-1)" }}
-                    onClick={() => { setIsRegister(false); setError(""); }}
+                    onClick={() => {
+                      setIsRegister(false);
+                      setError("");
+                    }}
                     type="button"
                   >
                     Sign in
@@ -180,7 +193,10 @@ export default function Login({ signup: isSignupProp = false }) {
                   <button
                     className="btn btn-ghost"
                     style={{ padding: "0 4px", fontSize: 13, color: "var(--accent-1)" }}
-                    onClick={() => { setIsRegister(true); setError(""); }}
+                    onClick={() => {
+                      setIsRegister(true);
+                      setError("");
+                    }}
                     type="button"
                   >
                     Sign up free

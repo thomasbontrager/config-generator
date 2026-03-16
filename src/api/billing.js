@@ -1,13 +1,15 @@
+import { API_URL } from "../config/api";
+
 export async function startSubscription() {
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    alert("Please log in to start a subscription.");
-    return;
-  }
-
   try {
-    const res = await fetch("http://localhost:5000/api/billing/subscribe", {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please log in to start a subscription");
+      return;
+    }
+
+    const res = await fetch(`${API_URL}/api/billing/stripe/checkout`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -15,25 +17,44 @@ export async function startSubscription() {
       },
     });
 
+    const contentType = res.headers.get("content-type") || "";
+    const isJson = contentType.includes("application/json");
+    const data = isJson ? await res.json() : null;
+
     if (!res.ok) {
-      throw new Error(`API request failed with status ${res.status}`);
+      alert((data && data.message) || `Failed to create checkout session (${res.status})`);
+      return;
     }
 
-    const data = await res.json();
-
-    if (!data.links || !Array.isArray(data.links)) {
-      throw new Error("Invalid response format from billing API");
+    if (data?.url) {
+      window.location.href = data.url;
+      return;
     }
 
-    const approval = data.links.find((link) => link.rel === "approve");
-
-    if (!approval || !approval.href) {
-      throw new Error("Approval link not found in response");
-    }
-
-    window.location.href = approval.href;
+    alert("Stripe checkout URL not found");
   } catch (error) {
     console.error("Subscription error:", error);
-    alert("Failed to start subscription. Please try again later.");
+    alert("An error occurred while starting subscription. Please try again.");
   }
+}
+
+export async function getBillingState() {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return null;
+  }
+
+  const res = await fetch(`${API_URL}/api/billing/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    return null;
+  }
+
+  const data = await res.json();
+  return data?.user || null;
 }

@@ -8,22 +8,24 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  password     String
-  role         String   @default("USER")
-  subscription String   @default("FREE")
-  stripeCustomerId String?
+  id                   String   @id @default(uuid())
+  email                String   @unique
+  password             String
+  role                 String   @default("USER")
+  subscription         String   @default("FREE")
+  stripeCustomerId     String?
   stripeSubscriptionId String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
 model AdminSettings {
-  id            Int      @id @default(autoincrement())
-  stripeKey     String   @default("")
-  paypalClient  String   @default("")
-  paypalSecret  String   @default("")
-  webhookSecret String   @default("")
-  updatedAt     DateTime @updatedAt
+  id                   Int      @id @default(autoincrement())
+  stripePublishableKey String   @default("")
+  stripeSecretKey      String   @default("")
+  stripeWebhookSecret  String   @default("")
+  stripePriceId        String   @default("")
+  paypalClient         String   @default("")
+  paypalSecret         String   @default("")
+  updatedAt            DateTime @updatedAt
 }
