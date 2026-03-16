@@ -1,6 +1,11 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
 import prisma from "../utils/prisma.js";
+import {
+  getUsers,
+  updateSubscription,
+  getMetrics,
+} from "../controllers/admin.controller.js";
 
 const router = Router();
 
@@ -48,59 +53,52 @@ async function getSettingsRecord() {
   return settings;
 }
 
-router.get("/settings/billing", requireAdmin, async (req, res) => {
+router.get("/users", requireAdmin, getUsers);
+router.get("/metrics", requireAdmin, getMetrics);
+router.post("/subscription", requireAdmin, updateSubscription);
+
+router.get("/settings", requireAdmin, async (req, res) => {
   try {
     const settings = await getSettingsRecord();
 
     return res.json({
-      stripePublishableKey: settings.stripePublishableKey || "",
-      stripeSecretKey: settings.stripeSecretKey || "",
-      stripeWebhookSecret: settings.stripeWebhookSecret || "",
+      stripeSecretKey: settings.stripeSecretKey ? "••••••••" : "",
+      stripeWebhookSecret: settings.stripeWebhookSecret ? "••••••••" : "",
       stripePriceId: settings.stripePriceId || "",
-      paypalClient: settings.paypalClient || "",
-      paypalSecret: settings.paypalSecret || "",
       updatedAt: settings.updatedAt,
     });
   } catch (error) {
-    console.error("Get billing settings error:", error);
-    return res.status(500).json({ message: "Failed to load billing settings" });
+    console.error("Get settings error:", error);
+    return res.status(500).json({ message: "Failed to load settings" });
   }
 });
 
-router.post("/settings/billing", requireAdmin, async (req, res) => {
+router.post("/settings", requireAdmin, async (req, res) => {
   try {
     const settings = await getSettingsRecord();
 
-    const data = {
-      stripePublishableKey: req.body?.stripePublishableKey?.trim?.() || "",
-      stripeSecretKey: req.body?.stripeSecretKey?.trim?.() || "",
-      stripeWebhookSecret: req.body?.stripeWebhookSecret?.trim?.() || "",
-      stripePriceId: req.body?.stripePriceId?.trim?.() || "",
-      paypalClient: req.body?.paypalClient?.trim?.() || "",
-      paypalSecret: req.body?.paypalSecret?.trim?.() || "",
-    };
+    const data = {};
+    const { stripeSecretKey, stripeWebhookSecret, stripePriceId } = req.body || {};
 
-    const updated = await prisma.adminSettings.update({
+    if (stripeSecretKey && stripeSecretKey !== "••••••••") {
+      data.stripeSecretKey = stripeSecretKey.trim();
+    }
+    if (stripeWebhookSecret && stripeWebhookSecret !== "••••••••") {
+      data.stripeWebhookSecret = stripeWebhookSecret.trim();
+    }
+    if (stripePriceId !== undefined) {
+      data.stripePriceId = stripePriceId.trim();
+    }
+
+    await prisma.adminSettings.update({
       where: { id: settings.id },
       data,
     });
 
-    return res.json({
-      success: true,
-      message: "Saved successfully",
-      settings: {
-        stripePublishableKey: updated.stripePublishableKey,
-        stripeSecretKey: updated.stripeSecretKey,
-        stripeWebhookSecret: updated.stripeWebhookSecret,
-        stripePriceId: updated.stripePriceId,
-        paypalClient: updated.paypalClient,
-        paypalSecret: updated.paypalSecret,
-        updatedAt: updated.updatedAt,
-      },
-    });
+    return res.json({ success: true, message: "Settings saved successfully" });
   } catch (error) {
-    console.error("Save billing settings error:", error);
-    return res.status(500).json({ message: "Failed to save billing settings" });
+    console.error("Save settings error:", error);
+    return res.status(500).json({ message: "Failed to save settings" });
   }
 });
 

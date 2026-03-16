@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { API_URL } from "../config/api";
 
-const API_BASE = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
+const API_BASE = API_URL;
 
 export default function Login({ signup: isSignupProp = false }) {
   const [isRegister, setIsRegister] = useState(isSignupProp);
