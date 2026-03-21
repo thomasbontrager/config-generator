@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { ConfigsActions } from '../configs/components/ConfigsActions';
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -14,16 +15,26 @@ export default async function DashboardPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    include: {
+    select: {
+      name: true,
+      subscriptionStatus: true,
+      trialEndsAt: true,
       generatedConfigs: {
         orderBy: { createdAt: 'desc' },
         take: 5,
+        select: {
+          id: true,
+          name: true,
+          configType: true,
+          content: true,
+          createdAt: true,
+        },
       },
     },
   });
 
-  const configCount = user?.generatedConfigs.length || 0;
-  const subscriptionStatus = user?.subscriptionStatus || 'FREE';
+  const configCount = user?.generatedConfigs.length ?? 0;
+  const subscriptionStatus = user?.subscriptionStatus ?? 'FREE';
   const trialEndsAt = user?.trialEndsAt;
 
   return (
@@ -96,19 +107,30 @@ export default async function DashboardPage() {
               {user?.generatedConfigs.map((config) => (
                 <div
                   key={config.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/30 transition-colors"
                 >
-                  <div>
+                  <div className="flex-1">
                     <div className="font-medium">{config.name}</div>
                     <div className="text-sm text-muted-foreground">
                       {config.configType} • {new Date(config.createdAt).toLocaleDateString()}
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">
-                    Download
-                  </Button>
+                  <ConfigsActions
+                    configId={config.id}
+                    configTypes={
+                      (config.content as { configTypes?: string[] })?.configTypes ?? []
+                    }
+                    downloadOnly
+                  />
                 </div>
               ))}
+              {configCount >= 5 && (
+                <div className="text-center pt-2">
+                  <Link href="/dashboard/configs">
+                    <Button variant="ghost" size="sm">View all configurations →</Button>
+                  </Link>
+                </div>
+              )}
             </div>
           )}
         </CardContent>

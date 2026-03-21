@@ -19,9 +19,18 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
 
     try {
-      // TODO: Implement password reset API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error ?? 'Something went wrong');
+      }
+
       setSubmitted(true);
       toast({
         title: 'Check your email',
@@ -31,7 +40,7 @@ export default function ForgotPasswordPage() {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Something went wrong. Please try again.',
+        description: error instanceof Error ? error.message : 'Something went wrong. Please try again.',
       });
     } finally {
       setIsLoading(false);
@@ -49,7 +58,7 @@ export default function ForgotPasswordPage() {
             </CardDescription>
           </CardHeader>
           <CardFooter>
-            <Link href="/auth/login" className="w-full">
+            <Link href="/login" className="w-full">
               <Button variant="outline" className="w-full">
                 Back to login
               </Button>
@@ -89,7 +98,7 @@ export default function ForgotPasswordPage() {
           </form>
         </CardContent>
         <CardFooter>
-          <Link href="/auth/login" className="w-full">
+          <Link href="/login" className="w-full">
             <Button variant="ghost" className="w-full">
               Back to login
             </Button>

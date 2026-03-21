@@ -22,6 +22,22 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # !! BUILD-TIME ONLY — NOT REAL CREDENTIALS !!
+          # These stubs satisfy env validation during `prisma generate && next build`.
+          # No real database, Stripe, or auth connection is made at build time.
+          # Real secrets are injected at runtime via the server's .env file.
+          DATABASE_URL: postgresql://BUILD_ONLY:BUILD_ONLY@localhost:5432/BUILD_ONLY
+          APP_URL: https://shipforge.dev
+          NEXT_PUBLIC_APP_URL: https://shipforge.dev
+          # AUTH_SECRET must be ≥32 chars to pass Zod validation
+          AUTH_SECRET: BUILD_ONLY_STUB_DO_NOT_USE_IN_PROD_XX
+          STRIPE_SECRET_KEY: sk_test_BUILD_ONLY_NOT_REAL
+          STRIPE_WEBHOOK_SECRET: whsec_BUILD_ONLY_NOT_REAL
+          STRIPE_PRICE_STARTER: price_BUILD_ONLY_STARTER
+          STRIPE_PRICE_PRO: price_BUILD_ONLY_PRO
+          STRIPE_PRICE_TEAM: price_BUILD_ONLY_TEAM
+          STRIPE_PORTAL_RETURN_URL: https://shipforge.dev/billing
 
       # 2️⃣ Set up Docker
       - name: Set up Docker

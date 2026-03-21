@@ -24,11 +24,20 @@ model User {
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
 
-  accounts          Account[]
-  sessions          Session[]
-  subscriptions     Subscription[]
-  generatedConfigs  GeneratedConfig[]
-  payments          Payment[]
+  accounts         Account[]
+  sessions         Session[]
+  subscriptions    Subscription[]
+  generatedConfigs GeneratedConfig[]
+  payments         Payment[]
+  stacks           Stack[]
+  apiKeys          ApiKey[]
+  activityLogs     ActivityLog[]
+  integrations     Integration[]
+  teamMemberships      TeamMember[]         @relation("TeamMemberUser")
+  ownedTeams           TeamMember[]         @relation("TeamMemberInvitedBy")
+  organizationMembers  OrganizationMember[]
+  auditLogsAsActor     AuditLog[]           @relation("AuditActor")
+  supportRequests      SupportRequest[]
 
   @@index([email])
   @@index([subscriptionId])
@@ -93,15 +102,18 @@ model Subscription {
 model GeneratedConfig {
   id          String   @id @default(cuid())
   userId      String
+  stackId     String?
   name        String
   configType  String
   content     Json
   downloadUrl String?
   createdAt   DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stack Stack? @relation(fields: [stackId], references: [id], onDelete: SetNull)
 
   @@index([userId])
+  @@index([stackId])
   @@index([createdAt])
 }
 
@@ -118,6 +130,98 @@ model Payment {
   @@index([userId])
   @@index([stripePaymentId])
 }
+
+// ─── New models ───────────────────────────────────────────────────────────────
+
+/// A saved set of config types the user wants to generate together.
+model Stack {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  description String?
+  configTypes String[] // e.g. ["vite-react", "express"]
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  generatedConfigs GeneratedConfig[]
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+/// Programmatic API keys for CI/CD and external integrations.
+model ApiKey {
+  id         String    @id @default(cuid())
+  userId     String
+  name       String
+  keyHash    String    @unique // SHA-256 hash of the full key
+  keyPrefix  String    // first 8 chars shown in UI
+  lastUsedAt DateTime?
+  expiresAt  DateTime?
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([keyHash])
+}
+
+/// Append-only audit trail of user actions.
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String   // e.g. "GENERATE_CONFIG", "LOGIN", "CREATE_STACK"
+  metadata  Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+/// OAuth / third-party service integrations per user.
+model Integration {
+  id           String              @id @default(cuid())
+  userId       String
+  provider     IntegrationProvider
+  accessToken  String?             @db.Text // store via app-level AES-GCM encryption in production
+  refreshToken String?             @db.Text // store via app-level AES-GCM encryption in production
+  externalId   String?             // e.g. GitHub user ID or org ID
+  scopes       String[]
+  metadata     Json?               // provider-specific data (login, avatar, etc.)
+  connectedAt  DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  revokedAt    DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, provider])
+  @@index([userId])
+}
+
+/// Team members — allows sharing stacks/projects across users.
+model TeamMember {
+  id          String     @id @default(cuid())
+  userId      String
+  role        TeamRole   @default(MEMBER)
+  invitedById String?
+  invitedAt   DateTime   @default(now())
+  acceptedAt  DateTime?
+
+  user        User  @relation("TeamMemberUser", fields: [userId], references: [id], onDelete: Cascade)
+  invitedBy   User? @relation("TeamMemberInvitedBy", fields: [invitedById], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([invitedById])
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
 
 enum UserRole {
   USER
@@ -137,4 +241,201 @@ enum PaymentStatus {
   SUCCEEDED
   FAILED
   REFUNDED
+}
+
+enum IntegrationProvider {
+  GITHUB
+  GITLAB
+  VERCEL
+  NETLIFY
+  STRIPE
+  OPENAI
+  EMAIL
+  STORAGE
+}
+
+enum TeamRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+// ─── Organization domain ──────────────────────────────────────────────────────
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members       OrganizationMember[]
+  auditLogs     AuditLog[]
+  featureFlags  FeatureFlag[]
+}
+
+model OrganizationMember {
+  id             String           @id @default(cuid())
+  organizationId String
+  userId         String
+  role           OrganizationRole @default(MEMBER)
+  invitedAt      DateTime         @default(now())
+  acceptedAt     DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([organizationId])
+  @@index([userId])
+}
+
+model AuditLog {
+  id             String   @id @default(cuid())
+  organizationId String?
+  actorUserId    String?
+  action         String
+  targetType     String?
+  targetId       String?
+  metadataJson   Json?
+  createdAt      DateTime @default(now())
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  actor        User?         @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([actorUserId])
+  @@index([createdAt])
+}
+
+model SupportRequest {
+  id        String               @id @default(cuid())
+  userId    String?
+  email     String
+  subject   String
+  message   String
+  status    SupportRequestStatus @default(OPEN)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([status])
+}
+
+model FeatureFlag {
+  id             String   @id @default(cuid())
+  organizationId String
+  key            String
+  enabled        Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, key])
+  @@index([organizationId])
+}
+
+model WebhookEvent {
+  id         String             @id @default(cuid())
+  provider   String
+  eventType  String
+  payload    Json
+  status     WebhookEventStatus @default(RECEIVED)
+  processedAt DateTime?
+  createdAt  DateTime           @default(now())
+
+  @@index([provider])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ─── New enums ────────────────────────────────────────────────────────────────
+
+enum OrganizationRole {
+  OWNER
+  ADMIN
+  MEMBER
+  SUPPORT
+}
+
+enum StackProjectStatus {
+  DRAFT
+  READY
+  GENERATING
+  ACTIVE
+  FAILED
+  ARCHIVED
+}
+
+enum StackGenerationStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
+enum IntegrationStatus {
+  DISCONNECTED
+  CONNECTING
+  CONNECTED
+  ERROR
+}
+
+enum BillingProvider {
+  STRIPE
+  LEMON_SQUEEZY
+}
+
+enum PurchaseStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum WebhookEventStatus {
+  RECEIVED
+  PROCESSED
+  FAILED
+  IGNORED
+}
+
+enum SupportRequestStatus {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+// ─── Background jobs ──────────────────────────────────────────────────────────
+
+model BackgroundJob {
+  id          String    @id @default(cuid())
+  type        String
+  status      JobStatus @default(PENDING)
+  payload     Json?
+  result      Json?
+  errorMessage String?
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(3)
+  scheduledAt DateTime  @default(now())
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status])
+  @@index([type])
+  @@index([scheduledAt])
+}
+
+enum JobStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
 }

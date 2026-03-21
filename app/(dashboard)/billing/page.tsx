@@ -2,8 +2,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { BillingActions } from './components/BillingActions';
 
 export default async function BillingPage() {
   const session = await getServerSession(authOptions);
@@ -19,12 +19,17 @@ export default async function BillingPage() {
         orderBy: { createdAt: 'desc' },
         take: 1,
       },
+      payments: {
+        orderBy: { createdAt: 'desc' },
+        take: 10,
+      },
     },
   });
 
   const subscription = user?.subscriptions[0];
   const subscriptionStatus = user?.subscriptionStatus || 'FREE';
   const trialEndsAt = user?.trialEndsAt;
+  const payments = user?.payments ?? [];
 
   return (
     <div className="space-y-8">
@@ -56,12 +61,7 @@ export default async function BillingPage() {
                 </p>
               )}
             </div>
-            {subscriptionStatus === 'TRIAL' && (
-              <Button size="lg">Upgrade to Pro - $29/mo</Button>
-            )}
-            {subscriptionStatus === 'ACTIVE' && (
-              <Button variant="outline">Manage Subscription</Button>
-            )}
+            <BillingActions subscriptionStatus={subscriptionStatus} />
           </div>
         </CardContent>
       </Card>
@@ -82,9 +82,7 @@ export default async function BillingPage() {
                   <li>✓ All templates</li>
                   <li>✓ ZIP downloads</li>
                 </ul>
-                <Button variant="outline" disabled>
-                  Current Plan
-                </Button>
+                <p className="text-sm text-muted-foreground font-medium">Current Plan</p>
               </div>
             </CardContent>
           </Card>
@@ -103,7 +101,7 @@ export default async function BillingPage() {
                   <li>✓ Priority support</li>
                   <li>✓ Config history</li>
                 </ul>
-                <Button className="w-full">Upgrade to Pro</Button>
+                <BillingActions subscriptionStatus={subscriptionStatus} showUpgradeOnly />
               </div>
             </CardContent>
           </Card>
@@ -117,9 +115,38 @@ export default async function BillingPage() {
           <CardDescription>Your past invoices and payments</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-muted-foreground">
-            No billing history yet
-          </div>
+          {payments.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              No billing history yet
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {payments.map((payment) => (
+                <div
+                  key={payment.id}
+                  className="flex items-center justify-between p-3 border rounded-lg"
+                >
+                  <div>
+                    <div className="font-medium text-sm">
+                      ${(payment.amount / 100).toFixed(2)}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {new Date(payment.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <span
+                    className={`text-xs font-medium px-2 py-1 rounded-full ${
+                      payment.status === 'SUCCEEDED'
+                        ? 'bg-green-500/10 text-green-400'
+                        : 'bg-red-500/10 text-red-400'
+                    }`}
+                  >
+                    {payment.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
