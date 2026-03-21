@@ -46,3 +46,4 @@ frontend/dist
 # Next.js
 .next
 out
+tsconfig.tsbuildinfo
