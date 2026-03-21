@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { DashboardNavSignOut } from './components/DashboardNavSignOut';
 
 export default async function DashboardLayout({
   children,
@@ -12,7 +13,7 @@ export default async function DashboardLayout({
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect('/auth/login');
+    redirect('/login');
   }
 
   return (
@@ -42,6 +43,14 @@ export default async function DashboardLayout({
             >
               History
             </Link>
+            {session.user?.role === 'ADMIN' && (
+              <Link
+                href="/dashboard/admin"
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              >
+                Admin
+              </Link>
+            )}
           </nav>
           <div className="ml-auto flex items-center space-x-4">
             <Link href="/dashboard/settings">
@@ -54,6 +63,7 @@ export default async function DashboardLayout({
                 Billing
               </Button>
             </Link>
+            <DashboardNavSignOut />
           </div>
         </div>
       </header>

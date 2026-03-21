@@ -28,7 +28,7 @@ export default function PricingPage() {
               </ul>
             </CardContent>
             <CardFooter>
-              <Link href="/auth/signup" className="w-full">
+              <Link href="/signup" className="w-full">
                 <Button variant="outline" className="w-full">Start Free Trial</Button>
               </Link>
             </CardFooter>
@@ -52,7 +52,7 @@ export default function PricingPage() {
               </ul>
             </CardContent>
             <CardFooter>
-              <Link href="/auth/signup" className="w-full">
+              <Link href="/signup" className="w-full">
                 <Button className="w-full">Get Started</Button>
               </Link>
             </CardFooter>

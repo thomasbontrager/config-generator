@@ -9,22 +9,45 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 
 export default function SettingsPage() {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    name: session?.user?.name || '',
-    email: session?.user?.email || '',
-  });
+  const [name, setName] = useState(session?.user?.name ?? '');
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!name.trim()) return;
+    setIsLoading(true);
 
-    toast({
-      title: 'Profile updates not available',
-      description: 'Profile changes cannot be saved yet in this demo.',
-      variant: 'destructive',
-    });
+    try {
+      const response = await fetch('/api/user/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error ?? 'Failed to save profile');
+      }
+
+      // Refresh session so the new name shows in the nav
+      await update({ name: data.user.name });
+
+      toast({
+        title: 'Profile updated',
+        description: 'Your name has been saved.',
+      });
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Something went wrong',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -47,9 +70,10 @@ export default function SettingsPage() {
               <Label htmlFor="name">Name</Label>
               <Input
                 id="name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 disabled={isLoading}
+                placeholder="Your name"
               />
             </div>
             <div className="space-y-2">
@@ -57,10 +81,13 @@ export default function SettingsPage() {
               <Input
                 id="email"
                 type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                disabled={isLoading}
+                value={session?.user?.email ?? ''}
+                disabled
+                className="cursor-not-allowed opacity-60"
               />
+              <p className="text-xs text-muted-foreground">
+                Email cannot be changed. Contact support if needed.
+              </p>
             </div>
             <Button type="submit" disabled={isLoading}>
               {isLoading ? 'Saving...' : 'Save Changes'}
@@ -75,7 +102,9 @@ export default function SettingsPage() {
           <CardDescription>Change your password</CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant="outline">Change Password</Button>
+          <Button variant="outline" disabled>
+            Change Password (coming soon)
+          </Button>
         </CardContent>
       </Card>
 
@@ -85,7 +114,9 @@ export default function SettingsPage() {
           <CardDescription>Irreversible actions</CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant="destructive">Delete Account</Button>
+          <Button variant="destructive" disabled>
+            Delete Account (contact support)
+          </Button>
         </CardContent>
       </Card>
     </div>

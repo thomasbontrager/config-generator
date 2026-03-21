@@ -320,7 +320,7 @@ function PricingCard({ tier, yearly }: { tier: PricingTier; yearly: boolean }) {
         ))}
       </ul>
 
-      <Link href="/auth/signup" className="w-full">
+      <Link href="/signup" className="w-full">
         <Button
           className={`w-full font-semibold ${
             tier.popular
@@ -355,12 +355,12 @@ export default function HomePage() {
             <Link href="/docs" className="hover:text-white transition-colors">Docs</Link>
           </div>
           <div className="flex items-center gap-3">
-            <Link href="/auth/login">
+            <Link href="/login">
               <Button variant="ghost" size="sm" className="text-gray-300 hover:text-white hidden sm:inline-flex">
                 Login
               </Button>
             </Link>
-            <Link href="/auth/signup">
+            <Link href="/signup">
               <Button
                 size="sm"
                 className="bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-400 hover:to-violet-500 border-0 font-semibold shadow-md shadow-cyan-500/20"

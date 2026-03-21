@@ -49,7 +49,7 @@ export default function ForgotPasswordPage() {
             </CardDescription>
           </CardHeader>
           <CardFooter>
-            <Link href="/auth/login" className="w-full">
+            <Link href="/login" className="w-full">
               <Button variant="outline" className="w-full">
                 Back to login
               </Button>
@@ -89,7 +89,7 @@ export default function ForgotPasswordPage() {
           </form>
         </CardContent>
         <CardFooter>
-          <Link href="/auth/login" className="w-full">
+          <Link href="/login" className="w-full">
             <Button variant="ghost" className="w-full">
               Back to login
             </Button>
