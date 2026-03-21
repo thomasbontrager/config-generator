@@ -4,6 +4,7 @@
  * Used by /api/generate and /api/stacks/[id]/generate.
  */
 import JSZip from 'jszip';
+import type { StackConfig } from '@/types/stack-config';
 
 // ─── Template registry ────────────────────────────────────────────────────────
 
@@ -542,4 +543,297 @@ export async function buildZip(configTypes: string[]): Promise<Buffer> {
  */
 export function configTypesLabel(configTypes: string[]): string {
   return configTypes.map((t) => TEMPLATES[t]?.name ?? t).join(', ');
+}
+
+// ─── Normalized StackConfig → ZIP ────────────────────────────────────────────
+
+/**
+ * Builds a ZIP archive from a normalized StackConfig.
+ * Files are organised under a top-level folder named after the project slug.
+ */
+export async function buildZipFromConfig(config: StackConfig): Promise<Buffer> {
+  const zip = new JSZip();
+  const root = zip.folder(config.slug) ?? zip;
+
+  // ── .env.example ───────────────────────────────────────────────────────────
+  const envLines: string[] = [`APP_NAME=${config.projectName}`];
+
+  if (config.database !== 'none') {
+    if (config.database === 'sqlite') {
+      envLines.push('DATABASE_URL=file:./dev.db');
+    } else {
+      const scheme = config.database === 'mysql' ? 'mysql' : 'postgresql';
+      envLines.push(`DATABASE_URL=${scheme}://user:password@localhost:5432/${config.slug}`);
+    }
+  }
+
+  if (config.frontend === 'nextjs') {
+    envLines.push('NEXTAUTH_URL=http://localhost:3000', 'NEXTAUTH_SECRET=change-me');
+  }
+  if (config.frontend === 'vite-react') {
+    envLines.push('VITE_API_URL=http://localhost:3000');
+  }
+
+  if (config.auth.includes('google')) {
+    envLines.push('GOOGLE_CLIENT_ID=', 'GOOGLE_CLIENT_SECRET=');
+  }
+  if (config.auth.includes('github')) {
+    envLines.push('GITHUB_CLIENT_ID=', 'GITHUB_CLIENT_SECRET=');
+  }
+
+  if (config.billing === 'stripe') {
+    envLines.push(
+      'STRIPE_SECRET_KEY=sk_test_...',
+      'STRIPE_WEBHOOK_SECRET=whsec_...',
+      'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...'
+    );
+  } else if (config.billing === 'lemon-squeezy') {
+    envLines.push(
+      'LEMONSQUEEZY_API_KEY=',
+      'LEMONSQUEEZY_WEBHOOK_SECRET=',
+      'LEMONSQUEEZY_STORE_ID='
+    );
+  }
+
+  if (config.aiProviders.includes('openai')) envLines.push('OPENAI_API_KEY=sk-...');
+  if (config.aiProviders.includes('anthropic')) envLines.push('ANTHROPIC_API_KEY=sk-ant-...');
+  if (config.aiProviders.includes('replicate')) envLines.push('REPLICATE_API_TOKEN=');
+
+  if (config.email === 'resend') {
+    envLines.push('RESEND_API_KEY=re_...');
+  } else if (config.email === 'mailgun') {
+    envLines.push('MAILGUN_API_KEY=', 'MAILGUN_DOMAIN=');
+  }
+
+  if (config.storage === 's3') {
+    envLines.push(
+      'AWS_ACCESS_KEY_ID=',
+      'AWS_SECRET_ACCESS_KEY=',
+      'AWS_REGION=us-east-1',
+      'AWS_S3_BUCKET='
+    );
+  } else if (config.storage === 'cloudflare-r2') {
+    envLines.push(
+      'CLOUDFLARE_R2_ACCOUNT_ID=',
+      'CLOUDFLARE_R2_ACCESS_KEY_ID=',
+      'CLOUDFLARE_R2_SECRET_ACCESS_KEY=',
+      'CLOUDFLARE_R2_BUCKET='
+    );
+  }
+
+  if (config.backend === 'express') envLines.push('PORT=3000');
+  if (config.backend === 'fastapi') envLines.push('PORT=8000');
+
+  root.file('.env.example', envLines.join('\n'));
+
+  // ── Frontend ────────────────────────────────────────────────────────────────
+  const frontendFolder = root.folder('frontend');
+
+  if (config.frontend === 'vite-react') {
+    const tpl = TEMPLATES['vite-react'].files;
+    Object.entries(tpl).forEach(([name, content]) => {
+      if (name !== '.env.example') frontendFolder?.file(name, content);
+    });
+  } else {
+    // nextjs
+    const tpl = TEMPLATES['next'].files;
+    Object.entries(tpl).forEach(([name, content]) => {
+      if (name !== '.env.example') frontendFolder?.file(name, content);
+    });
+  }
+
+  // ── Backend ─────────────────────────────────────────────────────────────────
+  if (config.backend !== 'none') {
+    const backendFolder = root.folder('backend');
+
+    if (config.backend === 'express') {
+      const tpl = TEMPLATES['express'].files;
+      Object.entries(tpl).forEach(([name, content]) => {
+        if (name !== '.env.example') backendFolder?.file(name, content);
+      });
+    } else {
+      // fastapi
+      backendFolder?.file(
+        'main.py',
+        [
+          'from fastapi import FastAPI',
+          '',
+          'app = FastAPI()',
+          '',
+          '@app.get("/health")',
+          'def health():',
+          '    return {"status": "ok"}',
+        ].join('\n')
+      );
+      backendFolder?.file(
+        'requirements.txt',
+        [
+          'fastapi>=0.110.0',
+          'uvicorn[standard]>=0.27.0',
+          'python-dotenv>=1.0.0',
+        ].join('\n')
+      );
+      backendFolder?.file(
+        'Dockerfile',
+        [
+          'FROM python:3.12-slim',
+          'WORKDIR /app',
+          'ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1',
+          'COPY requirements.txt .',
+          'RUN pip install --no-cache-dir -r requirements.txt',
+          'COPY . .',
+          'EXPOSE 8000',
+          'CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]',
+        ].join('\n')
+      );
+    }
+  }
+
+  // ── ORM ─────────────────────────────────────────────────────────────────────
+  if (config.database !== 'none') {
+    if (config.orm === 'prisma') {
+      const providerMap: Record<string, string> = {
+        postgres: 'postgresql',
+        mysql: 'mysql',
+        sqlite: 'sqlite',
+      };
+      root.file(
+        'prisma/schema.prisma',
+        [
+          'generator client {',
+          '  provider = "prisma-client-js"',
+          '}',
+          '',
+          'datasource db {',
+          `  provider = "${providerMap[config.database]}"`,
+          '  url      = env("DATABASE_URL")',
+          '}',
+        ].join('\n')
+      );
+    } else if (config.orm === 'drizzle') {
+      const dialectMap: Record<string, string> = {
+        postgres: 'postgresql',
+        mysql: 'mysql',
+        sqlite: 'sqlite',
+      };
+      root.file(
+        'drizzle.config.ts',
+        [
+          'import type { Config } from "drizzle-kit";',
+          '',
+          'export default {',
+          '  schema: "./src/db/schema.ts",',
+          '  out: "./drizzle",',
+          `  dialect: "${dialectMap[config.database]}",`,
+          '  dbCredentials: {',
+          '    url: process.env.DATABASE_URL!,',
+          '  },',
+          '} satisfies Config;',
+        ].join('\n')
+      );
+    }
+  }
+
+  // ── Deployment ───────────────────────────────────────────────────────────────
+  if (config.deployment === 'docker') {
+    const dockerFiles = TEMPLATES['docker'].files;
+    root.file('docker-compose.yml', dockerFiles['docker-compose.yml']);
+    root.file('.dockerignore', dockerFiles['.dockerignore']);
+  } else if (config.deployment === 'railway') {
+    root.file(
+      'railway.json',
+      JSON.stringify(
+        {
+          $schema: 'https://railway.app/railway.schema.json',
+          build: { builder: 'NIXPACKS' },
+          deploy: {
+            numReplicas: 1,
+            sleepApplication: false,
+            restartPolicyType: 'ON_FAILURE',
+          },
+        },
+        null,
+        2
+      )
+    );
+  } else if (config.deployment === 'coolify') {
+    root.file(
+      'coolify.yml',
+      [
+        '# Coolify deployment configuration',
+        '# See https://coolify.io/docs for more information',
+        'version: "1"',
+        `name: ${config.slug}`,
+      ].join('\n')
+    );
+  }
+
+  // ── CI workflow ───────────────────────────────────────────────────────────
+  const ciFiles = TEMPLATES['github-actions'].files;
+  root.file('.github/workflows/ci.yml', ciFiles['.github/workflows/ci.yml']);
+
+  // ── README ───────────────────────────────────────────────────────────────────
+  const readmeLines = [
+    `# ${config.projectName}`,
+    '',
+    '## Stack',
+    '',
+    `| Layer | Choice |`,
+    `|-------|--------|`,
+    `| Frontend | ${config.frontend} |`,
+    `| Backend | ${config.backend} |`,
+    `| Database | ${config.database} |`,
+    `| ORM | ${config.orm} |`,
+    `| Auth | ${config.auth.length ? config.auth.join(', ') : 'none'} |`,
+    `| Billing | ${config.billing} |`,
+    `| Email | ${config.email} |`,
+    `| Storage | ${config.storage} |`,
+    `| Deployment | ${config.deployment} |`,
+    config.aiProviders.length ? `| AI Providers | ${config.aiProviders.join(', ')} |` : null,
+    config.modules.length ? `| Modules | ${config.modules.join(', ')} |` : null,
+    '',
+    '## Getting started',
+    '',
+    '```bash',
+    '# 1. Copy environment variables',
+    'cp .env.example .env',
+    '# Fill in the values in .env',
+    '```',
+  ].filter((l): l is string => l !== null);
+
+  if (config.backend === 'express') {
+    readmeLines.push(
+      '',
+      '### Backend',
+      '```bash',
+      'cd backend && npm install && node server.js',
+      '```'
+    );
+  } else if (config.backend === 'fastapi') {
+    readmeLines.push(
+      '',
+      '### Backend',
+      '```bash',
+      'cd backend && pip install -r requirements.txt && uvicorn main:app --reload',
+      '```'
+    );
+  }
+
+  if (config.frontend === 'vite-react' || config.frontend === 'nextjs') {
+    readmeLines.push(
+      '',
+      '### Frontend',
+      '```bash',
+      'cd frontend && npm install && npm run dev',
+      '```'
+    );
+  }
+
+  if (config.deployment === 'docker') {
+    readmeLines.push('', '### Docker', '```bash', 'docker-compose up --build', '```');
+  }
+
+  root.file('README.md', readmeLines.join('\n'));
+
+  return zip.generateAsync({ type: 'nodebuffer' });
 }

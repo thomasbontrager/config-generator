@@ -2,17 +2,8 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { z } from 'zod';
-import { VALID_CONFIG_TYPES, buildZip, configTypesLabel } from '@/lib/generator';
-
-// ─── Input schema ─────────────────────────────────────────────────────────────
-
-const requestSchema = z.object({
-  configTypes: z
-    .array(z.enum(VALID_CONFIG_TYPES as [string, ...string[]]))
-    .min(1, 'Select at least one config type')
-    .max(VALID_CONFIG_TYPES.length),
-});
+import { buildZipFromConfig } from '@/lib/generator';
+import { stackConfigSchema } from '@/types/stack-config';
 
 // ─── Route handler ────────────────────────────────────────────────────────────
 
@@ -24,21 +15,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    let configTypes: string[];
-
+    let body: unknown;
     try {
-      const body = await request.json();
-      const parsed = requestSchema.safeParse(body);
-      if (!parsed.success) {
-        return NextResponse.json(
-          { error: parsed.error.issues[0]?.message ?? 'Invalid request' },
-          { status: 400 }
-        );
-      }
-      configTypes = parsed.data.configTypes;
+      body = await request.json();
     } catch {
       return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
     }
+
+    const parsed = stackConfigSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message ?? 'Invalid request' },
+        { status: 400 }
+      );
+    }
+
+    const config = parsed.data;
 
     // Enforce trial generation limit
     const user = await prisma.user.findUnique({
@@ -56,25 +48,23 @@ export async function POST(request: Request) {
       );
     }
 
-    // Build ZIP
-    const zipBuffer = await buildZip(configTypes);
+    // Build ZIP from normalized config
+    const zipBuffer = await buildZipFromConfig(config);
 
     // Persist record for history
-    const configName = configTypesLabel(configTypes);
-
     await prisma.generatedConfig.create({
       data: {
         userId: session.user.id,
-        name: configName,
-        configType: configTypes.join(', '),
-        content: { configTypes },
+        name: config.projectName,
+        configType: [config.frontend, config.backend].filter((v) => v !== 'none').join(', '),
+        content: config,
       },
     });
 
     return new NextResponse(new Blob([zipBuffer.buffer as ArrayBuffer], { type: 'application/zip' }), {
       headers: {
         'Content-Type': 'application/zip',
-        'Content-Disposition': `attachment; filename="shipforge-${configTypes.join('-')}-${Date.now()}.zip"`,
+        'Content-Disposition': `attachment; filename="${config.slug}-${Date.now()}.zip"`,
       },
     });
   } catch (error) {
