@@ -42,3 +42,7 @@ backend/prisma/dev.db-journal
 # Frontend specific
 frontend/node_modules
 frontend/dist
+
+# Next.js
+.next
+out

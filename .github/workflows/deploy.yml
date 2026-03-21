@@ -22,6 +22,12 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
+          NEXTAUTH_SECRET: placeholder-secret-for-build
+          NEXTAUTH_URL: https://shipforge.dev
+          STRIPE_SECRET_KEY: sk_test_placeholder
+          STRIPE_WEBHOOK_SECRET: whsec_placeholder
 
       # 2️⃣ Set up Docker
       - name: Set up Docker
