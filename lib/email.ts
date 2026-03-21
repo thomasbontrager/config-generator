@@ -71,7 +71,13 @@ async function sendViaSMTP(payload: EmailPayload): Promise<void> {
     throw new Error('EMAIL_SERVER_HOST is not set');
   }
 
-  const port = parseInt(process.env.EMAIL_SERVER_PORT || '587', 10);
+  const portRaw = process.env.EMAIL_SERVER_PORT || '587';
+  const port = parseInt(portRaw, 10);
+  if (Number.isNaN(port) || port < 1 || port > 65535) {
+    throw new Error(
+      `EMAIL_SERVER_PORT "${portRaw}" is not a valid port number (1–65535)`
+    );
+  }
   const user = process.env.EMAIL_SERVER_USER;
   const pass = process.env.EMAIL_SERVER_PASSWORD;
   const from = process.env.EMAIL_FROM || 'ShipForge <noreply@shipforge.dev>';
@@ -113,6 +119,19 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
       'EMAIL_SERVER_USER / EMAIL_SERVER_PASSWORD / EMAIL_FROM in your .env.local file.\n' +
       'See .env.example for details.'
   );
+}
+
+/**
+ * Extract the bare email address from an RFC 5322-style "Name <email>" string.
+ * Returns the raw value unchanged if it doesn't match that format.
+ *
+ * @example
+ * extractEmailAddress('ShipForge <noreply@shipforge.dev>') // 'noreply@shipforge.dev'
+ * extractEmailAddress('hello@shipforge.dev')               // 'hello@shipforge.dev'
+ */
+export function extractEmailAddress(formatted: string): string {
+  const match = formatted.match(/<([^>]+)>/);
+  return match?.[1] ?? formatted;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

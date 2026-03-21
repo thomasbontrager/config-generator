@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sendEmail, contactConfirmationEmail, contactInternalEmail } from '@/lib/email';
+import { sendEmail, contactConfirmationEmail, contactInternalEmail, extractEmailAddress } from '@/lib/email';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -34,8 +34,7 @@ export async function POST(request: Request) {
   try {
     // Destination for inbound contact messages (your inbox)
     const emailFromEnv = process.env.EMAIL_FROM ?? '';
-    // Extract bare address from "Name <email>" format, fall back to raw value
-    const emailFromAddress = emailFromEnv.match(/<([^>]+)>/)?.[1] ?? emailFromEnv;
+    const emailFromAddress = extractEmailAddress(emailFromEnv);
     const inboxAddress =
       process.env.CONTACT_EMAIL ||
       (emailFromAddress.includes('@') ? emailFromAddress : 'hello@shipforge.dev');

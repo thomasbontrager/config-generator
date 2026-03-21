@@ -10,9 +10,11 @@ interface ConfigsActionsProps {
   configId: string;
   /** The stored configTypes array, used to re-generate the ZIP on download. */
   configTypes: string[];
+  /** When true, only the Download button is rendered (no Delete). */
+  downloadOnly?: boolean;
 }
 
-export function ConfigsActions({ configId, configTypes }: ConfigsActionsProps) {
+export function ConfigsActions({ configId, configTypes, downloadOnly = false }: ConfigsActionsProps) {
   const router = useRouter();
   const { toast } = useToast();
   const [isDownloading, setIsDownloading] = useState(false);
@@ -102,16 +104,18 @@ export function ConfigsActions({ configId, configTypes }: ConfigsActionsProps) {
         <Download className="h-4 w-4" />
         {isDownloading ? 'Downloading…' : 'Download'}
       </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={handleDelete}
-        disabled={isDeleting}
-        className="gap-1 text-destructive hover:text-destructive"
-      >
-        <Trash2 className="h-4 w-4" />
-        {isDeleting ? 'Deleting…' : 'Delete'}
-      </Button>
+      {!downloadOnly && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleDelete}
+          disabled={isDeleting}
+          className="gap-1 text-destructive hover:text-destructive"
+        >
+          <Trash2 className="h-4 w-4" />
+          {isDeleting ? 'Deleting…' : 'Delete'}
+        </Button>
+      )}
     </div>
   );
 }
