@@ -7,3 +7,6 @@ export { GitHubAdapter } from './github.adapter';
 
 export type { BillingProviderAdapter } from './billing.provider';
 export { StripeBillingAdapter } from './billing.adapter';
+
+export type { AiGenerationProvider } from './ai.provider';
+export { OpenAiGenerationAdapter } from './ai.adapter';
