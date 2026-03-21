@@ -61,7 +61,7 @@ export async function exchangeGitHubCode(code: string): Promise<GitHubTokens> {
   if (!res.ok) throw new Error(`GitHub token endpoint returned HTTP ${res.status}`);
   const data = await res.json() as { access_token?: string; scope?: string; error_description?: string };
   if (!data.access_token) throw new Error(data.error_description ?? 'GitHub token exchange failed');
-  return { accessToken: data.access_token, scopes: data.scope ? data.scope.split(',') : [] };
+  return { accessToken: data.access_token, scopes: data.scope ? data.scope.split(' ') : [] };
 }
 
 export async function fetchGitHubUserProfile(accessToken: string): Promise<GitHubUserProfile> {

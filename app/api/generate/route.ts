@@ -56,7 +56,13 @@ export async function POST(request: Request) {
       data: {
         userId: session.user.id,
         name: config.projectName,
-        configType: [config.frontend, config.backend].filter((v) => v !== 'none').join(', '),
+        configType: [
+          config.frontend,
+          config.backend !== 'none' ? config.backend : null,
+          config.database !== 'none' ? config.database : null,
+        ]
+          .filter(Boolean)
+          .join(', '),
         content: config,
       },
     });

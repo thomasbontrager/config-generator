@@ -563,7 +563,8 @@ export async function buildZipFromConfig(config: StackConfig): Promise<Buffer> {
       envLines.push('DATABASE_URL=file:./dev.db');
     } else {
       const scheme = config.database === 'mysql' ? 'mysql' : 'postgresql';
-      envLines.push(`DATABASE_URL=${scheme}://user:password@localhost:5432/${config.slug}`);
+      const port = config.database === 'mysql' ? 3306 : 5432;
+      envLines.push(`DATABASE_URL=${scheme}://user:password@localhost:${port}/${config.slug}`);
     }
   }
 
