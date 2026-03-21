@@ -320,7 +320,7 @@ function PricingCard({ tier, yearly }: { tier: PricingTier; yearly: boolean }) {
         ))}
       </ul>
 
-      <Link href={tier.monthly === 0 ? '/auth/signup' : '/auth/signup'} className="w-full">
+      <Link href="/auth/signup" className="w-full">
         <Button
           className={`w-full font-semibold ${
             tier.popular
@@ -392,7 +392,7 @@ export default function HomePage() {
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] tracking-tight mb-6">
-            Generate production&#8209;ready stacks.{' '}
+            Generate production‑ready stacks.{' '}
             <span className="bg-gradient-to-r from-cyan-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent">
               Ship faster.
             </span>
