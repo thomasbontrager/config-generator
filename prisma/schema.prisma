@@ -248,6 +248,10 @@ enum IntegrationProvider {
   GITLAB
   VERCEL
   NETLIFY
+  STRIPE
+  OPENAI
+  EMAIL
+  STORAGE
 }
 
 enum TeamRole {

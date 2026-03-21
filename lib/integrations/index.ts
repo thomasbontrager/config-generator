@@ -6,6 +6,10 @@ export const IntegrationProvider = {
   GITLAB: 'GITLAB',
   VERCEL: 'VERCEL',
   NETLIFY: 'NETLIFY',
+  STRIPE: 'STRIPE',
+  OPENAI: 'OPENAI',
+  EMAIL: 'EMAIL',
+  STORAGE: 'STORAGE',
 } as const;
 export type IntegrationProviderType = (typeof IntegrationProvider)[keyof typeof IntegrationProvider];
 
