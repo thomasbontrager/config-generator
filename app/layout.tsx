@@ -4,8 +4,9 @@ import { Toaster } from '@/components/ui/toaster';
 import { Analytics } from '@/components/shared/Analytics';
 
 export const metadata: Metadata = {
-  title: 'ShipForge - Config & Boilerplate Generator',
-  description: 'Generate configuration files and boilerplates for your projects',
+  title: 'ShipForge - Generate Production-Ready Stacks. Ship Faster.',
+  description:
+    'ShipForge gives you a real foundation for modern products — auth, billing, database, AI, Docker, CI/CD, and GitHub workflows wired into one configurable stack.',
 };
 
 export default function RootLayout({
