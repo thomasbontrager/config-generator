@@ -23,16 +23,15 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # These are build-time-only stub values used solely to satisfy env validation
-          # during `prisma generate && next build`. The app never connects to any real
-          # service with these values — no database connection is made at build time,
-          # and Stripe/NextAuth are not initialised until runtime.
-          # Real production secrets are injected at runtime via SERVER_USER/.env on the VPS.
-          DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
-          NEXTAUTH_SECRET: placeholder-secret-for-build-only-not-used-at-runtime
+          # !! BUILD-TIME ONLY — NOT REAL CREDENTIALS !!
+          # These stubs satisfy env validation during `prisma generate && next build`.
+          # No real database, Stripe, or auth connection is made at build time.
+          # Real secrets are injected at runtime via the server's .env file.
+          DATABASE_URL: postgresql://BUILD_ONLY:BUILD_ONLY@localhost:5432/BUILD_ONLY
+          NEXTAUTH_SECRET: BUILD_ONLY_NOT_A_REAL_SECRET
           NEXTAUTH_URL: https://shipforge.dev
-          STRIPE_SECRET_KEY: sk_test_placeholder
-          STRIPE_WEBHOOK_SECRET: whsec_placeholder
+          STRIPE_SECRET_KEY: sk_test_BUILD_ONLY_NOT_REAL
+          STRIPE_WEBHOOK_SECRET: whsec_BUILD_ONLY_NOT_REAL
 
       # 2️⃣ Set up Docker
       - name: Set up Docker
