@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
-import type Stripe from 'stripe';
+import Stripe from 'stripe';
 
 const deleteAccountSchema = z.object({
   /**
