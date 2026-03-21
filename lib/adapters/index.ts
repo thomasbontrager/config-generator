@@ -4,3 +4,6 @@
  */
 export type { GitHubProvider } from './github.provider';
 export { GitHubAdapter } from './github.adapter';
+
+export type { BillingProviderAdapter } from './billing.provider';
+export { StripeBillingAdapter } from './billing.adapter';
